@@ -8,7 +8,6 @@
 
 :root {
     --tenne-tawny: #1138cc;
-    --tenne-tawny: #1138cc;
 }
 body{
     font-weight: 300;
@@ -51,6 +50,59 @@ body{
     display: flex;
     align-items: stretch;
 }
+.calorie-filter {
+    display: flex;
+    align-items: center;
+}
+
+.calorie-filter label {
+    margin-right: 10px;
+}
+
+.calorie-filter input[type="text"] {
+    width: 80px;
+    margin-right: 5px;
+}
+
+.calorie-checkbox {
+    display: none; 
+}
+
+.calorie-label {
+    font-size: 1rem;
+    color: var(--tenne-tawny);
+    cursor: pointer;
+}
+
+/* Style the checkbox */
+.calorie-label:before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border: 1px solid var(--tenne-tawny);
+    border-radius: 3px;
+    margin-right: 8px;
+    vertical-align: middle;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Change checkbox style when checked */
+.calorie-checkbox:checked + .calorie-label:before {
+    background-color: var(--tenne-tawny);
+    border-color: var(--tenne-tawny);
+}
+
+.calorie-checkbox:checked + .calorie-label:after {
+    content: '\2713';
+    font-size: 14px;
+    color: #fff;
+    position: absolute;
+    top: 1px;
+    left: 5px;
+}
+
 .search-control,
 .search-button{
     width: 100%;
@@ -78,7 +130,7 @@ body{
     border-top-right-radius: 2rem;
     border-bottom-left-radius: 2rem;
     transition: all 0.4s linear;
-    -webkit-transition: all 0.4s linear; /* Corrected */
+    -webkit-transition: all 0.4s linear;
     -moz-transition: all 0.4s linear;
     -ms-transition: all 0.4s linear;
     -o-transition: all 0.4s linear;
@@ -270,6 +322,17 @@ body{
     font-size: 2rem;
     font-weight: 600;
     width: 100%;
+}
+
+/* home icon */
+.home-icon {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 9999;
+    color: #1138cc; 
+    font-size: 24px;
+    text-decoration: none;
 }
 
 
