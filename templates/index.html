@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Hub</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
+    <!-- Link CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Add the home icon -->
+    <a href="/" class="home-icon">Home</a>
+    <div class="container">
+        <div class="meal-wrapper">
+            <div class="meal-search">
+                <h2 class="title"> Find meals for your ingredients</h2>
+                <div class="meal-search-box">
+                    <input type="text" class="search-control" placeholder="Enter ingredients" id="search-input">
+                    <!-- Add the search icon inside the button -->
+                    <button type="button" class="search-button button" id="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Move the calorie filter inside meal-search -->
+            <div class="meal-search">
+                <div class="calorie-filter">
+                    <input type="checkbox" id="calorie-filter-checkbox">
+                    <label for="calorie-filter-checkbox">Filter by Calories:</label>
+                    <input type="number" id="min-calories" placeholder="Min Calories">
+                    <input type="number" id="max-calories" placeholder="Max Calories">
+                </div>
+            </div>
+            <div class="meal-result" id="meal">
+            </div>
+        </div>
+    </div>
+
+    <div class="meal-details">
+        <div class="meal-details-content"></div>
+        <button id="recipe-close-button" class="recipe-close-button">&times;</button>
+    </div>
+
+    <!-- Link JavaScript file -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
