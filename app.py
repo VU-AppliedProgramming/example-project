@@ -5,7 +5,7 @@ import requests
 # Create the Flask app
 app = Flask(__name__)
 
-# Define your Spoonacular API key
+# Spoonacular API key
 API_KEY = '25f10c03748a4a99bed2f8dfb40d284f'
 
 # Define route to render index.html

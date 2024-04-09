@@ -321,7 +321,6 @@ body{
 }
 
 /* not found ingredients */
-
 .notFound {
     grid-template-columns: 1fr!important;
     color: #1138cc;
