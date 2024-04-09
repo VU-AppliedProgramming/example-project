@@ -14,6 +14,13 @@ body{
     font-size: 1.05rem;
     line-height: 1.6;
     font-family: 'Poppins' sans-serif;
+    /* Set the background image */
+    background-image: url('../images/background.jpeg');
+
+
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center; 
 }
 .btn{
     font-family: inherit;
@@ -51,8 +58,7 @@ body{
     align-items: stretch;
 }
 .calorie-filter {
-    display: flex;
-    align-items: center;
+    margin-bottom: 1rem; /* Added margin to create space below the calorie filter */
 }
 
 .calorie-filter label {
@@ -315,7 +321,6 @@ body{
 }
 
 /* not found ingredients */
-
 .notFound {
     grid-template-columns: 1fr!important;
     color: #1138cc;
