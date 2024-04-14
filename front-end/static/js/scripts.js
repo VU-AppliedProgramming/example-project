@@ -32,7 +32,12 @@ function getMealList() {
     }
 
     fetch(url)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             let html = '';
             if (data.results) {
@@ -55,6 +60,9 @@ function getMealList() {
                 mealList.classList.add('notFound');
             }
             mealList.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error fetching meals:', error);
         });
 }
 
@@ -64,8 +72,17 @@ function getMealRecipe(event) {
     if (event.target.classList.contains('recipe-button')) {
         let mealItem = event.target.parentElement.parentElement;
         fetch(`/api/recipe/${mealItem.dataset.id}`)
-            .then(response => response.json())
-            .then(data => mealRecipeModal(data));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => mealRecipeModal(data))
+            // catch error
+            .catch(error => {
+                console.error('Error fetching recipe:', error);
+            });
     }
 }
 
