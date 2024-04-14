@@ -9,10 +9,6 @@ CORS(app)
 # Spoonacular API key
 API_KEY = os.environ.get('API_KEY')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/api/meals')
 def get_meals():
     query = request.args.get('query')
