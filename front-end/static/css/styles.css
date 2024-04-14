@@ -14,9 +14,6 @@ body{
     font-size: 1.05rem;
     line-height: 1.6;
     font-family: 'Poppins' sans-serif;
-    /* Set the background image */
-    background-image: url('../images/background.jpeg');
-
 
     background-size: cover; 
     background-repeat: no-repeat; 

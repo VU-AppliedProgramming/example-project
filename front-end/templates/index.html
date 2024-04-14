@@ -6,7 +6,7 @@
     <title>Recipe Hub</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
     <!-- Link CSS file -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
 </head>
 <body>
     <!-- Add the home icon -->
@@ -22,9 +22,7 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-            </div>
-            <!-- Move the calorie filter inside meal-search -->
-            <div class="meal-search">
+                <!-- Move the calorie filter inside meal-search -->
                 <div class="calorie-filter">
                     <input type="checkbox" id="calorie-filter-checkbox">
                     <label for="calorie-filter-checkbox">Filter by Calories:</label>
@@ -43,6 +41,6 @@
     </div>
 
     <!-- Link JavaScript file -->
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
 </body>
 </html>
