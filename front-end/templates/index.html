@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Hub</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
+    <!-- Link Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Link CSS file -->
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
 </head>
 <body>
-    <!-- Add the home icon -->
     <a href="/" class="home-icon">Home</a>
+    <a id="random-button" class="random-button">Random</a>
     <div class="container">
         <div class="meal-wrapper">
             <div class="meal-search">
                 <h2 class="title"> Find meals for your ingredients</h2>
                 <div class="meal-search-box">
                     <input type="text" class="search-control" placeholder="Enter ingredients" id="search-input">
-                    <!-- Add the search icon inside the button -->
                     <button type="button" class="search-button button" id="search-button">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
-                <!-- Move the calorie filter inside meal-search -->
                 <div class="calorie-filter">
                     <input type="checkbox" id="calorie-filter-checkbox">
                     <label for="calorie-filter-checkbox">Filter by Calories:</label>
@@ -39,7 +39,6 @@
         <div class="meal-details-content"></div>
         <button id="recipe-close-button" class="recipe-close-button">&times;</button>
     </div>
-
     <!-- Link JavaScript file -->
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
 </body>

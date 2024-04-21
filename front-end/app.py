@@ -17,7 +17,6 @@ def send_css():
 def send_js():
     return send_from_directory(app.static_folder, 'js/scripts.js')
 
-
 @app.route('/api/meals')
 def search():
     query = request.args.get('query')
@@ -33,6 +32,18 @@ def recipe(meal_id):
     backend_url = f'http://localhost:5000/api/recipe/{meal_id}'
     response = requests.get(backend_url)
     return jsonify(response.json())
+
+@app.route('/api/random')
+def get_random_recipe():
+    backend_url = f'http://localhost:5000/api/random'
+    response = requests.get(backend_url)
+    return jsonify(response.json())
+
+@app.route('/api/price_breakdown_widget')
+def get_price_breakdown_widget():
+    backend_url = f'http://localhost:5000/api/price_breakdown_widget'
+    response = requests.get(backend_url)
+    return response.text
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

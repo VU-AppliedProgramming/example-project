@@ -9,15 +9,12 @@
 :root {
     --tenne-tawny: #1138cc;
 }
-body{
+body {
     font-weight: 300;
     font-size: 1.05rem;
     line-height: 1.6;
-    font-family: 'Poppins' sans-serif;
-
-    background-size: cover; 
-    background-repeat: no-repeat; 
-    background-position: center; 
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(120deg, #f6d365, #fda085);
 }
 .btn{
     font-family: inherit;
@@ -337,6 +334,11 @@ body{
     text-decoration: none;
 }
 
+.home-icon:hover {
+    color: #0a2d7e;
+    text-decoration: underline;
+}
+
 
 /* Media Queries*/
 @media screen and (min-width: 600px){
@@ -366,4 +368,26 @@ body{
     #meal{
         grid-template-columns: repeat(3, 1fr);
     }
+}
+
+.random-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    color: #1138cc;
+    font-size: 24px;
+    text-decoration: none;
+    cursor: pointer; /* Change cursor style to pointer */
+}
+
+/* Add hover effect */
+.random-button:hover {
+    color: #0a2d7e;
+    text-decoration: underline;
+}
+
+.price-breakdown-button {
+    color: white;
+    text-decoration: none;
 }
