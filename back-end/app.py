@@ -36,5 +36,26 @@ def get_recipe(meal_id):
     data = response.json()
     return jsonify(data)
 
+@app.route('/api/random')
+def get_random_recipe():
+    url = f'https://api.spoonacular.com/recipes/random?apiKey={API_KEY}'
+    response = requests.get(url)
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch random recipe'}), 500
+    
+    data = response.json()
+    return jsonify(data['recipes'][0])
+
+@app.route('/api/price_breakdown_widget')
+def get_price_breakdown_widget():
+    meal_id = request.args.get('mealId')
+    url = f'https://api.spoonacular.com/recipes/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
+    response = requests.get(url)
+    
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
+    
+    return response.text
+
 if __name__ == '__main__':
     app.run(debug=True)
