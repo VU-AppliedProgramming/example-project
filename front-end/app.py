@@ -40,8 +40,8 @@ def get_random_recipe():
     return jsonify(response.json())
 
 @app.route('/api/price_breakdown_widget')
-def get_price_breakdown_widget():
-    backend_url = f'http://localhost:5000/api/price_breakdown_widget'
+def get_price_breakdown_widget(meal_id):
+    backend_url = f'http://localhost:5000/api/recipes/price_breakdown_widget/{meal_id}'
     response = requests.get(backend_url)
     return response.text
 

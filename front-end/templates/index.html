@@ -13,6 +13,15 @@
 <body>
     <a href="/" class="home-icon">Home</a>
     <a id="random-button" class="random-button">Random</a>
+    <div class="timer-container">
+        <div class="timer-controls">
+            <button id="startButton">Start Timer</button>
+            <button id="pauseButton" style="display: none;">Pause Timer</button>
+            <button id="resetButton" style="display: none;">Reset Timer</button>
+            <button id="closeButton" style="display: none;">Close Timer</button>
+        </div>
+        <div id="timerDisplay"></div>
+    </div>
     <div class="container">
         <div class="meal-wrapper">
             <div class="meal-search">
@@ -39,6 +48,7 @@
         <div class="meal-details-content"></div>
         <button id="recipe-close-button" class="recipe-close-button">&times;</button>
     </div>
+
     <!-- Link JavaScript file -->
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
 </body>
