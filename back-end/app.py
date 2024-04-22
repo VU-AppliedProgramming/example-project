@@ -47,15 +47,14 @@ def get_random_recipe():
     return jsonify(data['recipes'][0])
 
 @app.route('/api/price_breakdown_widget')
-def get_price_breakdown_widget():
-    meal_id = request.args.get('mealId')
+def get_price_breakdown_widget(meal_id):
+
     url = f'https://api.spoonacular.com/recipes/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
     response = requests.get(url)
-    
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
     
-    return response.text
+    return response.text, 200, {'Content-Type': 'text/html'}
 
 if __name__ == '__main__':
     app.run(debug=True)

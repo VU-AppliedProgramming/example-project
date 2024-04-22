@@ -7,6 +7,72 @@ document.addEventListener('DOMContentLoaded', function() {
     const minCaloriesInput = document.getElementById('min-calories');
     const maxCaloriesInput = document.getElementById('max-calories');
     const randomButton = document.getElementById('random-button');
+    const startButton = document.getElementById('startButton');
+    const pauseButton = document.getElementById('pauseButton');
+    const resetButton = document.getElementById('resetButton');
+    const closeButton = document.getElementById('closeButton');
+    const timerDisplay = document.getElementById('timerDisplay');
+
+    let timer;
+    let startTime;
+    let elapsedTime = 0;
+    let isRunning = false;
+
+    // Initially hide the pause, reset, and close buttons
+    pauseButton.style.display = 'none';
+    resetButton.style.display = 'none';
+    closeButton.style.display = 'none';
+
+    startButton.addEventListener('click', startTimer);
+    pauseButton.addEventListener('click', pauseTimer);
+    resetButton.addEventListener('click', resetTimer);
+    closeButton.addEventListener('click', closeTimer);
+
+    function startTimer() {
+        if (!isRunning) {
+            isRunning = true;
+            startTime = Date.now() - elapsedTime;
+            timer = setInterval(function() {
+                elapsedTime = Date.now() - startTime;
+                displayTime(elapsedTime);
+            }, 1000); // Change interval to 1000ms (1 second)
+
+            // Show the pause, reset, and close buttons
+            pauseButton.style.display = 'inline-block';
+            resetButton.style.display = 'inline-block';
+            closeButton.style.display = 'inline-block';
+        }
+    }
+
+    function pauseTimer() {
+        if (isRunning) {
+            isRunning = false;
+            clearInterval(timer);
+        }
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        elapsedTime = 0;
+        displayTime(elapsedTime);
+    }
+
+    function closeTimer() {
+        // Hide the pause, reset, and close buttons
+        pauseButton.style.display = 'none';
+        resetButton.style.display = 'none';
+        closeButton.style.display = 'none';
+
+        // Clear the timer display
+        timerDisplay.textContent = '';
+    }
+
+    function displayTime(milliseconds) {
+        let minutes = Math.floor(milliseconds / 60000);
+        let seconds = Math.floor((milliseconds % 60000) / 1000);
+
+        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
 
     // Event listeners
     searchButton.addEventListener('click', getMealList);
@@ -16,10 +82,23 @@ document.addEventListener('DOMContentLoaded', function() {
         mealDetailsContent.parentElement.classList.remove('showRecipe');
     });
 
+    // Initially hide the calorie input fields
+    if (!calorieFilterCheckbox.checked) {
+        minCaloriesInput.style.display = 'none';
+        maxCaloriesInput.style.display = 'none';
+    }
+
     calorieFilterCheckbox.addEventListener('change', () => {
-        // Toggle visibility of calorie input fields
-        minCaloriesInput.style.display = calorieFilterCheckbox.checked ? 'inline-block' : 'none';
-        maxCaloriesInput.style.display = calorieFilterCheckbox.checked ? 'inline-block' : 'none';
+        // Toggle visibility of calorie input fields based on checkbox state
+        if (calorieFilterCheckbox.checked) {
+            // Show the calorie input fields if the checkbox is checked
+            minCaloriesInput.style.display = 'inline-block';
+            maxCaloriesInput.style.display = 'inline-block';
+        } else {
+            // Hide the calorie input fields if the checkbox is unchecked
+            minCaloriesInput.style.display = 'none';
+            maxCaloriesInput.style.display = 'none';
+        }
     });
 
     // Function to handle clicks on the meal list
@@ -43,10 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         alert('Failed to fetch recipe details. Please try again later.');
                     });
             }
-        } else if (target.classList.contains('price-breakdown-button')) {
-            event.preventDefault();
-            const mealId = target.dataset.id;
-            window.location.href = `/price_breakdown_page.html?mealId=${mealId}`;
         }
     }
 
@@ -100,11 +175,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to display meal recipe modal
     function mealRecipeModal(meal) {
         let instructions = meal.instructions ? meal.instructions : "No instructions available for this recipe";
-
         let ingredientsHTML = meal.extendedIngredients.map(ingredient => {
             return `<li>${ingredient.original}</li>`;
         }).join('');
-
+    
+        // Create HTML string including recipe details and iframe
         let html = `
             <h2 class="recipe-title">${meal.title}</h2>
             <div class="recipe-instructions">
@@ -120,14 +195,17 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="recipe-link">
                 <a href="${meal.sourceUrl}" target="_blank">View Recipe</a>
-            </div>
-            <div class="price-breakdown-link">
-                <a href="#" class="price-breakdown-button" data-id="${meal.id}">Get Price Breakdown</a>
-            </div>
-        `;
+            </div>`
+        ;
+    
+        // Update the modal content
         mealDetailsContent.innerHTML = html;
+    
+        // Show the modal
         mealDetailsContent.parentElement.classList.add('showRecipe');
     }
+    
+
 
     // Function to fetch and display a random recipe
     function getRandomRecipe(event) {
@@ -146,4 +224,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching random recipe:', error);
             });
     }
+
+    // Function to get price breakdown
+    function getPriceBreakdown(meal_id) {
+        fetch(`/api/recipes/${meal_id}/priceBreakdownWidget`)
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.text()
+            })
+            .then(data => {
+                console.log('HTML content:', data);
+
+            })
+            .catch(error => console.error('Error fetching price breakdown:', error));
+    }
 });
+
+
+
