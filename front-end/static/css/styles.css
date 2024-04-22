@@ -54,30 +54,30 @@ body {
     margin: 1.2rem 0;
     display: flex;
     align-items: stretch;
-    background-color: #fff; /* Change background color */
-    border-radius: 10px; /* Add border radius for rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    background-color: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    transition: all 0.3s ease; 
 }
 
 .meal-search-box:hover {
-    transform: translateY(-5px); /* Move box up on hover */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Add depth effect */
+    transform: translateY(-5px); 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
 }
 
 .search-control {
-    width: calc(100% - 55px); /* Adjust input width */
+    width: calc(100% - 55px); 
     padding: 10px;
     border: none;
-    border-top-left-radius: 10px; /* Add border radius for rounded corners */
-    border-bottom-left-radius: 10px; /* Add border radius for rounded corners */
-    margin-bottom: 0; /* Remove bottom margin */
-    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    border-top-left-radius: 10px; 
+    border-bottom-left-radius: 10px; 
+    margin-bottom: 0; 
+    transition: all 0.3s ease;
 }
 
 .search-control:focus {
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add focus effect */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .search-button {
@@ -87,10 +87,10 @@ body {
     background: var(--tenne-tawny);
     color: #fff;
     border: none;
-    border-top-right-radius: 10px; /* Add border radius for rounded corners */
-    border-bottom-right-radius: 10px; /* Add border radius for rounded corners */
+    border-top-right-radius: 10px; 
+    border-bottom-right-radius: 10px; 
     cursor: pointer;
-    transition: all 0.4s linear; /* Smooth transition for hover effect */
+    transition: all 0.4s linear;
 }
 
 .search-button:hover {
