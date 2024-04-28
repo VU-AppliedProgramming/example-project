@@ -172,15 +172,23 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Function to display meal recipe modal
     function mealRecipeModal(meal) {
         let instructions = meal.instructions ? meal.instructions : "No instructions available for this recipe";
         let ingredientsHTML = meal.extendedIngredients.map(ingredient => {
             return `<li>${ingredient.original}</li>`;
         }).join('');
     
-        // Create HTML string including recipe details and iframe
         let html = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${meal.title}</title>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
+            <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/recipe.css">
+        </head>
+        <body>
             <h2 class="recipe-title">${meal.title}</h2>
             <div class="recipe-instructions">
                 <h3>Instructions:</h3>
@@ -195,16 +203,15 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="recipe-link">
                 <a href="${meal.sourceUrl}" target="_blank">View Recipe</a>
-            </div>`
-        ;
+            </div>
+        </body>
+        </html>
+        `;
+
     
-        // Update the modal content
-        mealDetailsContent.innerHTML = html;
-    
-        // Show the modal
-        mealDetailsContent.parentElement.classList.add('showRecipe');
+        let newWindow = window.open();
+        newWindow.document.write(html);
     }
-    
 
 
     // Function to fetch and display a random recipe
