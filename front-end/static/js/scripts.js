@@ -129,6 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function getMealList() {
         let searchInputTxt = document.getElementById('search-input').value.trim();
         let url = `/api/meals?query=${searchInputTxt}`;
+
+        // Add calorie filter parameters if checkbox is checked and inputs have values
         if (calorieFilterCheckbox.checked && minCaloriesInput.value && maxCaloriesInput.value) {
             let minCalories = minCaloriesInput.value.trim();
             let maxCalories = maxCaloriesInput.value.trim();
@@ -165,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 mealList.innerHTML = html;
 
+                // Add event listener to the price breakdown buttons
                 const priceBreakdownButtons = document.querySelectorAll('.price-breakdown-button');
                 priceBreakdownButtons.forEach(button => {
                     button.addEventListener('click', () => {
@@ -178,9 +181,58 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Function to fetch price breakdown and display the plot
-    function getPriceBreakdownAndDisplay(mealId) {
-        // Fetch the HTML content of the meal
+
+    // Function to display meal recipe modal
+    function mealRecipeModal(meal) {
+        let instructions = meal.instructions ? meal.instructions : "No instructions available for this recipe";
+        let ingredientsHTML = meal.extendedIngredients.map(ingredient => {
+            return `<li>${ingredient.original}</li>`;
+        }).join('');
+
+        fetch('http://127.0.0.1:5001/static/css/recipe.css')
+            .then(response => response.text())
+            .then(css => {
+                let html = `
+                    <h2 class="recipe-title">${meal.title}</h2>
+                    <div class="recipe-instructions">
+                        <h3>Instructions:</h3>
+                        <p>${instructions}</p>
+                    </div>
+                    <div class="recipe-ingredients">
+                        <h3>Ingredients:</h3>
+                        <ul>${ingredientsHTML}</ul>
+                    </div>
+                    <div class="recipe-meal-image">
+                        <img src="${meal.image}" alt="image of food">
+                    </div>
+                    <div class="recipe-link">
+                        <a href="${meal.sourceUrl}" target="_blank">View Recipe</a>
+                    </div>
+                    <button class="price-breakdown-button" data-id="${meal.id}">Get Price Breakdown</button>
+                    <div id="chart-container"></div> 
+                `;
+
+                // Create a new window
+                let newWindow = window.open();
+                newWindow.document.write(html);
+
+                let style = newWindow.document.createElement('style');
+                style.innerHTML = css;
+                newWindow.document.head.appendChild(style);
+
+                // listener for the price breakdown button
+                newWindow.document.querySelector('.price-breakdown-button').addEventListener('click', function() {
+                    console.log('Price breakdown button clicked');
+                    getPriceBreakdownAndDisplay(meal.id, newWindow);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching CSS:', error);
+            });
+    }
+
+    // Function to get price breakdown and display
+    function getPriceBreakdownAndDisplay(mealId, window) {
         fetch(`/api/price_breakdown_widget/${mealId}`)
             .then(response => {
                 if (!response.ok) {
@@ -205,10 +257,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(data => {
                     // Extract cleaned data from the response
+                    console.log('Received base64-encoded image data:', data);
                     const pieChartImageBase64 = data.pie_chart_image_base64;
-                    
+
                     // Display the pie chart
-                    displayPriceBreakdown(pieChartImageBase64);
+                    displayPriceBreakdown(pieChartImageBase64, window);
                 })
                 .catch(error => {
                     console.error('Error processing meal HTML:', error);
@@ -219,55 +272,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Function to display the pie chart
-    function displayPriceBreakdown(pieChartImage) {
-        const chartContainer = document.getElementById('chart-container');
+    // Function to display price breakdown
+    function displayPriceBreakdown(pieChartImage, window) {
+        const chartContainer = window.document.getElementById('chart-container');
         chartContainer.innerHTML = `<img src="data:image/png;base64,${pieChartImage}" alt="Pie Chart">`;
     }
 
-    // Function to display meal recipe modal
-    function mealRecipeModal(meal) {
-        let instructions = meal.instructions ? meal.instructions : "No instructions available for this recipe";
-        let ingredientsHTML = meal.extendedIngredients.map(ingredient => {
-            return `<li>${ingredient.original}</li>`;
-        }).join('');
-    
-        // Create HTML string including recipe details
-        let html = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>${meal.title}</title>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
-            <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/recipe.css">
-        </head>
-        <body>
-            <h2 class="recipe-title">${meal.title}</h2>
-            <div class="recipe-instructions">
-                <h3>Instructions:</h3>
-                <p>${instructions}</p>
-            </div>
-            <div class="recipe-ingredients">
-                <h3>Ingredients:</h3>
-                <ul>${ingredientsHTML}</ul>
-            </div>
-            <div class="recipe-meal-image">
-                <img src="${meal.image}" alt="image of food">
-            </div>
-            <div class="recipe-link">
-                <a href="${meal.sourceUrl}" target="_blank">View Recipe</a>
-            </div>
-            <button class="price-breakdown-button" data-id="${meal.id}">Get Price Breakdown</button>
-        </body>
-        </html>
-        `;
 
-        // Open a new window with the recipe details
-        let newWindow = window.open();
-        newWindow.document.write(html);
-    }
 
     // Function to fetch and display a random recipe
     function getRandomRecipe(event) {

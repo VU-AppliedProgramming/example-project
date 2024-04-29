@@ -82,8 +82,7 @@ def clean_html_response(input_string):
 def clean_html():
     html_string = request.data.decode("utf-8")
     ingredient_names, prices = clean_html_response(html_string)
-
-    # Generate the pie chart using the cleaned data
+    
     pie_chart_image_base64 = create_pie_chart(ingredient_names, prices) 
 
     return jsonify({'pie_chart_image_base64': pie_chart_image_base64})
