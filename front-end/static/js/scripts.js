@@ -129,8 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function getMealList() {
         let searchInputTxt = document.getElementById('search-input').value.trim();
         let url = `/api/meals?query=${searchInputTxt}`;
-
-        // Add calorie filter parameters if checkbox is checked and inputs have values
         if (calorieFilterCheckbox.checked && minCaloriesInput.value && maxCaloriesInput.value) {
             let minCalories = minCaloriesInput.value.trim();
             let maxCalories = maxCaloriesInput.value.trim();
@@ -166,18 +164,75 @@ document.addEventListener('DOMContentLoaded', function() {
                     mealList.classList.add('notFound');
                 }
                 mealList.innerHTML = html;
+
+                const priceBreakdownButtons = document.querySelectorAll('.price-breakdown-button');
+                priceBreakdownButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const mealId = button.dataset.id;
+                        getPriceBreakdownAndDisplay(mealId);
+                    });
+                });
             })
             .catch(error => {
                 console.error('Error fetching meals:', error);
             });
     }
 
+    // Function to fetch price breakdown and display the plot
+    function getPriceBreakdownAndDisplay(mealId) {
+        // Fetch the HTML content of the meal
+        fetch(`/api/price_breakdown_widget/${mealId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch meal HTML');
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Send the HTML content to the backend for cleaning
+                fetch('/clean_html', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ html_string: html })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to clean HTML');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Extract cleaned data from the response
+                    const pieChartImageBase64 = data.pie_chart_image_base64;
+                    
+                    // Display the pie chart
+                    displayPriceBreakdown(pieChartImageBase64);
+                })
+                .catch(error => {
+                    console.error('Error processing meal HTML:', error);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching meal HTML:', error);
+            });
+    }
+
+    // Function to display the pie chart
+    function displayPriceBreakdown(pieChartImage) {
+        const chartContainer = document.getElementById('chart-container');
+        chartContainer.innerHTML = `<img src="data:image/png;base64,${pieChartImage}" alt="Pie Chart">`;
+    }
+
+    // Function to display meal recipe modal
     function mealRecipeModal(meal) {
         let instructions = meal.instructions ? meal.instructions : "No instructions available for this recipe";
         let ingredientsHTML = meal.extendedIngredients.map(ingredient => {
             return `<li>${ingredient.original}</li>`;
         }).join('');
     
+        // Create HTML string including recipe details
         let html = `
         <!DOCTYPE html>
         <html lang="en">
@@ -204,15 +259,15 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="recipe-link">
                 <a href="${meal.sourceUrl}" target="_blank">View Recipe</a>
             </div>
+            <button class="price-breakdown-button" data-id="${meal.id}">Get Price Breakdown</button>
         </body>
         </html>
         `;
 
-    
+        // Open a new window with the recipe details
         let newWindow = window.open();
         newWindow.document.write(html);
     }
-
 
     // Function to fetch and display a random recipe
     function getRandomRecipe(event) {
@@ -231,21 +286,4 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching random recipe:', error);
             });
     }
-
-    // Function to get price breakdown
-    function getPriceBreakdown(meal_id) {
-        fetch(`/api/recipes/${meal_id}/priceBreakdownWidget`)
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.text()
-            })
-            .then(data => {
-                console.log('HTML content:', data);
-
-            })
-            .catch(error => console.error('Error fetching price breakdown:', error));
-    }
 });
-
-
-

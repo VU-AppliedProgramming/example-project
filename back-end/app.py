@@ -2,7 +2,10 @@ from flask import Flask, render_template, jsonify, request
 import os
 import requests
 from flask_cors import CORS
-import matplotlib as plt
+import re
+import matplotlib.pyplot as plt
+import base64
+import io
 
 app = Flask(__name__)
 CORS(app)
@@ -56,51 +59,62 @@ def get_price_breakdown_widget(meal_id):
     
     return response.text, 200, {'Content-Type': 'text/html'}
 
-def create_pie_chart(response_text):
-    '''
-    Example output:  
+def clean_html_response(input_string):
+    # Extract prices
+    price_section = re.search(r'<b>Price<\/b>(.*?)<div', input_string, re.DOTALL)
+    if price_section:
+        prices_with_br = re.findall(r'\$(.*?)<br>', price_section.group(1))
+        prices = [price.replace('$', '').replace('<br>', '').strip() for price in prices_with_br]
+    else:
+        prices = None
 
-    Cost per Serving: $1.74
-    Ingredient
-    90 grams whey protein
-    150 grams frozen strawberries
-    150 grams frozen blueberries
-    3 bananas
-    1 pomegranate
-    60 grams walnuts
-    30 grams pumpkin seeds
-    30 grams flaxseed
-    180 grams granola
-    Price
-    $2.51
-    $1.34
-    $1.18
-    $0.47
-    $1.56
-    $1.44
-    $0.54
-    $0.18
-    $1.22
-    $10.43
-    charttable
-    
-    '''
+    # Extract ingredients
+    ingredients_section = re.search(r'<b>Ingredient<\/b>(.*?)<div', input_string, re.DOTALL)
+    if ingredients_section:
+        ingredients_with_br = re.findall(r'<br>(.*?)<br>', ingredients_section.group(1))
+        ingredients = [ingredient.strip() for ingredient in ingredients_with_br]
+    else:
+        ingredients = None
 
-    # Parse the response text
-    lines = response_text.split('\n')[1:-1]  # Exclude the first and last lines
-    ingredients_with_prices = [(line.split()[1:], float(line.split()[-1][1:])) for line in lines]
-    
-    # Extract ingredients and prices
-    ingredients = [item[0] for item in ingredients_with_prices]
-    prices = [item[1] for item in ingredients_with_prices]
-    
-    # Create pie chart
-    plt.figure(figsize=(8, 8))
-    plt.pie(prices, labels=ingredients, autopct='%1.1f%%', startangle=140)
-    plt.title('Ingredient Prices')
+    return ingredients, prices
+
+@app.route('/clean_html', methods=['POST'])
+def clean_html():
+    html_string = request.data.decode("utf-8")
+    ingredient_names, prices = clean_html_response(html_string)
+
+    # Generate the pie chart using the cleaned data
+    pie_chart_image_base64 = create_pie_chart(ingredient_names, prices) 
+
+    return jsonify({'pie_chart_image_base64': pie_chart_image_base64})
+
+def create_pie_chart(labels, values):
+    values = [float(v) for v in values]
+
+    plt.figure(figsize=(15, 8))
+    patches, _, _ = plt.pie(values, labels=None, startangle=140, autopct=lambda p: '${:.2f}'.format(p * sum(values) / 100), pctdistance=0.85)
+
+    plt.legend(patches, labels, loc="best")
+    plt.title("Ingredients Distribution")
     plt.axis('equal')
-    plt.savefig('pie_chart.png') 
-    plt.close()  
+
+    # Save the pie chart as a PNG image
+    img_data = io.BytesIO()
+    plt.savefig(img_data, format='png')
+    img_data.seek(0)
+    img_base64 = base64.b64encode(img_data.read()).decode('utf-8')
+
+    return img_base64
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+###################################
+###################################
+
+
+
+### https://api.spoonacular.com/recipes/1082038/priceBreakdownWidget?apiKey=25f10c03748a4a99bed2f8dfb40d284f ### to check response
