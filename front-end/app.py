@@ -39,11 +39,19 @@ def get_random_recipe():
     response = requests.get(backend_url)
     return jsonify(response.json())
 
-@app.route('/api/price_breakdown_widget')
+@app.route('/api/price_breakdown_widget/<int:meal_id>')
 def get_price_breakdown_widget(meal_id):
-    backend_url = f'http://localhost:5000/api/recipes/price_breakdown_widget/{meal_id}'
+    backend_url = f'http://localhost:5000/api/price_breakdown_widget/{meal_id}'
     response = requests.get(backend_url)
+    print(response.text) 
     return response.text
+
+@app.route('/clean_html', methods=['POST'])
+def clean_html():
+    html_string = request.data.decode("utf-8")
+    backend_url = 'http://localhost:5000/clean_html'
+    response = requests.post(backend_url, data=html_string)
+    return jsonify(response.json())
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
