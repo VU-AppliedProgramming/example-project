@@ -116,7 +116,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         return response.json();
                     })
-                    .then(data => mealRecipeModal(data))
+                    .then(data => {
+                        // Redirect to the /results page with the meals data as URL parameter
+                        const queryString = new URLSearchParams({ meals: JSON.stringify(data) }).toString();
+                        const url = '/results?' + queryString;
+                        window.location.replace(url);
+                    })
                     .catch(error => {
                         console.error('Error fetching recipe:', error);
                         alert('Failed to fetch recipe details. Please try again later.');
@@ -124,6 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
+
 
     // Function to fetch meal list based on ingredients
     function getMealList() {
