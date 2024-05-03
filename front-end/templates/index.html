@@ -24,6 +24,13 @@
         <div id="timerDisplay"></div>
     </div>
     <div class="container">
+        <div>
+            <form action="{{ url_for('read_form')}}" method="post"> 
+                <label for="word" class="form-label">word</label> 
+                <input name="wordUser" class="form-control" id="word"> 
+                <button type="submit" class="btn btn-primary">Submit</button> 
+            </form>
+        </div>
         <div class="meal-wrapper">
             <div class="meal-search">
                 <h2 class="title"> Find meals for your ingredients</h2>
