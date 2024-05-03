@@ -13,13 +13,29 @@ CORS(app)
 # Spoonacular API key
 API_KEY = os.environ.get('API_KEY')
 
+SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
+
+@app.route('/api/meals2')
+def get_meals2():
+    query = request.args.get('query')
+    
+    url = f'{SPOONACULAR_API}/complexSearch?query={query}&apiKey={API_KEY}'
+    
+    response = requests.get(url)
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch meals'}), 500
+    
+    # print(response.json())
+    # data = response.json()
+    return response.json()
+
 @app.route('/api/meals')
 def get_meals():
     query = request.args.get('query')
     min_calories = request.args.get('minCalories', type=int)
     max_calories = request.args.get('maxCalories', type=int)
     
-    url = f'https://api.spoonacular.com/recipes/complexSearch?query={query}&apiKey={API_KEY}'
+    url = f'{SPOONACULAR_API}/complexSearch?query={query}&apiKey={API_KEY}'
     if min_calories is not None and max_calories is not None:
         url += f'&minCalories={min_calories}&maxCalories={max_calories}'
     
@@ -32,7 +48,7 @@ def get_meals():
 
 @app.route('/api/recipe/<int:meal_id>')
 def get_recipe(meal_id):
-    url = f'https://api.spoonacular.com/recipes/{meal_id}/information?apiKey={API_KEY}'
+    url = f'{SPOONACULAR_API}/{meal_id}/information?apiKey={API_KEY}'
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch recipe'}), 500
@@ -42,7 +58,7 @@ def get_recipe(meal_id):
 
 @app.route('/api/random')
 def get_random_recipe():
-    url = f'https://api.spoonacular.com/recipes/random?apiKey={API_KEY}'
+    url = f'{SPOONACULAR_API}/random?apiKey={API_KEY}'
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch random recipe'}), 500
@@ -52,7 +68,7 @@ def get_random_recipe():
 
 @app.route('/api/price_breakdown_widget/<int:meal_id>')
 def get_price_breakdown_widget(meal_id):
-    url = f'https://api.spoonacular.com/recipes/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
+    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
