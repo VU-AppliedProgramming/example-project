@@ -1,40 +1,17 @@
-<!-- results.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
-</head>
-<body>
-    <h1>Search Results</h1>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="meals">
-                    {% if meals %}
-                        <ul class="list-group">
-                            {% for meal in meals.results %}
-                                <li class="list-group-item">
-                                    <img src="{{ meal.image }}" alt="{{ meal.title }}" class="img-fluid">
-                                    <h2>{{ meal.title }}</h2>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>No meals found.</p>
-                    {% endif %}
-                </div>
+{% extends "index.html" %}
+
+{% block content %}
+    <div class="results-container">
+        {% for meal in results %}
+        <div class="meal-item" data-id="{{ meal.id }}">
+            <div class="meal-img">
+                <img src="{{ meal.image }}" alt="{{ meal.title}}">
+            </div>
+            <div class="meal-name">
+                <h3>{{ meal.title }}</h3>
+                <a href="#" class="recipe-button">Get Recipe</a>
             </div>
         </div>
+        {% endfor %}
     </div>
-    <!-- Bootstrap JS (optional) -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Custom JavaScript -->
-    <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
-</body>
-</html>
+{% endblock %}

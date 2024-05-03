@@ -14,28 +14,18 @@ def index():
 def example():
     return render_template('example.html')
 
-from urllib.parse import urlencode
-
 @app.route('/api/meals')
 def search():
     query = request.args.get('query')
     min_calories = request.args.get('minCalories')
     max_calories = request.args.get('maxCalories')
+    
     backend_url = 'http://localhost:5000/api/meals'
     response = requests.get(backend_url, params={'query': query, 'minCalories': min_calories, 'maxCalories': max_calories})
+    print(response.json())
+    # CHANGE HERE BY MARTON
+    return render_template('results.html', results=response.json())
 
-    data = response.json()
-    print(data)
-    # Convert data to query string
-    query_string = urlencode({'meals': data})
-    # Redirect to /results with data as URL parameter
-    return redirect(url_for('render_results') + '?' + query_string)
-
-
-@app.route('/results')
-def render_results():
-    meals = request.args.get('meals')
-    return render_template('results.html', meals=meals)
 
 @app.route('/api/recipe/<meal_id>')
 def recipe(meal_id):

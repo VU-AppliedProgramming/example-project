@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe Hub</title>
+    <title>{% block title %}Recipe Hub{% endblock %}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
     <!-- Link Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -12,7 +12,7 @@
 </head>
 <body>
     <a href="/" class="home-icon">Home</a>
-    <a href="/example" class="home-icon" style="margin-top: 10em;">Example</a>
+    <!-- <a href="/example" class="home-icon" style="margin-top: 10em;">Example</a>-->
     <a id="random-button" class="random-button">Random</a>
     <div class="timer-container">
         <div class="timer-controls">
@@ -29,9 +29,13 @@
                 <h2 class="title"> Find meals for your ingredients</h2>
                 <div class="meal-search-box">
                     <input type="text" class="search-control" placeholder="Enter ingredients" id="search-input">
-                    <button type="button" class="search-button button" id="search-button">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <!-- CHANGE HERE BY MARTON -->
+                    <a href="/api/meals" class="search-button button" id="search-button-link">
+                        <button type="button" class="search-button button" id="search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </a>
+                    <!-- CHANGE HERE BY MARTON -->
                 </div>
                 <div class="calorie-filter">
                     <input type="checkbox" id="calorie-filter-checkbox">
@@ -41,6 +45,7 @@
                 </div>
             </div>
             <div class="meal-result" id="meal">
+                {% block content %}{% endblock %}
             </div>
         </div>
     </div>
