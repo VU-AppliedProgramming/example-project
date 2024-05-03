@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
+    <!-- Link Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Link CSS file -->
+    <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
+</head>
+<body>
+    <h2 class="recipe-title">{{ meal.title }}</h2>
+    <div class="recipe-instructions">
+        <h3>Instructions:</h3>
+        <ol>
+        {% for step in meal.analyzedInstructions[0].steps %}
+            <li>{{ step.step }}</li>
+        {% endfor %}
+    </ol>
+    </div>
+    <div class="recipe-ingredients">
+        <h3>Ingredients:</h3>
+        <ul>
+            {% for ingredient in meal.extendedIngredients %}
+            <li>{{ ingredient.original }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="recipe-meal-image">
+        <img src="{{ meal.image }}" alt="image of food">
+    </div>
+    <div class="recipe-link">
+        <a href="{{ meal.sourceUrl }}" target="_blank">View Recipe</a>
+    </div>
+    <button class="price-breakdown-button" data-id="{{ meal.id }}">Get Price Breakdown</button>
+    <div id="chart-container"></div>
+
+    <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
+</body>
+</html>

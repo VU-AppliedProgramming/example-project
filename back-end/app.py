@@ -15,19 +15,6 @@ API_KEY = os.environ.get('API_KEY')
 
 SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
 
-@app.route('/api/meals2')
-def get_meals2():
-    query = request.args.get('query')
-    
-    url = f'{SPOONACULAR_API}/complexSearch?query={query}&apiKey={API_KEY}'
-    
-    response = requests.get(url)
-    if response.status_code != 200:
-        return jsonify({'error': 'Failed to fetch meals'}), 500
-    
-    # print(response.json())
-    # data = response.json()
-    return response.json()
 
 @app.route('/api/meals')
 def get_meals():
@@ -43,8 +30,7 @@ def get_meals():
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch meals'}), 500
     
-    data = response.json()
-    return jsonify(data)
+    return response.json()
 
 @app.route('/api/recipe/<int:meal_id>')
 def get_recipe(meal_id):
@@ -54,7 +40,7 @@ def get_recipe(meal_id):
         return jsonify({'error': 'Failed to fetch recipe'}), 500
     
     data = response.json()
-    return jsonify(data)
+    return data
 
 @app.route('/api/random')
 def get_random_recipe():

@@ -9,7 +9,9 @@
             </div>
             <div class="meal-name">
                 <h3>{{ meal.title }}</h3>
-                <a href="#" class="recipe-button">Get Recipe</a>
+                <form action="{{ url_for('recipe', meal_id=meal.id)}}" method="post"> 
+                    <button type="submit" class="search-button" id="search-button"><i class="fas fa-search"></i></button>
+                </form>
             </div>
         </div>
         {% endfor %}
