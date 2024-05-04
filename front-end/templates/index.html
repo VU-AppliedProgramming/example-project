@@ -26,28 +26,29 @@
         </div>
         <div id="timerDisplay"></div>
     </div>
-        <div class="meal-wrapper">
-            <div class="meal-search">
-                <h2 class="title"> Find meals for your ingredients</h2>
-                <div class="meal-search-box">
-                    <div>
-                        <form action="{{ url_for('search')}}" method="post"> 
-                            <input name="wordUser" class="search-control" placeholder="Enter ingredients" id="search-input">
-                            <button type="submit" class="search-button" id="search-button"><i class="fas fa-search"></i></button>
-                        </form>
+    <div class="meal-wrapper">
+        <div class="meal-search">
+            <h2 class="title"> Find meals for your ingredients</h2>
+            <div class="meal-search-box">
+                <form action="{{ url_for('search')}}" method="post"> 
+                    <div class="search-container">
+                        <input name="wordUser" class="search-control" placeholder="Enter ingredients" id="search-input">
+                        <button type="submit" class="search-button" id="search-button"><i class="fas fa-search"></i></button>
                     </div>
-                </div>
-                <div class="calorie-filter">
-                    <input type="checkbox" id="calorie-filter-checkbox">
-                    <label for="calorie-filter-checkbox">Filter by Calories:</label>
-                    <input type="number" id="min-calories" placeholder="Min Calories">
-                    <input type="number" id="max-calories" placeholder="Max Calories">
-                </div>
+                </form>
             </div>
-            <div class="meal-result" id="meal">
-                {% block content %}{% endblock %}
+            <div class="calorie-filter">
+                <input type="checkbox" id="calorie-filter-checkbox">
+                <label for="calorie-filter-checkbox">Filter by Calories:</label>
+                <input type="number" id="min-calories" placeholder="Min Calories">
+                <input type="number" id="max-calories" placeholder="Max Calories">
             </div>
         </div>
+        <div class="meal-result" id="meal">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
     </div>
 
     <div class="meal-details">
