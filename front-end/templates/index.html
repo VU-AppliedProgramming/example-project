@@ -5,14 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Recipe Hub{% endblock %}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
-    <!-- Link Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- Link CSS file -->
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
 </head>
 <body>
     <a href="/" class="home-icon">Home</a>
-    <!-- <a href="/example" class="home-icon" style="margin-top: 10em;">Example</a>-->
     <a id="random-button" class="random-button"></a>
     <form action="{{ url_for('get_random_recipe')}}" method="post"> 
         <button type="submit" class="random-button" id="random-button">Random</button>
@@ -56,7 +53,6 @@
         <button id="recipe-close-button" class="recipe-close-button">&times;</button>
     </div>
 
-    <!-- Link JavaScript file -->
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
 </body>
 </html>

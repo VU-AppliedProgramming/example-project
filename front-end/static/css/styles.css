@@ -9,10 +9,10 @@
 
 body {
 
-    background-image: url('b2.jpg'); /* Add background image */
-    background-repeat: no-repeat; /* Ensure the background image does not repeat */
-    background-size: cover; /* Cover the entire viewport */
-    background-position: center; /* Center the background image */
+    background-image: url('b2.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
@@ -30,8 +30,8 @@ body {
 }
 
 .title {
-    font-size: 60px; /* Increase title font size */
-    margin-bottom: 20px; /* Add margin for spacing */
+    font-size: 60px;
+    margin-bottom: 20px;
 }
 
 .container {
@@ -292,9 +292,9 @@ body {
     transition: color 0.3s, transform 0.3s;
     border: none;
     background: none;
-    padding: 10px 20px; /* Add padding */
-    font-weight: bold; /* Make text bold */
-    border-radius: 5px; /* Add border radius for a slightly rounded appearance */
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 5px;
 }
 
 
@@ -308,8 +308,8 @@ body {
 .search-container {
     display: flex;
     align-items: center;
-    width: 90vw; /* Spread over the whole page */
-    font-size: 24px; /* Make it a lot bigger */
+    width: 90vw;
+    font-size: 24px;
 }
 
 .search-control {
@@ -322,11 +322,11 @@ body {
 }
 
 .search-button {
-    height: calc(100% - 20px); /* Utilize whole space vertically */
-    width: 120px; /* Make button bigger */
+    height: calc(100% - 20px);
+    width: 120px;
     height: 80px;
     border: none;
-    background-color: #8C693E; /* Change button color as needed */
+    background-color: #8C693E;
     color: white;
     border-radius: 0 5px 5px 0;
     cursor: pointer;
@@ -334,7 +334,7 @@ body {
 }
 
 .search-button:hover {
-    background-color: #8C3E4E; /* Change hover color as needed */
+    background-color: #8C3E4E; 
 }
 
 
@@ -377,9 +377,9 @@ body {
     transition: color 0.3s, transform 0.3s;
     border: none;
     background: none;
-    padding: 10px 20px; /* Add padding */
-    font-weight: bold; /* Make text bold */
-    border-radius: 5px; /* Add border radius for a slightly rounded appearance */
+    padding: 10px 20px;
+    font-weight: bold; 
+    border-radius: 5px; 
 }
 
 

@@ -1,7 +1,6 @@
-from flask import Flask, send_from_directory, jsonify, render_template, request, redirect, url_for
+from flask import Flask, jsonify, render_template, request
 import requests
 from flask_cors import CORS
-from urllib.parse import urlencode
 import os
 
 app = Flask(__name__)
