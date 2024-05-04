@@ -13,7 +13,10 @@
 <body>
     <a href="/" class="home-icon">Home</a>
     <!-- <a href="/example" class="home-icon" style="margin-top: 10em;">Example</a>-->
-    <a id="random-button" class="random-button">Random</a>
+    <a id="random-button" class="random-button"></a>
+    <form action="{{ url_for('get_random_recipe')}}" method="post"> 
+        <button type="submit" class="random-button" id="random-button">Random</button>
+    </form>
     <div class="timer-container">
         <div class="timer-controls">
             <button id="startButton">Start Timer</button>
@@ -30,7 +33,7 @@
                     <div>
                         <form action="{{ url_for('search')}}" method="post"> 
                             <input name="wordUser" class="search-control" placeholder="Enter ingredients" id="search-input">
-                            <button type="submit" class="search-button button" id="search-button"><i class="fas fa-search"></i></button>
+                            <button type="submit" class="search-button" id="search-button"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
                 </div>

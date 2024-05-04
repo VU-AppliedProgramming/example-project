@@ -35,11 +35,12 @@ def recipe(meal_id):
     print(meal)
     return render_template('onerecipe.html', meal=meal)
 
-@app.route('/api/random')
+@app.route('/api/random', methods=['POST'])
 def get_random_recipe():
     backend_url = f'{BACKEND_ENDPOINT}/api/random'
     response = requests.get(backend_url)
-    return jsonify(response.json())
+    meal = response.json()
+    return render_template('onerecipe.html', meal=meal)
 
 @app.route('/api/price_breakdown_widget/<int:meal_id>')
 def get_price_breakdown_widget(meal_id):

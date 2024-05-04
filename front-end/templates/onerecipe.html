@@ -9,6 +9,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Link CSS file -->
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
+    <a href="/" class="home-icon">Home</a>
+    <!-- <a href="/example" class="home-icon" style="margin-top: 10em;">Example</a>-->
+    <div class="timer-container">
+        <div class="timer-controls">
+            <button id="startButton">Start Timer</button>
+            <button id="pauseButton" style="display: none;">Pause Timer</button>
+            <button id="resetButton" style="display: none;">Reset Timer</button>
+            <button id="closeButton" style="display: none;">Close Timer</button>
+        </div>
+        <div id="timerDisplay"></div>
+    </div>
 </head>
 <body>
     <h2 class="recipe-title">{{ meal.title }}</h2>
