@@ -1,6 +1,21 @@
 {% extends "index.html" %}
 
 {% block content %}
+    <style>
+        .search-button {
+            width: 150px; 
+            height: 50px; 
+            border-radius: 25px; 
+            font-size: 20px;
+            background-color: #8C693E;
+            color: white;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-radius: 25px;
+        }
+
+    </style>
     <div class="results-container">
         {% for meal in results %}
         <div class="meal-item" data-id="{{ meal.id }}">
@@ -10,7 +25,7 @@
             <div class="meal-name">
                 <h3>{{ meal.title }}</h3>
                 <form action="{{ url_for('recipe', meal_id=meal.id)}}" method="post"> 
-                    <button type="submit" class="search-button" id="search-button"><i class="fas fa-search"></i></button>
+                    <button type="submit" class="search-button" id="search-button">Get Recipe</button>
                 </form>
             </div>
         </div>

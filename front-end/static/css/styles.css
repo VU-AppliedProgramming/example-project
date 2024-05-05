@@ -251,10 +251,11 @@ body {
 }
 
 .recipe-meal-image {
-    display: inline-block;
     max-width: 100%;
     height: auto;
     margin-top: 10px;
+    border-radius: 50%;
+    overflow: hidden;
 }
 
 .recip-link {
@@ -338,27 +339,6 @@ body {
 }
 
 
-
-@media screen and (min-width: 768px) {
-    #meal {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
-    }
-    
-    .meal-item {
-        margin: 0;
-        border: 2px solid #8C6542;
-        border-radius: 1rem;
-        padding: 1rem;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .meal-details {
-        width: 700px;
-    }
-}
-
 @media screen and (min-width: 992px) {
     #meal {
         grid-template-columns: repeat(3, 1fr);
@@ -436,4 +416,20 @@ body {
 #closeButton {
     background-color: #d63447;
     border-color: #d63447;
+}
+
+.results-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.meal-item {
+    flex: 0 0 calc(33.333% - 20px); /* Adjust the width as needed */
+    margin: 10px;
+    box-sizing: border-box;
+}
+
+.meal-img img {
+    max-width: 100%;
+    height: auto;
 }
