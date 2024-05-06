@@ -124,6 +124,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+    function checkBackendStatus() {
+        fetch('/check_backend')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Back end server is not running.');
+                }
+                return response.text();
+            })
+            .then(data => {
+                // Update UI based on the response
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error checking backend status:', error);
+                // Show pop-up window
+                showPopup('Back end server is down!');
+            });
+    }
+    
+    function showPopup(message) {
+        // Create pop-up window
+        const popup = document.createElement('div');
+        popup.classList.add('popup');
+        popup.textContent = message;
+    
+        // Append to body
+        document.body.appendChild(popup);
+    
+        // Close the pop-up after 5 seconds (adjust as needed)
+        setTimeout(() => {
+            document.body.removeChild(popup);
+        }, 5000);
+    }
+    
+    // Call checkBackendStatus() every 5 seconds (for example)
+    setInterval(checkBackendStatus, 5000);
 
     // Function to fetch meal list based on ingredients
     function getMealList() {

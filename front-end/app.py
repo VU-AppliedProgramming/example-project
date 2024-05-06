@@ -8,6 +8,17 @@ CORS(app)
 
 BACKEND_ENDPOINT = 'http://localhost:5000'
 
+@app.route('/check_backend')
+def check_backend():
+    try:
+        response = requests.get(f'{BACKEND_ENDPOINT}/health')
+        if response.status_code == 200:
+            return 'Back end server is running.', 200
+        else:
+            return 'Back end server is not running.', 500
+    except requests.exceptions.ConnectionError:
+        return 'Unable to connect to back end server.', 500
+
 @app.route('/')
 def index():
     print(BACKEND_ENDPOINT)

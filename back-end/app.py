@@ -15,6 +15,10 @@ API_KEY = os.environ.get('API_KEY')
 
 SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
 
+@app.route('/health')
+def health_check():
+    return 'OK', 200
+
 
 @app.route('/api/meals')
 def get_meals():

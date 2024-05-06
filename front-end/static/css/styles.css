@@ -18,6 +18,20 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ff4d4d;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 24px;
+    text-align: center;
+    z-index: 9999; 
+}
+
 .btn {
     font-family: inherit;
     cursor: pointer;
