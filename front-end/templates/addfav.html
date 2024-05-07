@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Recipe</title>
+</head>
+<body>
+    <h1>Create Recipe</h1>
+    <form id="recipeForm">
+        <label for="r_title">Title:</label><br>
+        <input type="text" id="r_title" name="r_title"><br><br>
+
+        <label for="r_id">Id:</label><br>
+        <input type="text" id="r_id" name="r_id"><br><br>
+        
+        <label for="r_instructions">Instructions:</label><br>
+        <textarea id="r_instructions" name="r_instructions" rows="4" cols="50"></textarea><br><br>
+        
+        <label for="r_ingredients">Ingredients:</label><br>
+        <textarea id="r_ingredients" name="r_ingredients" rows="4" cols="50"></textarea><br><br>
+        
+        <label for="r_image">Image URL:</label><br>
+        <input type="text" id="r_image" name="r_image"><br><br>
+        
+        <input type="submit" value="Create Recipe">
+    </form>
+
+    <script>
+        document.getElementById("recipeForm").addEventListener("submit", function(event) {
+            event.preventDefault(); 
+            
+            var formData = new FormData(this);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:5000/create_recipe", true);
+            xhr.onload = function() {
+                if (xhr.status === 201) {
+                    alert("Recipe created successfully!");
+                } else if (xhr.status === 409) {
+                    alert("Error: Recipe with this title already exists");
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html>

@@ -6,6 +6,8 @@ import re
 import matplotlib.pyplot as plt
 import base64
 import io
+from test import Test
+from favrecipes import FavRecipes
 
 app = Flask(__name__)
 CORS(app)
@@ -15,10 +17,62 @@ API_KEY = os.environ.get('API_KEY')
 
 SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
 
+fav_recipes = FavRecipes('myfavrecipes.json')
+
 @app.route('/health')
 def health_check():
     return 'OK', 200
 
+@app.route('/test')
+def test():
+    recipes= fav_recipes.get_recipes()
+    return jsonify(recipes)
+
+### CRUD OPERATIONS ###
+
+
+
+@app.route('/create_recipe', methods=['POST'])
+def create_recipe():
+    r_title = request.form['r_title']
+    r_id = request.form['r_id']
+    r_instructions = request.form['r_instructions']
+    r_ingredients = request.form['r_ingredients']
+    r_image = request.form['r_image']
+    
+    recipe_added = fav_recipes.add_recipe(r_title, r_instructions, r_ingredients, r_image, r_id)
+    
+    if recipe_added:
+        return jsonify({"message": "Recipe added successfully"}), 201
+    else:
+        return jsonify({"error": "Recipe with this title already exists"}), 409
+    
+
+
+@app.route('/delete_recipe', methods=['DELETE'])
+def delete_recipe():
+    data = request.get_json()
+    r_title = data.get('r_title')
+
+    if fav_recipes.delete_recipe(r_title):
+        return jsonify({"message": "Recipe deleted successfully"}), 200
+    else:
+        return jsonify({"error": "Recipe with this title does not exist"}), 404
+    
+
+@app.route('/update_recipe_instructions', methods=['PUT'])
+def update_recipe():
+    data = request.get_json()
+    r_title = data.get('r_title')
+    new_instructions = data.get('r_instructions')
+
+    if fav_recipes.update_recipe(r_title, new_instructions):
+        return jsonify({"message": "Instructions updated successfully"}), 200
+    else:
+        return jsonify({"error": "Recipe with this title does not exist"}), 404
+
+
+### CRUD OPERATIONS ###
 
 @app.route('/api/meals')
 def get_meals():

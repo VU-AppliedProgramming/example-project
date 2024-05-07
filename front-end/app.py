@@ -24,6 +24,33 @@ def index():
     print(BACKEND_ENDPOINT)
     return render_template('index.html')
 
+@app.route('/get_test_data', methods=['GET', 'POST'])
+def get_test_data():
+    backend_url = f'{BACKEND_ENDPOINT}/test'
+    response = requests.get(backend_url)
+    recipes = response.json()
+    print(type(recipes))
+    return render_template('test.html', results=recipes)
+
+@app.route('/show_one_favorite', methods=['GET', 'POST'])
+def show_one_fav():
+    backend_url = f'{BACKEND_ENDPOINT}/test'
+    response = requests.get(backend_url)
+    recipes = response.json()
+    return render_template('onefavourite.html', results=recipes)
+
+@app.route('/create_my_recipe', methods=['GET', 'POST'])
+def create_rec():
+    return render_template('addfav.html')
+
+@app.route('/delete_my_recipe', methods=['GET', 'POST'])
+def delete_rec():
+    return render_template('deletefav.html')
+
+@app.route('/update_my_recipe', methods=['GET', 'POST'])
+def update_rec():
+    return render_template('changeinstructions.html')
+
     
 @app.route('/api/meals', methods=['POST'])
 def search():

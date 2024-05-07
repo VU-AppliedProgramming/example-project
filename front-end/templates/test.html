@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+
+
+{% block title %}
+<h2 class="title">My favorite dishes</h2>
+{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    {% for recipe_id, recipe in results.items() %}
+    <div class="meal-item" data-id="{{ recipe_id }}">
+        <div class="meal-img">
+            <img src="{{ recipe.image }}" alt="Meal Image">
+        </div>
+        <div class="meal-name">
+            <h3>{{ recipe.title }}</h3>
+        </div>
+            <form action="{{ url_for('show_one_fav', meal_title = recipe.title)}}" method="post"> 
+                <input type="hidden" name="recipe_name" value="{{ recipe.title }}">
+                <button type="submit" class="search-button" id="search-button">Get Recipe</button>
+            </form>
+    </div>
+    {% endfor %}
+</div>
+
+
+<div>
+    <form action="{{ url_for('create_rec')}}" method="post"> 
+        <button type="submit" class="myrecipe-button" id="myrecipe-button">Add fav</button>
+    </form>
+</div>
+<div>
+    <form action="{{ url_for('delete_rec')}}" method="post"> 
+        <button type="submit" class="deleterecipe-button" id="deleterecipe-button">Delete fav</button>
+    </form>
+</div>
+<div>
+    <form action="{{ url_for('update_rec')}}" method="post"> 
+        <button type="submit" class="updaterecipe-button" id="updaterecipe-button">Update fav</button>
+    </form>
+</div>
+
+{% endblock %}
