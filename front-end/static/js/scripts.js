@@ -124,6 +124,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+    function checkBackendStatus() {
+        fetch('/check_backend')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Back end server is not running.');
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error checking backend status:', error);
+                showPopup('Back end server is down!');
+            });
+    }
+    
+    function showPopup(message) {
+        const popup = document.createElement('div');
+        popup.classList.add('popup');
+        popup.textContent = message;
+    
+        document.body.appendChild(popup);
+    
+        setTimeout(() => {
+            document.body.removeChild(popup);
+        }, 5000);
+    }
+    
+    setInterval(checkBackendStatus, 5000);
 
     // Function to fetch meal list based on ingredients
     function getMealList() {

@@ -1,47 +1,60 @@
-from flask import Flask, send_from_directory, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request
 import requests
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
 
+BACKEND_ENDPOINT = 'http://localhost:5000'
+
+@app.route('/check_backend')
+def check_backend():
+    try:
+        response = requests.get(f'{BACKEND_ENDPOINT}/health')
+        if response.status_code == 200:
+            return 'Back end server is running.', 200
+        else:
+            return 'Back end server is not running.', 500
+    except requests.exceptions.ConnectionError:
+        return 'Unable to connect to back end server.', 500
+
 @app.route('/')
 def index():
+    print(BACKEND_ENDPOINT)
     return render_template('index.html')
 
-@app.route('/static/css/styles.css')
-def send_css():
-    return send_from_directory(app.static_folder, 'css/styles.css')
-
-@app.route('/static/js/scripts.js')
-def send_js():
-    return send_from_directory(app.static_folder, 'js/scripts.js')
-
-@app.route('/api/meals')
-def search():
-    query = request.args.get('query')
-    min_calories = request.args.get('minCalories')
-    max_calories = request.args.get('maxCalories')
     
-    backend_url = 'http://localhost:5000/api/meals'
-    response = requests.get(backend_url, params={'query': query, 'minCalories': min_calories, 'maxCalories': max_calories})
-    return jsonify(response.json())
+@app.route('/api/meals', methods=['POST'])
+def search():
+    data = request.form
+    min_calories = data.get('minCalories')
+    max_calories = data.get('maxCalories')
+    
+    backend_url = f'{BACKEND_ENDPOINT}/api/meals'
+    response = requests.get(backend_url, params={'query': data['wordUser'], 'minCalories': min_calories, 'maxCalories': max_calories})
+    meals = response.json()['results']
+    return render_template('results.html', results=meals)
 
-@app.route('/api/recipe/<meal_id>')
+
+@app.route('/api/recipe/<meal_id>', methods=['POST'])
 def recipe(meal_id):
-    backend_url = f'http://localhost:5000/api/recipe/{meal_id}'
+    backend_url = f'{BACKEND_ENDPOINT}/api/recipe/{meal_id}'
     response = requests.get(backend_url)
-    return jsonify(response.json())
+    meal = response.json()
+    print(meal)
+    return render_template('onerecipe.html', meal=meal)
 
-@app.route('/api/random')
+@app.route('/api/random', methods=['POST'])
 def get_random_recipe():
-    backend_url = f'http://localhost:5000/api/random'
+    backend_url = f'{BACKEND_ENDPOINT}/api/random'
     response = requests.get(backend_url)
-    return jsonify(response.json())
+    meal = response.json()
+    return render_template('onerecipe.html', meal=meal)
 
 @app.route('/api/price_breakdown_widget/<int:meal_id>')
 def get_price_breakdown_widget(meal_id):
-    backend_url = f'http://localhost:5000/api/price_breakdown_widget/{meal_id}'
+    backend_url = f'{BACKEND_ENDPOINT}/api/price_breakdown_widget/{meal_id}'
     response = requests.get(backend_url)
     print(response.text) 
     return response.text
@@ -49,7 +62,7 @@ def get_price_breakdown_widget(meal_id):
 @app.route('/clean_html', methods=['POST'])
 def clean_html():
     html_string = request.data.decode("utf-8")
-    backend_url = 'http://localhost:5000/clean_html'
+    backend_url = f'{BACKEND_ENDPOINT}/clean_html'
     response = requests.post(backend_url, data=html_string)
     return jsonify(response.json())
 

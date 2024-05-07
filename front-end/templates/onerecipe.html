@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background-color: #F2E2C4;
+        }
+        .recipe-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .recipe-title {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+        .recipe-details {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .recipe-instructions,
+        .recipe-ingredients {
+            flex: 1;
+            margin: 0 10px;
+        }
+        .recipe-meal-image {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+        border-radius: 50%;
+        overflow: hidden;
+        }
+        .recipe-link {
+            margin-top: 20px;
+        }
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 40px;
+            z-index: 9999;
+            color: #0a0a0a;
+            font-size: 24px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+            border: none;
+            background: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px; 
+        }
+
+
+        .home-icon:hover {
+            color: #8C3E4E;
+            text-decoration: underline;
+            transform: scale(1.1);
+        }
+
+        .timer-container {
+            position: fixed;
+            bottom: 10px;
+            right: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        #timerDisplay {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .timer-controls {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 10px;
+        }
+
+        .timer-controls button {
+            margin-left: 5px;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: 2px solid #735840;
+            border-radius: 5px;
+            background-color: #735840;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .timer-controls button:hover {
+            background-color: #8C3E4E;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="home-icon">Home</a>
+    <div class="recipe-container">
+        <h2 class="recipe-title">{{ meal.title }}</h2>
+        <div class="recipe-details">
+            <div class="recipe-instructions">
+                <h3>Instructions:</h3>
+                <ol>
+                {% for step in meal.analyzedInstructions[0].steps %}
+                    <li>{{ step.step }}</li>
+                {% endfor %}
+                </ol>
+            </div>
+            <div class="recipe-ingredients">
+                <h3>Ingredients:</h3>
+                <ul>
+                    {% for ingredient in meal.extendedIngredients %}
+                    <li>{{ ingredient.original }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="recipe-meal-image">
+            <img src="{{ meal.image }}" alt="image of food">
+        </div>
+        <div class="recipe-link">
+            <a href="{{ meal.sourceUrl }}" target="_blank">View Recipe</a>
+        </div>
+        <div class="timer-container">
+            <div class="timer-controls">
+                <button id="startButton">Start Timer</button>
+                <button id="pauseButton" style="display: none;">Pause Timer</button>
+                <button id="resetButton" style="display: none;">Reset Timer</button>
+                <button id="closeButton" style="display: none;">Close Timer</button>
+            </div>
+            <div id="timerDisplay"></div>
+        </div>
+    </div>
+    <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
+</body>
+</html>
