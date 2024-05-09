@@ -1,23 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap');
 
-
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+html {
+    height: 100%;
 }
 
-
 body {
-
-    background-image: url('b2.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+    height: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
+    background-image: url('b3.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
+
 
 .popup {
     position: fixed;
@@ -47,6 +45,7 @@ body {
 .title {
     font-size: 60px;
     margin-bottom: 20px;
+    color: #fff;
 }
 
 .container {
@@ -57,13 +56,13 @@ body {
     max-width: 95%;
     margin: 0 auto;
     padding: 20px;
-    background: #F2E3D0;
+    background: rgba(242, 227, 208, 0);
     text-align: center;
 }
 
 .meal-search {
     width: 100%;
-    background-color: #F2E3D0; 
+    background: rgba(242, 227, 208, 0) ;
     border-radius: 10px; 
     padding: 20px; 
     margin-bottom: 20px; 
@@ -86,6 +85,7 @@ body {
 
 .calorie-filter label {
     margin-right: 20px;
+    color: #fff;
 }
 
 .calorie-checkbox {
@@ -94,7 +94,7 @@ body {
 
 .calorie-label {
     font-size: 20px;
-    color: #8C6542;
+    color: #fff;
     cursor: pointer;
 }
 
@@ -131,7 +131,7 @@ body {
 
 
 .search-control::placeholder {
-    color: #8C693E;
+    color: black;
 }
 
 .meal-result {
@@ -154,18 +154,16 @@ body {
     display: block;
 }
 
-.meal-name {
-    padding: 1.5rem 0.5rem;
-}
-
 .meal-name h3 {
     font-size: 1.4rem;
+    color: #fff;
+    padding: 1.5rem 0.5rem;
 }
 
 .recipe-button {
     text-decoration: none;
     color: #fff;
-    background: #8C6542;
+    background: #F2A007;
     font-weight: 700;
     font-size: 1.1rem;
     padding: 0.75rem 0;
@@ -173,7 +171,7 @@ body {
     width: 175px;
     margin: 1rem auto;
     border-radius: 2rem;
-    border: 2px solid #8C6542;
+    border: 2px solid #F2A007;
     transition: background 0.4s linear, transform 0.4s linear;
     cursor: pointer;
 }
@@ -189,7 +187,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: #fff;
-    background-color: #8C633F;
+    background-color: #F2A007;
     border-radius: 1rem;
     width: 90%;
     height: 90%;
@@ -251,7 +249,7 @@ body {
 .recipe-category {
     background: #fff;
     font-weight: 600;
-    color: #8C6542;
+    color: #F2A007;
     display: inline-block;
     padding: 0.2rem 0.5rem;
     border-radius: 0.3rem;
@@ -317,7 +315,7 @@ body {
     width: 120px;
     height: 80px;
     border: none;
-    background-color: #8C693E;
+    background-color: #d63447;
     color: white;
     border-radius: 0 5px 5px 0;
     cursor: pointer;
@@ -325,7 +323,7 @@ body {
 }
 
 .search-button:hover {
-    background-color: #8C3E4E; 
+    background-color: green; 
 }
 
 
@@ -340,7 +338,7 @@ body {
     top: 20px;
     right: 40px;
     z-index: 9999;
-    color: #0a0a0a;
+    color: #fff;
     font-size: 24px;
     text-decoration: none;
     cursor: pointer;
@@ -354,7 +352,7 @@ body {
 
 
 .random-button:hover {
-    color: #8C3E4E;
+    color: #F7B527;
     text-decoration: underline;
     transform: scale(1.1);
 }
@@ -378,6 +376,7 @@ body {
 #timerDisplay {
     font-size: 36px;
     margin-bottom: 20px;
+    color: #fff;
 }
 
 .timer-controls {
@@ -390,16 +389,16 @@ body {
     margin-left: 5px;
     padding: 10px 20px;
     font-size: 18px;
-    border: 2px solid #735840;
+    border: 2px solid #F2A007;
     border-radius: 5px;
-    background-color: #735840;
+    background-color: #F2A007;
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .timer-controls button:hover {
-    background-color: #8C3E4E;
+    background-color: #F7B527;
     transform: scale(1.1);
 }
 
@@ -411,6 +410,7 @@ body {
 .results-container {
     display: flex;
     flex-wrap: wrap;
+    background-color: rgba(0, 0, 0, 0.7);;
 }
 
 .meal-item {
@@ -427,16 +427,16 @@ body {
 
 
 .dropbtn {
-    background-color: #735840;
-    color: white;
+    background-color: rgba(249, 249, 249, 0);
+    color: #fff;
     padding: 16px;
-    font-size: 16px;
+    font-size: 25px;
     border: none;
     cursor: pointer;
 }
 
 .dropbtn:hover, .dropbtn:focus {
-    background-color: #8C3E4E;
+    background-color: #F2A007;
 }
 
 .dropdown {
@@ -470,7 +470,7 @@ body {
 }
 
 .dropdown:hover .dropbtn {
-    background-color: #8C3E4E;
+    background-color: #F2A007;
 }
 
 .dropdown-content .home-icon {
@@ -486,16 +486,16 @@ body {
 }
 
 .favdropdownbtn {
-    background-color: #735840;
+    background-color:  rgba(249, 249, 249, 0);
     color: white;
     padding: 16px;
-    font-size: 16px;
+    font-size: 25px;
     border: none;
     cursor: pointer;
 }
 
 .favdropdownbtn:hover, .favdropdownbtn:focus {
-    background-color: #8C3E4E;
+    background-color: #F2A007;
 }
 
 .favdropdown {
@@ -529,5 +529,5 @@ body {
 }
 
 .favdropdown:hover .favdropdownbtn {
-    background-color: #8C3E4E;
+    background-color: #F2A007;
 }

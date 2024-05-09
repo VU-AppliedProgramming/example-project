@@ -17,33 +17,36 @@
             </form>
         </div>
     </div>
-    {% for recipe_name, recipe_info in recipe.items() %}
-    <div class="recipe-container">
-        <h2 class="recipe-title">{{ recipe_info.title }}</h2>
-        <div class="recipe-details">
-            <div class="recipe-instructions">
-                <h3>Instructions:</h3>
-                <p>{{ recipe_info.instructions }}</p>
+
+    <div class="container">
+        {% for recipe_name, recipe_info in recipe.items() %}
+        <div class="recipe-container">
+            <h2 class="recipe-title">{{ recipe_info.title }}</h2>
+            <div class="recipe-details">
+                <div class="recipe-instructions">
+                    <h3>Instructions:</h3>
+                    <p>{{ recipe_info.instructions }}</p>
+                </div>
+                <div class="recipe-ingredients">
+                    <h3>Ingredients:</h3>
+                    <p>{{ recipe_info.ingredients }}</p>
+                </div>
             </div>
-            <div class="recipe-ingredients">
-                <h3>Ingredients:</h3>
-                <p>{{ recipe_info.ingredients }}</p>
+            <div class="recipe-meal-image">
+                <img src="{{ recipe_info.image }}" alt="{{ recipe_name }}">
+            </div>
+            <div class="timer-container">
+                <div class="timer-controls">
+                    <button id="startButton">Start Timer</button>
+                    <button id="pauseButton" style="display: none;">Pause Timer</button>
+                    <button id="resetButton" style="display: none;">Reset Timer</button>
+                    <button id="closeButton" style="display: none;">Close Timer</button>
+                </div>
+                <div id="timerDisplay"></div>
             </div>
         </div>
-        <div class="recipe-meal-image">
-            <img src="{{ recipe_info.image }}" alt="{{ recipe_name }}">
-        </div>
-        <div class="timer-container">
-            <div class="timer-controls">
-                <button id="startButton">Start Timer</button>
-                <button id="pauseButton" style="display: none;">Pause Timer</button>
-                <button id="resetButton" style="display: none;">Reset Timer</button>
-                <button id="closeButton" style="display: none;">Close Timer</button>
-            </div>
-            <div id="timerDisplay"></div>
-        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
 </body>
