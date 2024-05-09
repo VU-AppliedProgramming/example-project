@@ -55,13 +55,6 @@
         "ingredients": "6 slices thick sliced bacon, 3 ounces Goat cheese, 6 jalapenos, ",
         "image": "https://img.spoonacular.com/recipes/644958-556x370.jpg"
     },
-    "Granola": {
-        "title": "Granola",
-        "recipe_id": "645175",
-        "instructions": "Preheat oven to 300F degrees., Mix together the oats, sesame seeds almonds and sunflower seeds., Pour honey, oil, Water over this mixture and stir well., Spread on a large cookie sheet and bake 35 minutes until nicely browned on top.Stir the granola often while baking (about every 5 minutes)., Remove from oven allow to cool and add raisins, coconut and crasins.Makes 6 cups. Nutritional information is for 1/3 cup serving., ",
-        "ingredients": "1/2 cup chopped almonds, 3/4 cup shredded coconut, 3/4 cup craisins (dried cranberries), cup honey, 3/4 cup dark raisins, 4 cups uncooked rolled oats, 1/2 cup sesame seeds, cup sunflower oil, 3/4 cup sunflower seeds, 2 tablespoons water, ",
-        "image": "https://img.spoonacular.com/recipes/645175-556x370.jpg"
-    },
     "Classic French Mussels": {
         "title": "Classic French Mussels",
         "recipe_id": "639599",
@@ -75,5 +68,26 @@
         "instructions": "Put a layer of cubed bread in buttered souffle dish that will hold 1-1/2 quarts., Mix apples, sugar and spices. Cover bread with a layer of apples.Dot with butter; add a little lemon juice and rind. Repeat layers, ending in bread cubes, until dish is well-heaped. Cover and bake in a preheated 375-degree oven for 30 minutes. Uncover and bake until apples are tender and crust golden brown, about 30 more minutes., ",
         "ingredients": "3 cups apples (4 large), pared and thinly sliced, 10 cups apples, peeled, cored and diced, 2 cups cubed homemade bread (no crusts), 3/4 stick butter, melted, 2 tablespoons melted butter, 2 tablespoons butter, in small dots, 1/4 teaspoon cinnamon, 1 1/2 teaspoons cinnamon, 1 lemon, grated rind and juice of, 1/4 teaspoon nutmeg, 1/2 teaspoon nutmeg, 1 cup white sugar, ",
         "image": "https://img.spoonacular.com/recipes/632481-556x370.jpg"
+    },
+    "Ginger Melon Side Salad [Paleo, AIP]": {
+        "title": "Ginger Melon Side Salad [Paleo, AIP]",
+        "recipe_id": "1095692",
+        "instructions": "Cut melon and cucumber into small chunks.Peel and grate ginger., Place everything into a salad bowl and toss well., ",
+        "ingredients": "2 handfuls salad leaves, 1/2 small honeydew melon, cut into small chunks, 1/2 small cucumber, peeled and cut into small chunks, 1 Tablespoon fresh ginger, grated, 2 teaspoons fresh lemon juice, 2 Tablespoons extra virgin olive oil, 1/2 teaspoon sea salt (or to taste), ",
+        "image": "https://img.spoonacular.com/recipes/1095692-556x370.jpg"
+    },
+    "Beef Carrot Stew": {
+        "title": "Beef Carrot Stew",
+        "recipe_id": "769754",
+        "instructions": "Scrape, wash and boil your carrots till soft., Place in a blender without water and grind till completely shredded.In a pot, heat up your oil and fry your onions, garlic and ginger., Pour in your Tatashe-pepper mix and your beef and allow to simmer on low heat for about 10-15 minutes.Season with curry, seasoning cubes and anything else you may wish to add., Pour in your carrots and stir in and allow to simmer on low heat for another 3-5 minutes., Add your chopped scent leaves and stir in and serve hot with rice, yam, plantain, pasta or any other accompaniment of your choice.\u00a0, ",
+        "ingredients": "1 tablespoon of chopped Scent leaves, 8 Pieces of medium Beef (Seasoned and Boiled), 7 medium pieces of Carrots, 1/2 teaspoon of Curry, 1 clove of Garlic, 1 teaspoon of grated Ginger, Seasoning cubes, 1 small bulb of Onion, 2 cooking spoons of Blended Tatashe-Pepper Mix (Bell peppers and scotch bonnet peppers), 2 Cooking spoons of Vegetable Oil, ",
+        "image": "https://img.spoonacular.com/recipes/769754-556x370.jpg"
+    },
+    "Chicken In A Pot": {
+        "title": "Chicken In A Pot",
+        "recipe_id": "638125",
+        "instructions": "Adjust oven rack to lowest position and pre- heat oven to 250 degrees, Rinse chicken under cold water and pat dry. Season well with salt and pepper on each side, Heat olive oil in large Dutch Oven (9 quarts), over medium heat. Do not allow oil to smoke, Place chicken breast side down. Cook until breast is lightly browned, about 5 minutes, Using a wooden spoon inserted into cavity of the bird and flip chicken breast side up, add remaining ingredients except lemon juice, and cook about 6 to 8 minutes, Remove from heat., Place a large aluminum sheet over the pot, place the lid on top. This is to ensure a tight seal, so that no vapors escape during the cooking process, Transfer the Dutch Oven in your pre heated oven. Cook approximately 1:30 minutes, Removed pot from the oven and check the chicken internal temperature (must be at least 160 degrees), Remove chicken and place onto a carving board, tent with foil and allow to rest about 20 minutes, Strain chicken juices from the pot through a fine mesh., Place the juices into a fat separator, Pour the juices into a saucepan (discard any of the fat left in the separator), add lemon juice and any juices from the carving board.  Cook approximately 5 minutes and serve!, ",
+        "ingredients": "1 4 \u00bd to 5 pounds Whole chicken (Organic, preferred), 2 teaspoons of Kosher salt or 1 teaspoon of table salt. Kosher salt, 1/4 teaspoon ground black pepper, 1 tablespoon of olive oil, 1 about \u00bd cup small onion, chopped, 1 about \u00bc cup small stalk celery, chopped, 6 mediums garlic cloves, peeled and trimmed, 5 smalls bay leaves, 4 sprigs thyme or rosemary (optional), 1/2 lemon juice, ",
+        "image": "https://img.spoonacular.com/recipes/638125-556x370.jpg"
     }
 }
