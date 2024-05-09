@@ -46,7 +46,30 @@ def show_one_fav():
 
 
 
+@app.route('/add_to_favorites', methods=['GET', 'POST'])
+def add_to_favorites():
+    if request.method == 'POST':
+        # Handle form submission and send data to the backend
+        recipe_title = request.form['recipe_title']
+        recipe_instructions = request.form['recipe_instructions']
+        recipe_ingredients = request.form['recipe_ingredients']
+        recipe_image = request.form['recipe_image']
+        recipe_id = request.form['recipe_id']
 
+        backend_url = f'{BACKEND_ENDPOINT}/add_to_favorites'
+        data = {
+            'recipe_title': recipe_title,
+            'recipe_instructions': recipe_instructions,
+            'recipe_ingredients': recipe_ingredients,
+            'recipe_image': recipe_image,
+            'recipe_id': recipe_id
+        }
+        response = requests.post(backend_url, data=data)
+
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({"error": "Failed to add recipe to favorites"})
 
 
 @app.route('/create_my_recipe', methods=['GET', 'POST'])

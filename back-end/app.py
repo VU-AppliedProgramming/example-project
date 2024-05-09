@@ -45,6 +45,24 @@ def s_one_fav(recipe_id):
 
 ### CRUD OPERATIONS ###
 
+@app.route('/add_to_favorites', methods=['POST', 'GET'])
+def add_to_favorites():
+    recipe_title = request.form['recipe_title']
+    recipe_instructions = request.form['recipe_instructions']
+    recipe_ingredients = request.form['recipe_ingredients']
+    recipe_image = request.form['recipe_image']
+    recipe_id = request.form['recipe_id']
+    
+    success = fav_recipes.add_recipe(recipe_title, recipe_instructions, recipe_ingredients, recipe_image, recipe_id)
+    
+    if success:
+        return jsonify({"message": "Recipe added to favorites successfully"})
+    else:
+        return jsonify({"error": "Failed to add recipe to favorites"})
+
+
+
+
 @app.route('/create_recipe', methods=['POST'])
 def create_recipe():
     r_title = request.form['r_title']

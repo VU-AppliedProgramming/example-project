@@ -135,6 +135,14 @@
         <div class="recipe-link">
             <a href="{{ meal.sourceUrl }}" target="_blank">View Recipe</a>
         </div>
+            <form action="{{ url_for('add_to_favorites')}}" method="post"> 
+                <input type="hidden" name="recipe_title" value="{{ meal.title }}">
+                <input type="hidden" name="recipe_instructions" value="{% for step in meal.analyzedInstructions[0].steps %}{{ step.step }}, {% endfor %}">
+                <input type="hidden" name="recipe_ingredients" value="{% for ingredient in meal.extendedIngredients %}{{ ingredient.original }}, {% endfor %}">
+                <input type="hidden" name="recipe_image" value="{{ meal.image }}">
+                <input type="hidden" name="recipe_id" value="{{ meal.id }}">
+                <button type="submit" class="add-to-favorites-button">Add to Favorites</button>
+            </form>
         <div class="timer-container">
             <div class="timer-controls">
                 <button id="startButton">Start Timer</button>
