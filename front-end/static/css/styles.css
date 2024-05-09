@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap');
 
+
 * {
     padding: 0;
     margin: 0;
@@ -447,3 +448,27 @@ body {
     max-width: 100%;
     height: auto;
 }
+
+.myrecipe-button {
+    position: fixed;
+    bottom: 30px;
+    left: 40px;
+    margin-bottom: 10px;
+}
+
+.myrecipe-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 2px solid #735840;
+    border-radius: 5px;
+    background-color: #735840;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.myrecipe-button:hover {
+    background-color: #8C3E4E;
+    transform: scale(1.1);
+}
+
