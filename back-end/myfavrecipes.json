@@ -1,11 +1,4 @@
 {
-    "cheese sticks": {
-        "title": "cheese sticks",
-        "recipe_id": "999876",
-        "instructions": "cheese and sticks",
-        "ingredients": "cheese milk apple ",
-        "image": "none"
-    },
     "Lemon Pie": {
         "title": "Lemon Pie",
         "recipe_id": "649730",
