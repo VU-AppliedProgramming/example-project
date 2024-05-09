@@ -28,9 +28,22 @@ def test():
     recipes= fav_recipes.get_recipes()
     return jsonify(recipes)
 
+
+
+
+@app.route('/show_one_favorite/<recipe_id>')
+def s_one_fav(recipe_id):
+    recipes = fav_recipes.get_recipes()
+    if recipe_id in recipes:
+        return jsonify({recipe_id: recipes[recipe_id]})
+    else:
+        return jsonify({"error": "Recipe not found"})
+    
+
+
+
+
 ### CRUD OPERATIONS ###
-
-
 
 @app.route('/create_recipe', methods=['POST'])
 def create_recipe():

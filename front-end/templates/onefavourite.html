@@ -110,7 +110,7 @@
 <body>
     <a href="/" class="home-icon">Home</a>
 
-    {% for recipe_name, recipe_info in results.items() %}
+    {% for recipe_name, recipe_info in recipe.items() %}
     <div class="recipe-container">
         <h2 class="recipe-title">{{ recipe_info.title }}</h2>
         <div class="recipe-details">

@@ -32,12 +32,22 @@ def get_test_data():
     print(type(recipes))
     return render_template('test.html', results=recipes)
 
+
+
+
 @app.route('/show_one_favorite', methods=['GET', 'POST'])
 def show_one_fav():
-    backend_url = f'{BACKEND_ENDPOINT}/test'
+    recipe_id = request.form['recipe_id']
+    backend_url = f'{BACKEND_ENDPOINT}/show_one_favorite/{recipe_id}' 
     response = requests.get(backend_url)
-    recipes = response.json()
-    return render_template('onefavourite.html', results=recipes)
+    recipe = response.json()
+    return render_template('onefavourite.html', recipe=recipe)
+
+
+
+
+
+
 
 @app.route('/create_my_recipe', methods=['GET', 'POST'])
 def create_rec():
