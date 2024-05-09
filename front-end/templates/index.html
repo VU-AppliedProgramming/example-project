@@ -9,10 +9,13 @@
 </head>
 <body>
     <a href="/" class="home-icon">Home</a>
+    {% block random %}
     <a id="random-button" class="random-button"></a>
     <form action="{{ url_for('get_random_recipe')}}" method="post"> 
         <button type="submit" class="random-button" id="random-button">Random</button>
     </form>
+    {% endblock %}
+    {% block timer %}
     <div class="timer-container">
         <div class="timer-controls">
             <button id="startButton">Start Timer</button>
@@ -22,6 +25,7 @@
         </div>
         <div id="timerDisplay"></div>
     </div>
+    {% endblock %}
     <div class="meal-wrapper">
         <div class="meal-search">
             {% block title %}
@@ -55,9 +59,11 @@
     </div>
 
     <div>
+        {% block favorites %}
         <form action="{{ url_for('get_test_data')}}" method="post"> 
             <button type="submit" class="myrecipe-button" id="myrecipe-button">Favorites</button>
         </form>
+        {% endblock %}
     </div>
 
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
