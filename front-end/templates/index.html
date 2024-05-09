@@ -8,7 +8,17 @@
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
 </head>
 <body>
-    <a href="/" class="home-icon">Home</a>
+
+    <div class="dropdown">
+        <button class="dropbtn">Menu <i class="fas fa-chevron-down"></i></button>
+        <div class="dropdown-content">
+            <a href="/" class="home-icon">Home</a>
+            <form action="{{ url_for('get_test_data')}}" method="post"> 
+                <button type="submit" class="myrecipe-button" id="myrecipe-button">Favorites</button>
+            </form>
+        </div>
+    </div>
+    
     {% block random %}
     <a id="random-button" class="random-button"></a>
     <form action="{{ url_for('get_random_recipe')}}" method="post"> 
@@ -56,14 +66,6 @@
     <div class="meal-details">
         <div class="meal-details-content"></div>
         <button id="recipe-close-button" class="recipe-close-button">&times;</button>
-    </div>
-
-    <div>
-        {% block favorites %}
-        <form action="{{ url_for('get_test_data')}}" method="post"> 
-            <button type="submit" class="myrecipe-button" id="myrecipe-button">Favorites</button>
-        </form>
-        {% endblock %}
     </div>
 
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>

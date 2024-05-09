@@ -1,11 +1,4 @@
 {
-    "chicken wings": {
-        "title": "chicken wings",
-        "recipe_id": "https://images.immediate.co.uk/production/volatile/sites/30/2020/12/Air-Fryer-Chicken-Wings-d2c6fa4.jpg?quality=90&resize=556,505",
-        "instructions": "45678",
-        "ingredients": "bla bla bla",
-        "image": "ja ja ja"
-    },
     "cheese sticks": {
         "title": "cheese sticks",
         "recipe_id": "999876",
@@ -33,5 +26,54 @@
         "instructions": "",
         "ingredients": "",
         "image": "https://assets.tmecosys.com/image/upload/t_web767x639/img/recipe/ras/Assets/21861ad1f03b6136a02bf810234cd666/Derivates/d257bb4fe192628f00a98b1f08a7976fbf7f21d4.jpg"
+    },
+    "Apple Cake": {
+        "title": "Apple Cake",
+        "recipe_id": "632485",
+        "instructions": "Preheat oven to 350F degrees.In a large bowl, mix together apples, oil, sugar, eggs and walnuts by hand., Mix well then set aside.In a separate bowl, mix flour, baking soda, salt, vanilla and cinnamon, Mix well then add to the apple mixture. The batter will be thick., Pour into ungreased 13x9 baking pan, and bake for one hour or until done., ",
+        "ingredients": "3 cups sliced apples preferably Jonathan, 1 1/2 teaspoons baking soda, 1 teaspoon of cinnamon, 2 eggs, 2 1/2 cups flour, 1 1/2 cups oil, 1 teaspoon salt, 2 cups of sugar, 3 teaspoons vanilla (I increased this from 2 tsps. in original recipe), 1 cup chopped walnuts, ",
+        "image": "https://img.spoonacular.com/recipes/632485-556x370.jpg"
+    },
+    "Chicken Wings": {
+        "title": "Chicken Wings",
+        "recipe_id": "638420",
+        "instructions": "Add chicken into a large glass or stainless steel bowl, toss all the seasonings and brown sugar over the chicken.Cover with plastic wrap and refrigerate for an hour or two.Preheat the oven temperature to 400 degrees F., Place all the seasoned chicken onto a parchment lined baking sheet spread out so that they don't touch.  If you are doubling the recipe use two pans., Bake for 35 minutes.In a large bowl, add about 2 tablespoons of honey (or more if you like) and a few splashes of tabasco sauce (less or more to your liking)., Add the chicken, if it feels to hot to toss, wait a few minutes or use two spoons to coat the chicken., ",
+        "ingredients": "2 tablespoons brown sugar, 2 tablespoons brown sugar, 3 1/3 pounds organic chicken drummettes, 1 teaspoon garlic powder, 2 teaspoons ground cumin, Honey, 1 tablespoon kosher salt, Tabasco Sauce, 2 tablespoons taco seasoning(Trader Joes's brand), 3 tablespoons vegan cream cheese, 2 tablespoons coconut yogurt, ",
+        "image": "https://img.spoonacular.com/recipes/638420-556x370.jpg"
+    },
+    "Chicken Satay": {
+        "title": "Chicken Satay",
+        "recipe_id": "638308",
+        "instructions": "Soak 20 bamboo skewers for at least 2 hours in a glass of water. This is to prevent the sticks from burning and breaking when placed under the grill or over the coals., Add the ground coriander, ground cumin, turmeric powder, chilli powder, salt, saugar, coconut cream and vegetable oil in a large bowl., Mix well., Cut the chicken into long thin strips.Marinate the chicken in the sauce. Ensure the chicken are well coated.Tightly seal the bowl with cling wrap and place in the fridge. Leave to marinade for at least 4 hours. The longer, the better.In the meantime, prepare the sauce.Look for a reputable brand of satay sauce. I always use Lee Kum Kee., Add about 6 tablespoons of the satay sauce into a bowl.The rest of these steps are to be done, subject to taste. I like to taste as I add the other condiments., Add the crunchy peanut butter, coconut cream and water. If the sauce is too thick, thin it down with a little more water., Add the dark soy sauce, sugar and ground peanuts, Seal the bowl with cling wrap and set aside until ready to serve. Before serving, warm the satay sauce in the microwave oven, covered slightly, for approximately 1.5 to 2mins.When you are ready to grill the chicken, start forming satays by piercing the chicken through the bamboo skewers. I find it alot easier to pierce the meat into the sticks when they are long strips and I pierce through in an undulating manner.  Set aside until ready to use.Preheat your oven to 200 deg Celsius at GRILL., Place your oven shelf higher and closer to the top too., Lay the satay sticks on a cooling mesh sitting over a flat baking sheet to collect drippings., Place the tray of satay under the grill. And grill for 10 to 20 mins. It really depends on how thick your chicken sticks are., Remove the tray from the oven when one side of the satay is a golden brown (not dark brown!). Turn over the satay to the other side. And continue to grill till it has a nice dark golden brown. I like it a little burnt., Serve warm with satay sauce and sliced cucumber., ",
+        "ingredients": "500 grams chicken thigh meat (with fat), 500 grams chicken thigh meat (with fat), 1 teaspoon chilli powder, 3/4 cup coconut cream, 6 tablespoons coconut cream, 1 tablespoon crunchy peanut butter, 1 tablespoon ground coriander, 1 1/2 tablespoons ground cumin, 1/2 cup of ground peanuts, 1 jar of ready made satay sauce (about 6 tablespoons), 1 teaspoon salt, 2 teaspoons dark soy sauce, 1 teaspoon sugar, 2 teaspoons sugar, 2 teaspoons turmeric powder, 1/4 cup vegetable oil, 1/4 cup water, ",
+        "image": "https://img.spoonacular.com/recipes/638308-556x370.jpg"
+    },
+    "Chicken Fingers": {
+        "title": "Chicken Fingers",
+        "recipe_id": "638086",
+        "instructions": "Preheat oven to 400 degrees, Line a baking sheet with parchment paper or line the bottom with foil and place a cookie rack on top and spray with cooking spray, set aside, In a shallow bowl add egg whites and water, In another shallow bowl add cornflakes, cheese, and seasonings, stir until combined, Cut chicken breasts horizontally and then cut into strips.Dredge the chicken in egg whites, then dip into cornflake mixture., Place on baking sheet. Do the same for all the chicken., Bake for 18 minutes or until chicken is done., ",
+        "ingredients": "1 dash Cayenne Pepper, 1 pound Boneless Chicken Breasts, 1 1/2 cup Cornflakes,crushed, 1 whole Egg White, 1/4 teaspoons Italian Seasoning, 1/4 teaspoons Paprika, 2 teaspoons Parmesan Cheese, 1 Tablespoon Water, ",
+        "image": "https://img.spoonacular.com/recipes/638086-556x370.jpg"
+    },
+    "Goat Cheese Stuffed Bacon Wrapped Jalapeno Appetizer": {
+        "title": "Goat Cheese Stuffed Bacon Wrapped Jalapeno Appetizer",
+        "recipe_id": "644958",
+        "instructions": "Slice the tops off of the jalapenos and discard. Scrape and rinse out as many seeds as possible from the jalapenos.Evenly divide up the goat cheese between the 6 peppers and fill each jalapeno with the cheese.Wrap one slice of bacon around each pepper and set aside. Once all peppers are filled and wrapped, place the peppers on a medium-high grill and cook until bacon is fully cooked. Or place peppers on a sheet tray and bake at 350 F for 20 minutes., ",
+        "ingredients": "6 slices thick sliced bacon, 3 ounces Goat cheese, 6 jalapenos, ",
+        "image": "https://img.spoonacular.com/recipes/644958-556x370.jpg"
+    },
+    "Granola": {
+        "title": "Granola",
+        "recipe_id": "645175",
+        "instructions": "Preheat oven to 300F degrees., Mix together the oats, sesame seeds almonds and sunflower seeds., Pour honey, oil, Water over this mixture and stir well., Spread on a large cookie sheet and bake 35 minutes until nicely browned on top.Stir the granola often while baking (about every 5 minutes)., Remove from oven allow to cool and add raisins, coconut and crasins.Makes 6 cups. Nutritional information is for 1/3 cup serving., ",
+        "ingredients": "1/2 cup chopped almonds, 3/4 cup shredded coconut, 3/4 cup craisins (dried cranberries), cup honey, 3/4 cup dark raisins, 4 cups uncooked rolled oats, 1/2 cup sesame seeds, cup sunflower oil, 3/4 cup sunflower seeds, 2 tablespoons water, ",
+        "image": "https://img.spoonacular.com/recipes/645175-556x370.jpg"
+    },
+    "Classic French Mussels": {
+        "title": "Classic French Mussels",
+        "recipe_id": "639599",
+        "instructions": "Scrub mussels with a stiff brush, discard any that are open and stay that way even when you close the shell. Discard any with broken shells.Soak them in cool clean water for at least an hour. Mussels are alive and breathing and have taken in sand over time. This allows them to expel the sand.Mussels have a small fibrous \"beard\" that should be removed. Pull it out toward the hinge of the shell to keep from injuring the mussel., Heat the olive oil in a large pot over medium-high heat., Add the shallots and garlic and cook until soft, about 5 minutes., Add the mussels, wine, buttermilk, butter, and parsley and season well with the kosher salt. Give it a good stir, cover the pot, and cook until mussels open and are cooked through, 10 to 15 minutes. Divide the mussels and the juices between 2 bowls and serve with a crusty whole-grain bread to sop up that wonderful sauce., ",
+        "ingredients": "1/2 cup dry white wine, 3 sprigs fresh parsley, 4 garlic cloves, finely chopped, Kosher salt, 1/2 cup low-fat buttermilk, 2 pounds mussels, cleaned, 1 Tbs olive oil, 2 shallots, finely chopped, 4 tablespoons unsalted light butter, cut into pieces, ",
+        "image": "https://img.spoonacular.com/recipes/639599-556x370.jpg"
     }
 }

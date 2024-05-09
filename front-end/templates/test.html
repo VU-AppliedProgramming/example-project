@@ -16,6 +16,10 @@
     <!-- same -->
 {% endblock %}
 
+{% block search %}
+    <!-- same -->
+{% endblock %}
+
 {% block content %}
     <div class="results-container">
         {% for recipe_id, recipe in results.items() %}
@@ -34,17 +38,17 @@
         {% endfor %}
     </div>
 
-    <div class="dropdown">
-        <button class="dropbtn">Actions</button>
-        <div class="dropdown-content">
+    <div class="favdropdown">
+        <button class="favdropdownbtn">Actions</button>
+        <div class="favdropdown-content">
             <form action="{{ url_for('create_rec')}}" method="post">
-                <button type="submit" class="dropdown-btn">Create</button>
+                <button type="submit" class="favdropdown-btn">Create</button>
             </form>
             <form action="{{ url_for('delete_rec')}}" method="post">
-                <button type="submit" class="dropdown-btn">Delete</button>
+                <button type="submit" class="favdropdown-btn">Delete</button>
             </form>
             <form action="{{ url_for('update_rec')}}" method="post">
-                <button type="submit" class="dropdown-btn">Update</button>
+                <button type="submit" class="favdropdown-btn">Update</button>
             </form>
         </div>
     </div>
