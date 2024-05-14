@@ -32,7 +32,11 @@
                 </div>
                 <form action="{{ url_for('show_one_fav', recipe_id=recipe_id)}}" method="post"> 
                     <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
-                    <button type="submit" class="search-button">Get Recipe</button>
+                    <button type="submit" class="get-button">Get Recipe</button>
+                </form>
+                <form class="deleteForm" data-recipe="{{ recipe.title }}" onsubmit="confirmDelete(this); return false;"> 
+                    <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+                    <button type="submit" class="delete-button">Delete favorite</button>
                 </form>
             </div>
         {% endfor %}
@@ -44,13 +48,33 @@
             <form action="{{ url_for('create_rec')}}" method="post">
                 <button type="submit" class="favdropdown-btn">Create</button>
             </form>
-            <form action="{{ url_for('delete_rec')}}" method="post">
-                <button type="submit" class="favdropdown-btn">Delete</button>
-            </form>
             <form action="{{ url_for('update_rec')}}" method="post">
                 <button type="submit" class="favdropdown-btn">Update</button>
             </form>
         </div>
     </div>
-{% endblock %}
 
+    <script>
+        document.querySelectorAll(".deleteForm").forEach(form => {
+            form.addEventListener("submit", function(event) {
+                event.preventDefault(); 
+                
+                var recipeTitle = this.dataset.recipe;
+                var recipeId = this.querySelector("input[name='recipe_id']").value;
+                
+                var xhr = new XMLHttpRequest();
+                xhr.open("DELETE", "http://localhost:5000/delete_recipe", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        alert("Recipe deleted successfully!");
+                        document.querySelector(".meal-item[data-id='" + recipeId + "']").remove();
+                    } else {
+                        alert("Error: " + xhr.responseText);
+                    }
+                };
+                xhr.send(JSON.stringify({ "r_title": recipeTitle }));
+            });
+        });
+    </script>
+{% endblock %}

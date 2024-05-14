@@ -15,7 +15,39 @@
                     <button type="submit" class="search-button" id="search-button">Get Recipe</button>
                 </form>
             </div>
+            <form id="addToFavoritesForm" action="{{ url_for('add_to_favorites')}}" method="post"> 
+                <input type="hidden" name="recipe_title" value="{{ meal.title }}">
+                <input type="hidden" name="recipe_instructions" value=''>
+                <input type="hidden" name="recipe_ingredients" value="">
+                <input type="hidden" name="recipe_image" value="{{ meal.image }}">
+                <input type="hidden" name="recipe_id" value="{{ meal.id }}">
+                <button type="submit" class="add-to-favorites-button">Add to Favorites</button>
+            </form>
         </div>
         {% endfor %}
     </div>
+    <script>
+        document.querySelectorAll("#addToFavoritesForm").forEach(form => {
+            form.addEventListener("submit", function(event) {
+                event.preventDefault();
+    
+                var formData = new FormData(this);
+                
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{{ url_for('add_to_favorites')}}", true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        alert("Recipe added to favorites successfully!");
+                    } else if (xhr.status === 409) {
+                        alert("Error: Recipe with this title already exists");
+                    } else {
+                        alert("Error: " + xhr.responseText);
+                    }
+                };
+                xhr.send(formData);
+            });
+        });
+    </script>
+    
 {% endblock %}
+

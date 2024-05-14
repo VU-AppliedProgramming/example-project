@@ -77,7 +77,7 @@ def create_rec():
 
 @app.route('/delete_my_recipe', methods=['GET', 'POST'])
 def delete_rec():
-    return render_template('deletefav.html')
+    return render_template('test.html')
 
 @app.route('/update_my_recipe', methods=['GET', 'POST'])
 def update_rec():

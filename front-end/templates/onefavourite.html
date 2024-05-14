@@ -20,6 +20,11 @@
 
     <div class="container">
         {% for recipe_name, recipe_info in recipe.items() %}
+        
+        <form class="deleteForm" data-recipe="{{ recipe_info.title }}" onsubmit="deleteRecipe(this); return false;"> 
+            <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+            <button type="submit" class="remove-button">Delete favorite</button>
+        </form>        
         <div class="recipe-container">
             <h2 class="recipe-title">{{ recipe_info.title }}</h2>
             <div class="recipe-details">
@@ -49,5 +54,50 @@
     </div>
 
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
+    <script>
+        function deleteRecipe(form) {
+            var recipeTitle = form.dataset.recipe;
+            var recipeId = form.querySelector("input[name='recipe_id']").value;
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost:5000/delete_recipe", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert("Recipe deleted successfully!");
+                    // Redirect to test.html after deletion
+                    window.location.href = "get_test_data";
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(JSON.stringify({ "r_title": recipeTitle }));
+        }
+    </script>    
 </body>
+<style>
+    .remove-button {
+        position: fixed;
+        top: 20px;
+        right: 40px;
+        z-index: 9999;
+        color: #fff;
+        font-size: 24px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.3s, transform 0.3s;
+        border: none;
+        background: none;
+        padding: 10px 20px;
+        font-weight: bold; 
+        border-radius: 5px; 
+    }
+
+
+    .remove-button:hover {
+        color: #F7B527;
+        text-decoration: underline;
+        transform: scale(1.1);
+    }
+</style>
 </html>

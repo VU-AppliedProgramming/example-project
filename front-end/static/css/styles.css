@@ -161,6 +161,39 @@ body {
     padding: 1.5rem 0.5rem;
 }
 
+.delete-button{
+    text-decoration: none;
+    color: #fff;
+    background: #F2A007;
+    font-weight: 600;
+    font-size: 0.7rem;
+    padding: 0.75rem 0;
+    display: block;
+    width: 225px;
+    margin: 1rem auto;
+    border-radius: 2rem;
+    border: 2px solid #000;
+    transition: background 0.4s linear, transform 0.4s linear;
+    cursor: pointer;
+}
+
+.get-button {
+    height: 80px;
+    width: 120px;
+    border: none;
+    background-color: #d63447;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.get-button:hover {
+    background: green;
+    transform: scale(1.1);
+}
+
 .recipe-button {
     text-decoration: none;
     color: #fff;
@@ -177,8 +210,14 @@ body {
     cursor: pointer;
 }
 
+
 .recipe-button:hover {
     background: #8C3E4E;
+    transform: scale(1.1);
+}
+
+.delete-button:hover {
+    background: #378dee;
     transform: scale(1.1);
 }
 
