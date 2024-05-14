@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import base64
 import io
 from test import Test
-from favrecipes import FavRecipes
+from favrecipes import FavRecipes, Recipe
 
 app = Flask(__name__)
 CORS(app)
@@ -39,10 +39,6 @@ def s_one_fav(recipe_id):
     else:
         return jsonify({"error": "Recipe not found"})
     
-
-
-
-
 ### CRUD OPERATIONS ###
 
 @app.route('/add_to_favorites', methods=['POST', 'GET'])
@@ -52,8 +48,10 @@ def add_to_favorites():
     recipe_ingredients = request.form['recipe_ingredients']
     recipe_image = request.form['recipe_image']
     recipe_id = request.form['recipe_id']
+
+    recipe = Recipe(recipe_title,  recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
     
-    success = fav_recipes.add_recipe(recipe_title, recipe_instructions, recipe_ingredients, recipe_image, recipe_id)
+    success = fav_recipes.add_recipe(recipe)
     
     if success:
         return jsonify({"message": "Recipe added to favorites successfully"})
@@ -65,13 +63,15 @@ def add_to_favorites():
 
 @app.route('/create_recipe', methods=['POST'])
 def create_recipe():
-    r_title = request.form['r_title']
-    r_id = request.form['r_id']
-    r_instructions = request.form['r_instructions']
-    r_ingredients = request.form['r_ingredients']
-    r_image = request.form['r_image']
+    recipe_title = request.form['r_title']
+    recipe_id = request.form['r_id']
+    recipe_instructions = request.form['r_instructions']
+    recipe_ingredients = request.form['r_ingredients']
+    recipe_image = request.form['r_image']
+
+    recipe = Recipe(recipe_title,  recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
     
-    recipe_added = fav_recipes.add_recipe(r_title, r_instructions, r_ingredients, r_image, r_id)
+    recipe_added = fav_recipes.add_recipe(recipe)
     
     if recipe_added:
         return jsonify({"message": "Recipe added successfully"}), 201
@@ -85,10 +85,14 @@ def delete_recipe():
     data = request.get_json()
     r_title = data.get('r_title')
 
-    if fav_recipes.delete_recipe(r_title):
-        return jsonify({"message": "Recipe deleted successfully"}), 200
-    else:
-        return jsonify({"error": "Recipe with this title does not exist"}), 404
+    recipes = fav_recipes.get_recipes()
+
+    if r_title in recipes:
+        recipe = Recipe(recipes[r_title]["title"], recipes[r_title]["recipe_id"], recipes[r_title]["instructions"], recipes[r_title]["ingredients"], recipes[r_title]["image"])
+
+        if fav_recipes.delete_recipe(recipe):
+            return jsonify({"message": "Recipe deleted successfully"}), 200
+    return jsonify({"error": "Recipe with this title does not exist"}), 404
     
 
 @app.route('/update_recipe_instructions', methods=['PUT'])
@@ -97,10 +101,14 @@ def update_recipe():
     r_title = data.get('r_title')
     new_instructions = data.get('r_instructions')
 
-    if fav_recipes.update_recipe(r_title, new_instructions):
-        return jsonify({"message": "Instructions updated successfully"}), 200
-    else:
-        return jsonify({"error": "Recipe with this title does not exist"}), 404
+    recipes = fav_recipes.get_recipes()
+
+    if r_title in recipes:
+        recipe = Recipe(recipes[r_title]["title"], recipes[r_title]["recipe_id"], recipes[r_title]["instructions"], recipes[r_title]["ingredients"], recipes[r_title]["image"])
+
+        if fav_recipes.update_recipe(recipe, new_instructions):
+            return jsonify({"message": "Ingredients updated successfully"}), 200
+    return jsonify({"error": "Recipe with this title does not exist"}), 404
 
 
 ### CRUD OPERATIONS ###

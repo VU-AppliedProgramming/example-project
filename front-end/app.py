@@ -49,7 +49,6 @@ def show_one_fav():
 @app.route('/add_to_favorites', methods=['GET', 'POST'])
 def add_to_favorites():
     if request.method == 'POST':
-        # Handle form submission and send data to the backend
         recipe_title = request.form['recipe_title']
         recipe_instructions = request.form['recipe_instructions']
         recipe_ingredients = request.form['recipe_ingredients']

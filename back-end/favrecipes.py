@@ -7,6 +7,14 @@ image
 '''
 import json
 
+class Recipe:
+    def __init__(self, title, id, instructions, ingredients, image):
+        self.title = title
+        self.id = id
+        self.instructions = instructions
+        self.ingredients = ingredients
+        self.image = image
+
 
 class FavRecipes:
     def __init__(self, file_path) -> None:
@@ -25,32 +33,34 @@ class FavRecipes:
         with open(self.file_path, 'w') as file:
             json.dump(self.recipes, file, indent=4)
 
-    def add_recipe(self, r_title, r_instructions, r_ingredients, r_image, r_id):
-        if r_title in self.recipes:
+    def add_recipe(self, recipe:Recipe):
+        if recipe.title in self.recipes:
             return False
-        self.recipes[r_title] = {
-            "title": r_title,
-            "recipe_id": r_id,
-            "instructions": r_instructions,
-            "ingredients": r_ingredients,
-            "image": r_image
+        self.recipes[recipe.title] = {
+            "title": recipe.title,
+            "recipe_id": recipe.id,
+            "instructions": recipe.instructions,
+            "ingredients": recipe.ingredients,
+            "image": recipe.image
         }
         self.save_recipe()
         return True
     
-    def delete_recipe(self, recipe_name):
-        if recipe_name in self.recipes:
-            del self.recipes[recipe_name]
+    def delete_recipe(self, recipe:Recipe):
+        if recipe.title in self.recipes:
+            del self.recipes[recipe.title]
             self.save_recipe()
             return True 
         return False  
     
-    def update_recipe(self, recipe_name, new_ingredients):
-        if recipe_name in self.recipes:
-            self.recipes[recipe_name]["ingredients"] = new_ingredients
+    def update_recipe(self, recipe:Recipe, new_ingredients:str):
+        if recipe.title in self.recipes:
+            self.recipes[recipe.title]["ingredients"] = new_ingredients
             self.save_recipe()
             return True  
         return False
 
     def get_recipes(self):
         return self.recipes
+
+
