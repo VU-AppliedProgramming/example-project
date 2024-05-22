@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request,Response
 import os
 import requests
 from flask_cors import CORS
@@ -151,12 +151,13 @@ def get_random_recipe():
 
 @app.route('/api/price_breakdown_widget/<int:meal_id>')
 def get_price_breakdown_widget(meal_id):
-    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
+    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget.png?apiKey={API_KEY}'
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
     
-    return response.text, 200, {'Content-Type': 'text/html'}
+    image_data = response.content
+    return Response(image_data, content_type='image/png')
 
 def clean_html_response(input_string):
     # Extract prices

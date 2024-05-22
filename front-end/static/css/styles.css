@@ -161,6 +161,27 @@ body {
     padding: 1.5rem 0.5rem;
 }
 
+.add-to-favorites-button{
+    text-decoration: none;
+    color: #fff;
+    background: #F2A007;
+    font-weight: 600;
+    font-size: 0.7rem;
+    padding: 0.75rem 0;
+    display: block;
+    width: 225px;
+    margin: 1rem auto;
+    border-radius: 2rem;
+    border: 2px solid #000;
+    transition: background 0.4s linear, transform 0.4s linear;
+    cursor: pointer;
+}
+
+.add-to-favorites-button:hover {
+    background: blue;
+    transform: scale(1.1);
+}
+
 .delete-button{
     text-decoration: none;
     color: #fff;

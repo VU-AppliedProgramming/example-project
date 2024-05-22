@@ -43,6 +43,13 @@
             <input type="hidden" name="recipe_id" value="{{ meal.id }}">
             <button type="submit" class="add-to-favorites-button">Add to Favorites</button>
         </form>
+
+        <form action="{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}" method="post"> 
+            <button type="submit" class="search-button" id="breakdwon-button">Get Breakdown</button>
+        </form>
+
+        <div id="priceBreakdownContainer"></div>
+
         <script>
             document.getElementById("addToFavoritesForm").addEventListener("submit", function(event) {
                 event.preventDefault(); 
@@ -62,7 +69,40 @@
                 };
                 xhr.send(formData);
             });
+
+            document.getElementById("breakdown-button").addEventListener("click", function(event) {
+                event.preventDefault(); 
+                
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}", true);
+                xhr.responseType = 'blob'; // Set the response type to blob
+                
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        // If request successful, create a Blob URL from the response
+                        var blob = xhr.response;
+                        var imageUrl = URL.createObjectURL(blob);
+                        
+                        // Create an image element
+                        var img = document.createElement('img');
+                        img.src = imageUrl;
+                        img.alt = "Price Breakdown";
+                        img.className = "price-breakdown-image";
+                        
+                        // Append the image to the container
+                        document.getElementById("priceBreakdownContainer").appendChild(img);
+                    } else {
+                        // If request fails, display an error message
+                        alert("Error: Failed to fetch price breakdown widget");
+                    }
+                };
+                
+                xhr.send(); // Send the request
+            });
+            
         </script>
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
 </body>
 </html>

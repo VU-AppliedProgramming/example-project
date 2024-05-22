@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, Response
 import requests
 from flask_cors import CORS
 import os
@@ -29,9 +29,8 @@ def get_test_data():
     backend_url = f'{BACKEND_ENDPOINT}/test'
     response = requests.get(backend_url)
     recipes = response.json()
-    print(type(recipes))
+    #print(type(recipes))
     return render_template('test.html', results=recipes)
-
 
 
 
@@ -42,7 +41,6 @@ def show_one_fav():
     response = requests.get(backend_url)
     recipe = response.json()
     return render_template('onefavourite.html', recipe=recipe)
-
 
 
 
@@ -83,18 +81,35 @@ def delete_rec():
 def update_rec():
     return render_template('changeinstructions.html')
 
-    
-@app.route('/api/meals', methods=['POST'])
+
+@app.route('/api/meals', methods=['POST', 'GET'])
 def search():
-    data = request.form
+    if request.method == 'POST':
+        data = request.form
+    elif request.method == 'GET':
+        data = request.args
+    else:
+        return jsonify({'error': 'Method not allowed'}), 405
+    
+    word_user = data.get('wordUser') or data.get('query')
     min_calories = data.get('minCalories')
     max_calories = data.get('maxCalories')
     
+    if not word_user:
+        return jsonify({'error': 'Missing parameter: wordUser or query'}), 400
+    
     backend_url = f'{BACKEND_ENDPOINT}/api/meals'
-    response = requests.get(backend_url, params={'query': data['wordUser'], 'minCalories': min_calories, 'maxCalories': max_calories})
-    meals = response.json()['results']
-    return render_template('results.html', results=meals)
-
+    response = requests.get(backend_url, params={'query': word_user, 'minCalories': min_calories, 'maxCalories': max_calories})
+    
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch meals'}), 500
+    
+    meals = response.json().get('results', [])
+    
+    if request.method == 'POST':
+        return render_template('results.html', results=meals)
+    else:
+        return jsonify(meals)
 
 @app.route('/api/recipe/<meal_id>', methods=['POST'])
 def recipe(meal_id):
@@ -111,12 +126,22 @@ def get_random_recipe():
     meal = response.json()
     return render_template('onerecipe.html', meal=meal)
 
-@app.route('/api/price_breakdown_widget/<int:meal_id>')
+@app.route('/api/price_breakdown_widget/<int:meal_id>', methods=['GET', 'POST'])
 def get_price_breakdown_widget(meal_id):
     backend_url = f'{BACKEND_ENDPOINT}/api/price_breakdown_widget/{meal_id}'
     response = requests.get(backend_url)
-    print(response.text) 
-    return response.text
+    
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
+    
+    # Check if response is an image
+    if 'image/png' in response.headers.get('content-type', ''):
+        image_data = response.content
+        return Response(image_data, content_type='image/png')
+    else:
+        # If not an image, assume it's HTML or other text data
+        data = response.text
+        return render_template('price_breakdown_widget.html', data=data)
 
 @app.route('/clean_html', methods=['POST'])
 def clean_html():
