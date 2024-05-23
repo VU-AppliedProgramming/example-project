@@ -332,18 +332,23 @@ body {
     overflow: hidden;
 }
 
-.recip-link {
-    margin: 1.4rem 0;
+.recipe-link {
+    text-align: center;
+    margin: 20px 0;
 }
 
 .recipe-link a {
-    color: #fff;
-    font-size: 1.2rem;
-    transition: all 0.4s linear;
+    display: inline-block;
+    padding: 10px 20px;
+    color: white !important;
+    background-color: #ff6347;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 .recipe-link a:hover {
-    opacity: 0.8;
+    background-color: #e5533d;
 }
 
 .notFound {

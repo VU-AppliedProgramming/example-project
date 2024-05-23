@@ -4,6 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/singlerecipe.css">
+    <style>
+        .breakdown-button {
+            text-decoration: none;
+            color: #fff;
+            background: #F2A007;
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 0.75rem 0;
+            display: block;
+            width: 225px;
+            margin: 1rem auto;
+            border-radius: 2rem;
+            border: 2px solid #000;
+            transition: background 0.4s linear, transform 0.4s linear;
+            cursor: pointer;
+        }
+
+        .breakdown-button:hover {
+            background: blue;
+            transform: scale(1.1);
+        }
+    </style>
 
     <title>Recipe</title>
 </head>
@@ -45,7 +67,7 @@
         </form>
 
         <form action="{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}" method="post"> 
-            <button type="submit" class="search-button" id="breakdwon-button">Get Breakdown</button>
+            <button type="submit" class="breakdown-button" id="breakdown-button">Get Breakdown</button>
         </form>
 
         <div id="priceBreakdownContainer"></div>
@@ -75,11 +97,10 @@
                 
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", "{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}", true);
-                xhr.responseType = 'blob'; // Set the response type to blob
+                xhr.responseType = 'blob';
                 
                 xhr.onload = function() {
                     if (xhr.status === 200) {
-                        // If request successful, create a Blob URL from the response
                         var blob = xhr.response;
                         var imageUrl = URL.createObjectURL(blob);
                         
@@ -89,15 +110,13 @@
                         img.alt = "Price Breakdown";
                         img.className = "price-breakdown-image";
                         
-                        // Append the image to the container
                         document.getElementById("priceBreakdownContainer").appendChild(img);
                     } else {
-                        // If request fails, display an error message
                         alert("Error: Failed to fetch price breakdown widget");
                     }
                 };
                 
-                xhr.send(); // Send the request
+                xhr.send();
             });
             
         </script>
