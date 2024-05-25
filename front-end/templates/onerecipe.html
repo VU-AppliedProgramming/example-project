@@ -4,34 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/singlerecipe.css">
-    <style>
-        .breakdown-button {
-            text-decoration: none;
-            color: #fff;
-            background: #F2A007;
-            font-weight: 600;
-            font-size: 0.7rem;
-            padding: 0.75rem 0;
-            display: block;
-            width: 225px;
-            margin: 1rem auto;
-            border-radius: 2rem;
-            border: 2px solid #000;
-            transition: background 0.4s linear, transform 0.4s linear;
-            cursor: pointer;
-        }
-
-        .breakdown-button:hover {
-            background: blue;
-            transform: scale(1.1);
-        }
-    </style>
-
     <title>Recipe</title>
 </head>
 <body>
     <a href="/" class="home-icon">Home</a>
-    <div class="recipe-container">
+    <div id="mainContent" class="recipe-container">
         <h2 class="recipe-title">{{ meal.title }}</h2>
         <div class="recipe-details">
             <div class="recipe-instructions">
@@ -71,56 +48,81 @@
         </form>
 
         <div id="priceBreakdownContainer"></div>
+    </div>
 
-        <script>
-            document.getElementById("addToFavoritesForm").addEventListener("submit", function(event) {
-                event.preventDefault(); 
-                
-                var formData = new FormData(this);
-                
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{{ url_for('add_to_favorites')}}", true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        alert("Recipe added to favorites successfully!");
-                    } else if (xhr.status === 409) {
-                    alert("Error: Recipe with this title already exists");
-                    } else {
-                        alert("Error: " + xhr.responseText);
-                    }
-                };
-                xhr.send(formData);
-            });
+    <!-- Modal Structure -->
+    <div id="favoriteModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <p>Recipe added to favorites successfully!</p>
+        </div>
+    </div>
 
-            document.getElementById("breakdown-button").addEventListener("click", function(event) {
-                event.preventDefault(); 
-                
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}", true);
-                xhr.responseType = 'blob';
-                
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        var blob = xhr.response;
-                        var imageUrl = URL.createObjectURL(blob);
-                        
-                        var img = document.createElement('img');
-                        img.src = imageUrl;
-                        img.alt = "Price Breakdown";
-                        img.className = "price-breakdown-image";
-                        
-                        document.getElementById("priceBreakdownContainer").appendChild(img);
-                    } else {
-                        alert("Error: Failed to fetch price breakdown widget");
-                    }
-                };
-                
-                xhr.send();
-            });
+    <script>
+        document.getElementById("addToFavoritesForm").addEventListener("submit", function(event) {
+            event.preventDefault(); 
             
-        </script>
+            var formData = new FormData(this);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('add_to_favorites')}}", true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    showFavoriteModal();
+                } else if (xhr.status === 409) {
+                    alert("Error: Recipe with this title already exists");
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(formData);
+        });
+
+        document.getElementById("breakdown-button").addEventListener("click", function(event) {
+            event.preventDefault(); 
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}", true);
+            xhr.responseType = 'blob';
+            
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var blob = xhr.response;
+                    var imageUrl = URL.createObjectURL(blob);
+                    
+                    var img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.alt = "Price Breakdown";
+                    img.className = "price-breakdown-image";
+                    
+                    document.getElementById("priceBreakdownContainer").appendChild(img);
+                } else {
+                    alert("Error: Failed to fetch price breakdown widget");
+                }
+            };
+            
+            xhr.send();
+        });
+
+        function showFavoriteModal() {
+            var modal = document.getElementById("favoriteModal");
+            var mainContent = document.getElementById("mainContent");
+            mainContent.classList.add("blur");
+            modal.classList.add("show");
+            setTimeout(function() {
+                mainContent.classList.remove("blur");
+                modal.classList.remove("show");
+            }, 2000);
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("favoriteModal");
+            var mainContent = document.getElementById("mainContent");
+            mainContent.classList.remove("blur");
+            modal.classList.remove("show");
+        }
+    </script>
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
 </body>
 </html>
