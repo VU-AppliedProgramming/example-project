@@ -66,7 +66,7 @@
         "title": "3 Cheese Ravioli",
         "recipe_id": "631863",
         "instructions": "",
-        "ingredients": "idk\nidk",
+        "ingredients": "idk idk",
         "image": "https://img.spoonacular.com/recipes/631863-312x231.jpg"
     },
     "test": {
@@ -129,7 +129,7 @@
         "title": "Chicken Lo Mein",
         "recipe_id": "638174",
         "instructions": "In a large nonstick skillet, heat oil; add ginger and garlic and cook over medium heat for 1 minute., Add chicken and carrot; cook over medium-high heat, stirring occasionally, until chicken is lightly browned, about 2 minutes., Add remaining ingredients except noodles; cook, stirring constantly, until carrot is tender-crisp, about 3 minutes.  Stir in noodles and cook until heated through, about 1 minute., ",
-        "ingredients": "this is just a test, anything can happend 1234 NHDUICVJHDDY 1/2 cup low-sodium chicken broth, 1 tablespoon low-sodium soy sauce, 1/2 cup mushrooms, sliced, 1/2 cup mushrooms, sliced, 2 teaspoons peanut oil, 4 scallions, juliened, 5 ounces boneless, skinless chicken breast, cut into \u00bd-inch strips,",
+        "ingredients": "TEST TES TEST\n\n\n\n\nDY 1/2 cup low-sodium chicken broth, 1 tablespoon low-sodium soy sauce, 1/2 cup mushrooms, sliced, 1/2 cup mushrooms, sliced, 2 teaspoons peanut oil, 4 scallions, juliened, 5 ounces boneless, skinless chicken breast, cut into \u00bd-inch strips,",
         "image": "https://img.spoonacular.com/recipes/638174-556x370.jpg"
     }
 }

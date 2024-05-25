@@ -154,3 +154,43 @@ body {
 .dropdown-content .home-icon:hover {
     background-color: #F2A007;
 }
+
+.remove-button {
+    position: fixed;
+    top: 20px;
+    right: 40px;
+    z-index: 9999;
+    color: #fff;
+    font-size: 24px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.3s;
+    border: none;
+    background: none;
+    padding: 10px 20px;
+    font-weight: bold; 
+    border-radius: 5px; 
+}
+
+
+.remove-button:hover {
+    color: #F7B527;
+    text-decoration: underline;
+    transform: scale(1.1);
+}
+
+.edit-ingredients-button{
+    height: 40px;
+    width: 160;
+    border: none;
+    background-color: #F2A007;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-ingredients-button:hover {
+    background: green;
+    transform: scale(1.1);
+}
