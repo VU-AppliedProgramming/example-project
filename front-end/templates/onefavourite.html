@@ -34,8 +34,8 @@
                 </div>
                 <div class="recipe-ingredients">
                     <h3>Ingredients:</h3>
-                    <p id="ingredients_{{ loop.index }}">{{ recipe_info.ingredients }}</p>
-                    <button class="edit-ingredients-button" onclick="editInstructions('{{ recipe_info.title }}', '{{ recipe_info.ingredients }}')">Edit Ingredients</button>
+                    <p id="ingredients_{{ loop.index }}" contenteditable="true">{{ recipe_info.ingredients }}</p>
+                    <button class="edit-ingredients-button" onclick="updateInstructions('{{ recipe_info.title }}', document.getElementById('ingredients_{{ loop.index }}').innerText)">Update Ingredients</button>
                 </div>
             </div>
             <div class="recipe-meal-image">
@@ -74,27 +74,19 @@
             xhr.send(JSON.stringify({ "r_title": recipeTitle }));
         }
 
-        function editInstructions(title, currentInstructions) {
-            var newInstructions = prompt("Enter new ingredients:", currentInstructions);
-            if (newInstructions !== null) {
-                updateInstructions(title, newInstructions);
-            }
-        }
-
-        function updateInstructions(title, newInstructions) {
+        function updateInstructions(title, newIngredients) {
             var xhr = new XMLHttpRequest();
             xhr.open("PUT", "http://localhost:5000/update_recipe_instructions", true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     alert("Ingredients updated successfully!");
-                    document.getElementById("instructions_" + title).textContent = newInstructions;
                     window.location.reload(true);
                 } else {
                     alert("Error: " + xhr.responseText);
                 }
             };
-            xhr.send(JSON.stringify({ "r_title": title, "r_instructions": newInstructions }));
+            xhr.send(JSON.stringify({ "r_title": title, "r_instructions": newIngredients }));
         }
 
     </script>    
