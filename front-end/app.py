@@ -150,5 +150,22 @@ def clean_html():
     response = requests.post(backend_url, data=html_string)
     return jsonify(response.json())
 
+
+###################################
+###################################
+
+
+@app.route('/api/price_breakdown/<int:meal_id>',methods=['POST', 'GET'])
+def get_price_breakdown(meal_id):
+    backend_url = f'{BACKEND_ENDPOINT}/api/price_breakdown/{meal_id}'
+    response = requests.get(backend_url)
+    
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch price breakdown data'}), 500
+    
+    data = response.json()
+    
+    return jsonify(data), 200
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

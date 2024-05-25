@@ -10,7 +10,7 @@
         "title": "Beef Carrot Stew",
         "recipe_id": "769754",
         "instructions": "",
-        "ingredients": "",
+        "ingredients": "test",
         "image": "https://img.spoonacular.com/recipes/769754-312x231.jpg"
     },
     "Beef Cottage Pie": {
@@ -66,7 +66,7 @@
         "title": "3 Cheese Ravioli",
         "recipe_id": "631863",
         "instructions": "",
-        "ingredients": "",
+        "ingredients": "idk",
         "image": "https://img.spoonacular.com/recipes/631863-312x231.jpg"
     },
     "test": {
@@ -87,14 +87,14 @@
         "title": "Beef Bourguignon",
         "recipe_id": "634593",
         "instructions": "",
-        "ingredients": "",
+        "ingredients": "more test",
         "image": "https://img.spoonacular.com/recipes/634593-312x231.jpg"
     },
     "Beef Shanks Oso Bucco": {
         "title": "Beef Shanks Oso Bucco",
         "recipe_id": "634671",
         "instructions": "Place the rosemary, thyme, bay leaf and cloves into cheesecloth and secure with twine. This will be your bouquet garni.For the veal shanks, pat dry with paper towels to remove any excess moisture. Veal shanks will brown better when they are dry. Secure the meat to the bone with the kitchen twine. Season each shank with salt and freshly ground pepper. Dredge the shanks in flour, shaking off excess.In a large Dutch oven pot, heat vegetable oil until smoking., Add tied veal shanks to the hot pan and brown all sides, about 3 minutes per side., Remove browned shanks and reserve.In the same pot, add the onion, carrot and celery. Season with salt at this point to help draw out the moisture from the vegetables., Saute until soft and translucent, about 8 minutes., Add the tomato paste and mix well. Return browned shanks to the pan and add the white wine and reduce liquid by half, about 5 minutes., Add the bouquet garni and 2 cups of the chicken stock and bring to a boil.Reduce heat to low, cover pan and simmer for about 1 1/2 hours or until the meat is falling off the bone. Check every 15 minutes, turning shanks and adding more chicken stock as necessary. The level of cooking liquid should always be about 3/4 the way up the shank.Carefully remove the cooked shanks from the pot and place in decorative serving platter., Cut off the kitchen twine and discard., Remove and discard bouquet garni from the pot., Pour all the juices and sauce from the pot over the shanks., Garnish with chopped parsley and lemon zest., ",
-        "ingredients": "All purpose flour, for dredging, 1 dry bay leaf, 3 pounds whole beef shanks (about 1 per shank), trimmed, 1 small carrot, diced into \u00bd-inch cubes, 1 inch stalk celery, diced into \u00bd cubes, 3 cups chicken stock (or veal stock, beef stock or 1/2 cup vegetable oil, 3 tablespoons fresh flat-leaf Italian parsley, chopped, 1 sprig fresh rosemary, 1 sprig fresh thyme, 1 tablespoon lemon zest, 1 cup chopped onion, Sea salt and freshly ground black pepper, 1 tablespoon tomato paste, 1 cup white wine, 2 whole garlic cloves, Kitchen twine, for bouquet garni and tying the veal shanks, Cheesecloth, Cheesecloth, ",
+        "ingredients": "test",
         "image": "https://img.spoonacular.com/recipes/634671-556x370.jpg"
     },
     "Chia Seed Pudding": {
@@ -115,7 +115,7 @@
         "title": "Beef Tataki",
         "recipe_id": "634698",
         "instructions": "",
-        "ingredients": "",
+        "ingredients": "testttt",
         "image": "https://img.spoonacular.com/recipes/634698-312x231.jpg"
     },
     "Pan Con L'uva": {
@@ -124,5 +124,12 @@
         "instructions": "",
         "ingredients": "",
         "image": "https://img.spoonacular.com/recipes/654396-312x231.jpg"
+    },
+    "Chicken Lo Mein": {
+        "title": "Chicken Lo Mein",
+        "recipe_id": "638174",
+        "instructions": "In a large nonstick skillet, heat oil; add ginger and garlic and cook over medium heat for 1 minute., Add chicken and carrot; cook over medium-high heat, stirring occasionally, until chicken is lightly browned, about 2 minutes., Add remaining ingredients except noodles; cook, stirring constantly, until carrot is tender-crisp, about 3 minutes.  Stir in noodles and cook until heated through, about 1 minute., ",
+        "ingredients": "133 cup bean sprouts, drained, 2 cup bok choy, chopped, 1/2 cup carrot, julienned, 2 cups cooked cooked spaghetti, 1 clove garlic, minced, 2 teaspoons ginger, minced, 1/2 cup low-sodium chicken broth, 1 tablespoon low-sodium soy sauce, 1/2 cup mushrooms, sliced, 1/2 cup mushrooms, sliced, 2 teaspoons peanut oil, 4 scallions, juliened, 5 ounces boneless, skinless chicken breast, cut into \u00bd-inch strips, ",
+        "image": "https://img.spoonacular.com/recipes/638174-556x370.jpg"
     }
 }

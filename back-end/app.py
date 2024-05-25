@@ -214,6 +214,13 @@ if __name__ == '__main__':
 ###################################
 ###################################
 
-
+@app.route('/api/price_breakdown/<int:meal_id>')
+def get_price_breakdown(meal_id):
+    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
+    response = requests.get(url)
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
+    
+    return response.text, 200, {'Content-Type': 'text/html'}
 
 ### https://api.spoonacular.com/recipes/1082038/priceBreakdownWidget?apiKey=25f10c03748a4a99bed2f8dfb40d284f ### to check response
