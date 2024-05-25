@@ -194,3 +194,61 @@ body {
     background: green;
     transform: scale(1.1);
 }
+
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden; 
+}
+
+.modal-content {
+    position: absolute;
+    top: 5px;
+    left: 35%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    padding: 10px;
+    animation: bounceIn 1s forwards;
+}
+
+.success-message {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+@keyframes bounceIn {
+    0% {
+        top: -100%;
+        transform: translateY(-100%); 
+    }
+    25% {
+        top: 20%; 
+        transform: translateY(0);
+    }
+    50% {
+        top: 10%; 
+        transform: translateY(-20%); 
+    }
+    75% {
+        top: 15%; 
+        transform: translateY(-10%);
+    }
+    100% {
+        top: 10%; 
+        transform: translateY(0);
+    }
+}
+
+.update-modal-content {
+    border: 2px solid greenyellow;
+}
+
+.delete-modal-content {
+    border: 2px solid red;
+}

@@ -54,27 +54,62 @@
         </div>
     </div>
 
+    <!-- Modal Structure -->
+    <div id="deleteModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <p>Recipe deleted successfully!</p>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            position: fixed;
+            left: 50%;
+            color: white;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: red;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .modal-close {
+            float: right;
+            cursor: pointer;
+        }
+    </style>
+
     <script>
-        document.querySelectorAll(".deleteForm").forEach(form => {
-            form.addEventListener("submit", function(event) {
-                event.preventDefault(); 
-                
-                var recipeTitle = this.dataset.recipe;
-                var recipeId = this.querySelector("input[name='recipe_id']").value;
-                
-                var xhr = new XMLHttpRequest();
-                xhr.open("DELETE", "http://localhost:5000/delete_recipe", true);
-                xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        alert("Recipe deleted successfully!");
-                        document.querySelector(".meal-item[data-id='" + recipeId + "']").remove();
-                    } else {
-                        alert("Error: " + xhr.responseText);
-                    }
-                };
-                xhr.send(JSON.stringify({ "r_title": recipeTitle }));
-            });
-        });
+        function confirmDelete(form) {
+            var recipeTitle = form.dataset.recipe;
+            var recipeId = form.querySelector("input[name='recipe_id']").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost:5000/delete_recipe", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    showDeleteModal();
+                    document.querySelector(".meal-item[data-id='" + recipeId + "']").remove();
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(JSON.stringify({ "r_title": recipeTitle }));
+        }
+
+        function showDeleteModal() {
+            var modal = document.getElementById("deleteModal");
+            modal.style.display = "block";
+            setTimeout(function() {
+                modal.style.display = "none";
+            }, 5000);
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("deleteModal");
+            modal.style.display = "none";
+        }
     </script>
 {% endblock %}

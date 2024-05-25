@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/onefav.css">
-</head>
-    <title>Recipe</title>
-</head>
 <body>
     <div class="dropdown">
         <button class="dropbtn">Menu <i class="fas fa-chevron-down"></i></button>
         <div class="dropdown-content">
             <a href="/" class="home-icon">Home</a>
-            <form action="{{ url_for('get_test_data')}}" method="post"> 
+            <form action="{{ url_for('get_test_data') }}" method="post"> 
                 <button type="submit" class="myrecipe-button" id="myrecipe-button">Favorites</button>
             </form>
         </div>
@@ -54,8 +51,37 @@
         {% endfor %}
     </div>
 
+    <div id="successModal" class="modal">
+        <div class="modal-content update-modal-content">
+            <p class="success-message">Ingredients updated successfully!</p>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content delete-modal-content">
+            <p class="success-message">Recipe deleted!</p>
+        </div>
+    </div>
+
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
     <script>
+        var successModal = document.getElementById("successModal");
+        var deleteModal = document.getElementById("deleteModal");
+
+        function openSuccessModal() {
+            successModal.style.display = "block";
+            setTimeout(function() {
+                successModal.style.display = "none";
+            }, 10000);
+        }
+
+        function openDeleteModal() {
+            deleteModal.style.display = "block";
+            setTimeout(function() {
+                deleteModal.style.display = "none";
+            }, 10000);
+        }
+
         function deleteRecipe(form) {
             var recipeTitle = form.dataset.recipe;
             var recipeId = form.querySelector("input[name='recipe_id']").value;
@@ -65,7 +91,7 @@
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    alert("Recipe deleted successfully!");
+                    openDeleteModal(); // Open the delete modal
                     window.location.href = "get_test_data";
                 } else {
                     alert("Error: " + xhr.responseText);
@@ -80,7 +106,7 @@
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    alert("Ingredients updated successfully!");
+                    openSuccessModal();
                     window.location.reload(true);
                 } else {
                     alert("Error: " + xhr.responseText);
@@ -88,7 +114,6 @@
             };
             xhr.send(JSON.stringify({ "r_title": title, "r_instructions": newIngredients }));
         }
-
     </script>    
 </body>
 </html>
