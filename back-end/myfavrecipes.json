@@ -6,41 +6,6 @@
         "ingredients": "vjh",
         "image": "https://cdn.britannica.com/80/150980-050-84B9202C/Giant-panda-cub-branch.jpg"
     },
-    "Smashed Fried Lemon Potatoes": {
-        "title": "Smashed Fried Lemon Potatoes",
-        "recipe_id": "660322",
-        "instructions": "In a large pot of salted water place the well-scrubbed potatoes. Bring to a boil and cook until the potatoes are tender, about 20 minutes., Drain the potatoes and rinse with cold water. Using the palm, or the back of a large spatula, press the potatoes until slightly mashed.In a large skillet, heat the olive oil over medium high heat., Add the garlic and cook until slightly brown., Remove and toss., Add the potatoes and cook without stirring for about 5 to 10 minutes, the bottoms need to be a nice golden brown color. Using a spatula or cooking thongs, turn and cook another 5 to 8 minutes., Transfer to a plate.In a bowl mix together the lemon zest, lemon juice, olive oil, rosemary, parsley, thyme, vinegar and sea salt., Add the potatoes and coat them well gently., ",
-        "ingredients": "1 \u00bd pound (24 oz. bag) fingerling potatoes, all the same size if possible, 1 tablespoon fresh chopped flat leaf Italian parsley, 1 teaspoon chopped fresh rosemary, 1 teaspoon chopped fresh thyme leaves, 2 garlic cloves peeled and end core removed, Juice of 1 large lemon, Zest of 1 large lemon, 2 tablespoon olive oil, 1 teaspoon red wine vinegar, \u00bd teaspoon sea salt, ",
-        "image": "https://img.spoonacular.com/recipes/660322-556x370.png"
-    },
-    "Chicken Lo Mein": {
-        "title": "Chicken Lo Mein",
-        "recipe_id": "638174",
-        "instructions": "In a large nonstick skillet, heat oil; add ginger and garlic and cook over medium heat for 1 minute., Add chicken and carrot; cook over medium-high heat, stirring occasionally, until chicken is lightly browned, about 2 minutes., Add remaining ingredients except noodles; cook, stirring constantly, until carrot is tender-crisp, about 3 minutes.  Stir in noodles and cook until heated through, about 1 minute., ",
-        "ingredients": "TEST TES TEST\n\n\n\n\nDY 1/2 cup low-sodium chicken broth, 1 tablespoon low-sodium soy sauce, 1/2 cup mushrooms, sliced, 1/2 cup mushrooms, sliced, 2 teaspoons peanut oil, 4 scallions, juliened, 5 ounces boneless, skinless chicken breast, cut into \u00bd-inch strips,",
-        "image": "https://img.spoonacular.com/recipes/638174-556x370.jpg"
-    },
-    "Beef Tataki": {
-        "title": "Beef Tataki",
-        "recipe_id": "634698",
-        "instructions": "For 4 people, Heat grid well., Place beef on grid and grill on all sides. When the surface turns light brown, dip in ice water for a few seconds. Dry with a cloth, wrap in Saran Wrap and place in the refrigerator.Prepare condiments., Cut lemon into 8 wedges. Pare daikon in paper thin sheets, cutting with bottom part of knife while rotating the daikon., Roll daikon sheet and slice thinly crosswise, thus making very thin and long strips. Do the same with cucumber., Cut beef into thin slices., Place daikon strip, cucumber and beef slices in a serving dish. Put other condiments on the side., Place scallions on beef., Pour soy sauce into small individual serving dishes and add condiments to taste. The beef is dipped lightly in the soy sauce., ",
-        "ingredients": "3/4 pound beef, tenderloin, 1 Japanese cucumber, 7 ounces daikon (Japanese radish), 2 teaspoons grated fresh ginger, 5 cloves garlic, minced, 1 lemon, Shiso leaves, Soy sauce, ",
-        "image": "https://img.spoonacular.com/recipes/634698-556x370.jpg"
-    },
-    "Chicken Wings": {
-        "title": "Chicken Wings",
-        "recipe_id": "638420",
-        "instructions": "Add chicken into a large glass or stainless steel bowl, toss all the seasonings and brown sugar over the chicken.Cover with plastic wrap and refrigerate for an hour or two.Preheat the oven temperature to 400 degrees F., Place all the seasoned chicken onto a parchment lined baking sheet spread out so that they don't touch.  If you are doubling the recipe use two pans., Bake for 35 minutes.In a large bowl, add about 2 tablespoons of honey (or more if you like) and a few splashes of tabasco sauce (less or more to your liking)., Add the chicken, if it feels to hot to toss, wait a few minutes or use two spoons to coat the chicken., ",
-        "ingredients": "2 tablespoons brown sugar, 2 tablespoons brown sugar, 3 1/3 pounds organic chicken drummettes, 1 teaspoon garlic powder, 2 teaspoons ground cumin, Honey, 1 tablespoon kosher salt, Tabasco Sauce, 2 tablespoons taco seasoning(Trader Joes's brand), 3 tablespoons vegan cream cheese, 2 tablespoons coconut yogurt, ",
-        "image": "https://img.spoonacular.com/recipes/638420-556x370.jpg"
-    },
-    "Chicken Suya": {
-        "title": "Chicken Suya",
-        "recipe_id": "716342",
-        "instructions": "Heat the oven to 500 F.Wash and season the chicken with the Suya spice, chilli powder, seasoning cubes, salt and drizzle the oil over it., Place the chicken in the oven and grill for 40 minutes. Check the chicken occasionally and flip on both sides so it can cook properly., Serve hot garnished with the onions and tomato and a bit of suya spice sprinkled over the chicken., ",
-        "ingredients": "1.5 Tablespoons of Suya Spice, 1 pound Chicken, 1 teaspoon of chilli powder, 1 cooking spoon groundnut oil, Seasoning cubes, Onions and Tomatoes for Garnishing, Salt to taste, ",
-        "image": "https://img.spoonacular.com/recipes/716342-556x370.jpg"
-    },
     "Beef Lo Mein Noodles": {
         "title": "Beef Lo Mein Noodles",
         "recipe_id": "634629",
@@ -48,11 +13,11 @@
         "ingredients": "8 ounces dried Chinese egg noodles or soba (buckwheat) noodles, 3/4 pound flank steak, trimmed of any fat and cut into thin strips, 1 tablespoon oyster sauce, 1/2 cup chicken stock, 2 tablespoons soy sauce, 2 teaspoons sesame oil, 3 tablespoons vegetable oil, 2 teaspoons garlic, minced, 2 teaspoon ginger, minced, 1/4 cup green onions, chopped, ",
         "image": "https://img.spoonacular.com/recipes/634629-556x370.jpg"
     },
-    "Chicken 65": {
-        "title": "Chicken 65",
-        "recipe_id": "637876",
-        "instructions": "Take a large bowl mix in the ginger and garlic paste, yogurt, red chilly powder, turmeric powder, and salt., Mix well to from smooth and thick paste, add the chicken pieces to the masala paste and  marinaded for 4 hours., Heat enough oil in a pan to deep fry the marinaded chicken pieces. Deep fry the chicken pieces in batches till crisp and golden color.Note: The taste of the Chicken 65 depends mainly on the amount of time it gets marinated in the masala, it is best to marinate the chicken pieces the day before., ",
-        "ingredients": "500 grams boneless chicken breast, 2-3 tsp chili powder, 4 tbsp Ginger and Garlic paste, \u00bd tbsp. salt, 1/4 tsp Turmeric powder, 4 tbsp yogurt, ",
-        "image": "https://img.spoonacular.com/recipes/637876-556x370.jpg"
+    "Chicken Fingers": {
+        "title": "Chicken Fingers",
+        "recipe_id": "638086",
+        "instructions": "Preheat oven to 400 degrees, Line a baking sheet with parchment paper or line the bottom with foil and place a cookie rack on top and spray with cooking spray, set aside, In a shallow bowl add egg whites and water, In another shallow bowl add cornflakes, cheese, and seasonings, stir until combined, Cut chicken breasts horizontally and then cut into strips.Dredge the chicken in egg whites, then dip into cornflake mixture., Place on baking sheet. Do the same for all the chicken., Bake for 18 minutes or until chicken is done., ",
+        "ingredients": "1 dash Cayenne Pepper, 1 pound Boneless Chicken Breasts, 1 1/2 cup Cornflakes,crushed, 1 whole Egg White, 1/4 teaspoons Italian Seasoning, 1/4 teaspoons Paprika, 2 teaspoons Parmesan Cheese, 1 Tablespoon Water, ",
+        "image": "https://img.spoonacular.com/recipes/638086-556x370.jpg"
     }
 }

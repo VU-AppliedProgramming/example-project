@@ -25,7 +25,12 @@
         {% for recipe_id, recipe in results.items() %}
             <div class="meal-item" data-id="{{ recipe_id }}">
                 <div class="meal-img">
-                    <img src="{{ recipe.image }}" alt="Meal Image">
+                    <form action="{{ url_for('show_one_fav', recipe_id=recipe_id)}}" method="post" style="display:inline;">
+                        <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+                        <button type="submit" style="border:none; background:none; padding:0;">
+                            <img src="{{ recipe.image }}" alt="Meal Image">
+                        </button>
+                    </form>
                 </div>
                 <div class="meal-name">
                     <h3>{{ recipe.title }}</h3>
@@ -48,19 +53,15 @@
             <form action="{{ url_for('create_rec')}}" method="post">
                 <button type="submit" class="favdropdown-btn">Create</button>
             </form>
-            <form action="{{ url_for('update_rec')}}" method="post">
-                <button type="submit" class="favdropdown-btn">Update</button>
-            </form>
         </div>
     </div>
 
     <div id="deleteModal" class="modal" style="display:none;">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
-            <p>Recipe deleted successfully!</p>
+            <p>Recipe removed from favorites!</p>
         </div>
     </div>
-
     <style>
         .modal {
             position: fixed;
@@ -77,8 +78,15 @@
             float: right;
             cursor: pointer;
         }
+        .meal-img button {
+            border: none;
+            background: none;
+            padding: 0;
+        }
+        .meal-img button img {
+            cursor: pointer;
+        }
     </style>
-
     <script>
         function confirmDelete(form) {
             var recipeTitle = form.dataset.recipe;

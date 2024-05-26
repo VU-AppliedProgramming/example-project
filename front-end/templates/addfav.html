@@ -14,9 +14,6 @@
         <label for="r_title">Title:</label><br>
         <input type="text" id="r_title" name="r_title"><br><br>
 
-        <label for="r_id">Id:</label><br>
-        <input type="text" id="r_id" name="r_id"><br><br>
-        
         <label for="r_instructions">Instructions:</label><br>
         <textarea id="r_instructions" name="r_instructions" rows="4" cols="50"></textarea><br><br>
         
@@ -34,6 +31,8 @@
             event.preventDefault(); 
             
             var formData = new FormData(this);
+            var randomId = 'id_' + Math.random().toString(36).substr(2, 9);
+            formData.append('r_id', randomId);
             
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:5000/create_recipe", true);
