@@ -103,6 +103,25 @@
 
             
             xhr.send();
+
+            var xhr2 = new XMLHttpRequest();
+            xhr2.open("POST", "{{ url_for('get_price_breakdown', meal_id=meal.id)}}", true);
+            xhr2.responseType = 'json';
+
+            xhr2.onload = function() {
+                if (xhr2.status === 200) {
+                    var response_json = xhr2.response;
+
+                    // Parse JSON and append necessary information to HTML
+                    var priceInfo = document.createElement('div');
+                    priceInfo.textContent = "Price Breakdown: " + JSON.stringify(response_json);
+                    document.getElementById("recipePriceInfo").appendChild(priceInfo);
+                } else {
+                    alert("Error: Failed to fetch price breakdown info");
+                }
+            };
+
+            xhr2.send();
         });
 
 
@@ -126,5 +145,24 @@
     </script>
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <style>
+        #recipePriceInfo {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #recipePriceInfo h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        #recipePriceInfo p {
+            margin: 0;
+            color: #666;
+        }
+    </style>
 </body>
 </html>
