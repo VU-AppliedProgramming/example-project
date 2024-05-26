@@ -112,10 +112,21 @@
                 if (xhr2.status === 200) {
                     var response_json = xhr2.response;
 
-                    // Parse JSON and append necessary information to HTML
-                    var priceInfo = document.createElement('div');
-                    priceInfo.textContent = "Price Breakdown: " + JSON.stringify(response_json);
-                    document.getElementById("recipePriceInfo").appendChild(priceInfo);
+                    // Parse JSON and format price information
+                    var priceInfoContainer = document.getElementById("recipePriceInfo");
+                    priceInfoContainer.innerHTML = "<h3>Price Breakdown:</h3>";
+
+                    var ingredients = response_json[0];
+                    var prices = response_json[1];
+
+                    for (var i = 0; i < ingredients.length; i++) {
+                        var ingredient = ingredients[i];
+                        var price = prices[i];
+
+                        var ingredientPrice = document.createElement('p');
+                        ingredientPrice.textContent = ingredient + ": " + price;
+                        priceInfoContainer.appendChild(ingredientPrice);
+                    }
                 } else {
                     alert("Error: Failed to fetch price breakdown info");
                 }
