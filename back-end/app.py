@@ -5,6 +5,10 @@ from flask_cors import CORS
 import re
 from favrecipes import FavRecipes, Recipe
 from typing import Union, Tuple, Optional, List
+try: 
+    from BeautifulSoup import BeautifulSoup
+except ImportError:
+    from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 CORS(app)
@@ -225,7 +229,7 @@ def get_price_breakdown_widget(meal_id: int) -> Union[Response, tuple]:
     image_data = response.content
     return Response(image_data, content_type='image/png')
 
-def clean_html_response(input_string: str) -> Tuple[Optional[List[str]], Optional[List[str]]]:
+def clean_html_response(html: str) -> Tuple[Optional[List[str]], Optional[List[str]]]:
     """
     Helper function to clean HTML response and extract ingredients and prices.
     Args:
@@ -234,21 +238,15 @@ def clean_html_response(input_string: str) -> Tuple[Optional[List[str]], Optiona
         Tuple[Optional[List[str]], Optional[List[str]]]: A tuple containing lists of ingredients and prices, or None if not found.
     """
 
-    # Extract prices
-    price_section = re.search(r'<b>Price<\/b>(.*?)<div', input_string, re.DOTALL)
-    if price_section:
-        prices_with_br = re.findall(r'\$(.*?)<br>', price_section.group(1))
-        prices = [price.replace('$', '').replace('<br>', '').strip() for price in prices_with_br]
-    else:
-        prices = None
+    parsed_html = BeautifulSoup(html, "html.parser")
 
-    # Extract ingredients
-    ingredients_section = re.search(r'<b>Ingredient<\/b>(.*?)<div', input_string, re.DOTALL)
-    if ingredients_section:
-        ingredients_with_br = re.findall(r'<br>(.*?)<br>', ingredients_section.group(1))
-        ingredients = [ingredient.strip() for ingredient in ingredients_with_br]
-    else:
-        ingredients = None
+    # Extracting ingredients
+    ingredients_container = parsed_html.find('div', attrs={'id': 'spoonacularPriceBreakdownTable'}).find('div', style=lambda value: value and 'float:left;max-width:80%' in value)
+    ingredients = [ingredient.strip() for ingredient in ingredients_container.stripped_strings]
+
+    # Extracting prices
+    prices_container = parsed_html.find('div', attrs={'id': 'spoonacularPriceBreakdownTable'}).find('div', style=lambda value: value and 'text-align:right;display:inline-block;float:left;padding-left:1em' in value)
+    prices = [price.strip() for price in prices_container.stripped_strings]
 
     return ingredients, prices
 
