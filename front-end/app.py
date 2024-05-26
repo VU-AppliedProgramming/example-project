@@ -234,7 +234,7 @@ def get_price_breakdown(meal_id: int) -> Union[str, Response]:
     Returns:
         Union[str, Response]: JSON response with price breakdown data or an error message.
     """
-    
+
     backend_url = f'{BACKEND_ENDPOINT}/api/price_breakdown/{meal_id}'
     response = requests.get(backend_url)
     
@@ -243,7 +243,7 @@ def get_price_breakdown(meal_id: int) -> Union[str, Response]:
     
     data = response.json()
     
-    return jsonify(data), 200
+    return data, 200
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

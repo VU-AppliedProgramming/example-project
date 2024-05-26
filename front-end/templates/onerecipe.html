@@ -48,6 +48,7 @@
         </form>
 
         <div id="priceBreakdownContainer"></div>
+        <div id="recipePriceInfo"></div>
     </div>
 
     <div id="favoriteModal" class="modal">
@@ -99,9 +100,11 @@
                     alert("Error: Failed to fetch price breakdown widget");
                 }
             };
+
             
             xhr.send();
         });
+
 
         function showFavoriteModal() {
             var modal = document.getElementById("favoriteModal");

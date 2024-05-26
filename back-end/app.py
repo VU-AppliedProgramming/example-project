@@ -253,6 +253,20 @@ def clean_html_response(input_string: str) -> Tuple[Optional[List[str]], Optiona
     return ingredients, prices
 
 
+@app.route('/api/price_breakdown/<int:meal_id>')
+def get_price_breakdown(meal_id):
+    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
+    response = requests.get(url)
+    if response.status_code != 200:
+        return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
+    
+    #return response.text, 200, {'Content-Type': 'text/html'}
+    #price_info = clean_html_response(response.text)
+
+    return jsonify(clean_html_response(response.text))
+    
+
+
 '''
 
 @app.route('/clean_html', methods=['POST'])
