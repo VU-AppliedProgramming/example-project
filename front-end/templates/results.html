@@ -2,20 +2,21 @@
 
 {% block content %}
 
-    </style>
     <div class="results-container">
         {% for meal in results %}
         <div class="meal-item" data-id="{{ meal.id }}">
             <div class="meal-img">
-                <img src="{{ meal.image }}" alt="{{ meal.title}}">
+                <a href="#" onclick="document.getElementById('getRecipeForm-{{ meal.id }}').submit();">
+                    <img src="{{ meal.image }}" alt="{{ meal.title }}">
+                </a>
             </div>
             <div class="meal-name">
                 <h3>{{ meal.title }}</h3>
-                <form action="{{ url_for('recipe', meal_id=meal.id)}}" method="post"> 
+                <form id="getRecipeForm-{{ meal.id }}" action="{{ url_for('recipe', meal_id=meal.id)}}" method="post"> 
                     <button type="submit" class="search-button" id="search-button">Get Recipe</button>
                 </form>
             </div>
-            <form id="addToFavoritesForm" action="{{ url_for('add_to_favorites')}}" method="post"> 
+            <form id="addToFavoritesForm-{{ meal.id }}" action="{{ url_for('add_to_favorites')}}" method="post"> 
                 <input type="hidden" name="recipe_title" value="{{ meal.title }}">
                 <input type="hidden" name="recipe_instructions" value=''>
                 <input type="hidden" name="recipe_ingredients" value="">
@@ -27,7 +28,7 @@
         {% endfor %}
     </div>
     <script>
-        document.querySelectorAll("#addToFavoritesForm").forEach(form => {
+        document.querySelectorAll("form[id^='addToFavoritesForm']").forEach(form => {
             form.addEventListener("submit", function(event) {
                 event.preventDefault();
     
@@ -50,4 +51,3 @@
     </script>
     
 {% endblock %}
-
