@@ -1,8 +1,4 @@
-html {
-    height: 100%;
-}
-
-body {
+html, body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -172,16 +168,15 @@ body {
     border-radius: 5px; 
 }
 
-
 .remove-button:hover {
     color: #F7B527;
     text-decoration: underline;
     transform: scale(1.1);
 }
 
-.edit-ingredients-button{
+.edit-ingredients-button {
     height: 40px;
-    width: 160;
+    width: 160px; 
     border: none;
     background-color: #F2A007;
     color: white;
@@ -208,8 +203,8 @@ body {
 
 .modal-content {
     position: absolute;
-    top: 5px;
-    left: 35%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
     padding: 10px;
@@ -247,8 +242,10 @@ body {
 
 .update-modal-content {
     border: 2px solid greenyellow;
+    background-color: rgba(0, 128, 0, 0.8);
 }
 
 .delete-modal-content {
     border: 2px solid red;
+    background-color: rgba(255, 0, 0, 0.8);
 }

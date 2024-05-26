@@ -51,6 +51,8 @@
         {% endfor %}
     </div>
 
+    <div class="backdrop" id="backdrop"></div>
+
     <div id="successModal" class="modal">
         <div class="modal-content update-modal-content">
             <p class="success-message">Ingredients updated successfully!</p>
@@ -59,7 +61,7 @@
 
     <div id="deleteModal" class="modal">
         <div class="modal-content delete-modal-content">
-            <p class="success-message">Recipe deleted!</p>
+            <p class="success-message">Recipe removed from favorites!</p>
         </div>
     </div>
 
@@ -67,18 +69,23 @@
     <script>
         var successModal = document.getElementById("successModal");
         var deleteModal = document.getElementById("deleteModal");
+        var backdrop = document.getElementById("backdrop");
 
         function openSuccessModal() {
             successModal.style.display = "block";
+            backdrop.style.display = "block";
             setTimeout(function() {
                 successModal.style.display = "none";
+                backdrop.style.display = "none";
             }, 10000);
         }
 
         function openDeleteModal() {
             deleteModal.style.display = "block";
+            backdrop.style.display = "block";
             setTimeout(function() {
                 deleteModal.style.display = "none";
+                backdrop.style.display = "none";
             }, 10000);
         }
 
@@ -91,7 +98,7 @@
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    openDeleteModal(); // Open the delete modal
+                    openDeleteModal();
                     window.location.href = "get_test_data";
                 } else {
                     alert("Error: " + xhr.responseText);
