@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/add_fav.css">
+    <title>Create Recipe</title>
+</head>
+<body>
+    <h1>Create Recipe</h1>
+    <form id="recipeForm">
+        <a href="/" class="home-icon">Home</a>
+        <label for="r_title">Title:</label><br>
+        <input type="text" id="r_title" name="r_title"><br><br>
+
+        <label for="r_instructions">Instructions:</label><br>
+        <textarea id="r_instructions" name="r_instructions" rows="4" cols="50"></textarea><br><br>
+        
+        <label for="r_ingredients">Ingredients:</label><br>
+        <textarea id="r_ingredients" name="r_ingredients" rows="4" cols="50"></textarea><br><br>
+        
+        <label for="r_image">Image URL:</label><br>
+        <input type="text" id="r_image" name="r_image"><br><br>
+        
+        <input type="submit" value="Create Recipe">
+    </form>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("recipeForm").addEventListener("submit", function(event) {
+            event.preventDefault(); 
+            
+            var formData = new FormData(this);
+            var randomId = 'id_' + Math.random().toString(36).substr(2, 9);
+            formData.append('r_id', randomId);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:5000/create_recipe", true);
+            xhr.onload = function() {
+                if (xhr.status === 201) {
+                    showModal("Recipe created successfully!");
+                } else if (xhr.status === 409) {
+                    showModal("Error: Recipe with this title already exists");
+                } else {
+                    showModal("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(formData);
+        });
+
+        function showModal(message) {
+            var modal = document.getElementById("myModal");
+            var modalMessage = document.getElementById("modalMessage");
+            modalMessage.innerText = message;
+            modal.style.display = "block";
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            var closeBtn = document.getElementsByClassName("close")[0];
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+            setTimeout(function() {
+                modal.style.display = "none";
+            }, 3000);
+            }
+    </script>
+</body>
+</html>

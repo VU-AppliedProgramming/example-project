@@ -3,113 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/singlerecipe.css">
     <title>Recipe</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            background-color: #F2E2C4;
-        }
-        .recipe-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            max-width: 800px;
-            margin-top: 20px;
-        }
-        .recipe-title {
-            font-size: 50px;
-            margin-bottom: 20px;
-        }
-        .recipe-details {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-        }
-        .recipe-instructions,
-        .recipe-ingredients {
-            flex: 1;
-            margin: 0 10px;
-        }
-        .recipe-meal-image {
-        max-width: 100%;
-        height: auto;
-        margin-top: 10px;
-        border-radius: 50%;
-        overflow: hidden;
-        }
-        .recipe-link {
-            margin-top: 20px;
-        }
-        .home-icon {
-            position: fixed;
-            top: 20px;
-            left: 40px;
-            z-index: 9999;
-            color: #0a0a0a;
-            font-size: 24px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: color 0.3s, transform 0.3s;
-            border: none;
-            background: none;
-            padding: 10px 20px;
-            font-weight: bold;
-            border-radius: 5px; 
-        }
-
-
-        .home-icon:hover {
-            color: #8C3E4E;
-            text-decoration: underline;
-            transform: scale(1.1);
-        }
-
-        .timer-container {
-            position: fixed;
-            bottom: 10px;
-            right: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        #timerDisplay {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-
-        .timer-controls {
-            display: flex;
-            flex-direction: row;
-            margin-bottom: 10px;
-        }
-
-        .timer-controls button {
-            margin-left: 5px;
-            padding: 10px 20px;
-            font-size: 18px;
-            border: 2px solid #735840;
-            border-radius: 5px;
-            background-color: #735840;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .timer-controls button:hover {
-            background-color: #8C3E4E;
-            transform: scale(1.1);
-        }
-    </style>
 </head>
 <body>
     <a href="/" class="home-icon">Home</a>
-    <div class="recipe-container">
+    <div id="mainContent" class="recipe-container">
         <h2 class="recipe-title">{{ meal.title }}</h2>
         <div class="recipe-details">
             <div class="recipe-instructions">
@@ -135,16 +34,194 @@
         <div class="recipe-link">
             <a href="{{ meal.sourceUrl }}" target="_blank">View Recipe</a>
         </div>
-        <div class="timer-container">
-            <div class="timer-controls">
-                <button id="startButton">Start Timer</button>
-                <button id="pauseButton" style="display: none;">Pause Timer</button>
-                <button id="resetButton" style="display: none;">Reset Timer</button>
-                <button id="closeButton" style="display: none;">Close Timer</button>
+        <form id="addToFavoritesForm" action="{{ url_for('add_to_favorites')}}" method="post"> 
+            <input type="hidden" name="recipe_title" value="{{ meal.title }}">
+            <input type="hidden" name="recipe_instructions" value="{% for step in meal.analyzedInstructions[0].steps %}{{ step.step }}, {% endfor %}">
+            <input type="hidden" name="recipe_ingredients" value="{% for ingredient in meal.extendedIngredients %}{{ ingredient.original }}, {% endfor %}">
+            <input type="hidden" name="recipe_image" value="{{ meal.image }}">
+            <input type="hidden" name="recipe_id" value="{{ meal.id }}">
+            <button type="submit" class="add-to-favorites-button">Add to Favorites</button>
+        </form>
+
+        <form action="{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}" method="post"> 
+            <button type="submit" class="breakdown-button" id="breakdown-button">Get Breakdown</button>
+        </form>
+
+        <div id="priceBreakdownContainer"></div>
+        <div id="recipePriceInfo" style="display: none;">
+            <h3>Price Breakdown:</h3>
+            <div class="priceGrid">
+                <div class="ingredientColumn">
+                </div>
+                <div class="priceColumn">
+                </div>
             </div>
-            <div id="timerDisplay"></div>
         </div>
     </div>
+
+    <div id="favoriteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>Added to Favorites!</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("addToFavoritesForm").addEventListener("submit", function(event) {
+            event.preventDefault(); 
+            
+            var formData = new FormData(this);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('add_to_favorites')}}", true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    showFavoriteModal();
+                } else if (xhr.status === 409) {
+                    alert("Error: Recipe with this title already exists");
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(formData);
+        });
+
+        document.getElementById("breakdown-button").addEventListener("click", function(event) {
+            event.preventDefault(); 
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}", true);
+            xhr.responseType = 'blob';
+            
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var blob = xhr.response;
+                    var imageUrl = URL.createObjectURL(blob);
+                    
+                    var img = document.createElement('img');
+                    img.src = imageUrl;
+                    img.alt = "Price Breakdown";
+                    img.className = "price-breakdown-image";
+                    
+                    document.getElementById("priceBreakdownContainer").appendChild(img);
+                } else {
+                    alert("Error: Failed to fetch price breakdown widget");
+                }
+            };
+
+            
+            xhr.send();
+
+            var xhr2 = new XMLHttpRequest();
+            xhr2.open("POST", "{{ url_for('get_price_breakdown', meal_id=meal.id)}}", true);
+            xhr2.responseType = 'json';
+
+            xhr2.onload = function() {
+                if (xhr2.status === 200) {
+                    var response_json = xhr2.response;
+
+                    var ingredientColumn = document.querySelector('.ingredientColumn');
+                    var priceColumn = document.querySelector('.priceColumn');
+
+                    ingredientColumn.innerHTML = "";
+                    priceColumn.innerHTML = "";
+
+                    var ingredients = response_json[0];
+                    var prices = response_json[1];
+
+                    for (var i = 0; i < ingredients.length; i++) {
+                        var ingredient = ingredients[i];
+                        var price = prices[i];
+
+                        var ingredientCell = document.createElement('div');
+                        ingredientCell.textContent = ingredient;
+                        ingredientCell.className = 'tableCell';
+                        ingredientColumn.appendChild(ingredientCell);
+
+                        var priceCell = document.createElement('div');
+                        priceCell.textContent = price;
+                        priceCell.className = 'tableCell';
+                        priceColumn.appendChild(priceCell);
+                    }
+
+                    document.getElementById("recipePriceInfo").style.display = "block";
+                } else {
+                    alert("Error: Failed to fetch price breakdown info");
+                }
+            };
+
+            xhr2.send();
+        });
+
+
+        function showFavoriteModal() {
+            var modal = document.getElementById("favoriteModal");
+            var mainContent = document.getElementById("mainContent");
+            mainContent.classList.add("blur");
+            modal.classList.add("show");
+            setTimeout(function() {
+                mainContent.classList.remove("blur");
+                modal.classList.remove("show");
+            }, 2000);
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("favoriteModal");
+            var mainContent = document.getElementById("mainContent");
+            mainContent.classList.remove("blur");
+            modal.classList.remove("show");
+        }
+    </script>
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <style>
+        #recipePriceInfo {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            backdrop-filter: blur(5px);
+            color: white; 
+        }
+
+        #recipePriceInfo h3 {
+            margin-top: 0;
+            color: white; 
+        }
+
+        .priceGrid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .ingredientColumn,
+        .priceColumn {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .ingredientColumn {
+            border-right: 1px solid #ddd;
+        }
+
+        .priceColumn {
+            border-left: 1px solid #ddd;
+        }
+
+        .priceGrid::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        #recipePriceInfo p {
+            margin: 0;
+            color: white;
+            line-height: 1.5;
+        }
+
+    </style>
 </body>
 </html>
+

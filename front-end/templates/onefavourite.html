@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/onefav.css">
+<body>
+    <div class="dropdown">
+        <button class="dropbtn">Menu <i class="fas fa-chevron-down"></i></button>
+        <div class="dropdown-content">
+            <a href="/" class="home-icon">Home</a>
+            <form action="{{ url_for('get_test_data') }}" method="post"> 
+                <button type="submit" class="myrecipe-button" id="myrecipe-button">Favorites</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        {% for recipe_name, recipe_info in recipe.items() %}
+        
+        <form class="deleteForm" data-recipe="{{ recipe_info.title }}" onsubmit="deleteRecipe(this); return false;"> 
+            <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+            <button type="submit" class="remove-button">Delete favorite</button>
+        </form>        
+        <div class="recipe-container">
+            <h2 class="recipe-title">{{ recipe_info.title }}</h2>
+            <div class="recipe-details">
+                <div class="recipe-instructions">
+                    <h3>Instructions:</h3>
+                    <p>{{ recipe_info.instructions }}</p>
+                </div>
+                <div class="recipe-ingredients">
+                    <h3>Ingredients:</h3>
+                    <p id="ingredients_{{ loop.index }}" contenteditable="true">{{ recipe_info.ingredients }}</p>
+                    <button class="edit-ingredients-button" onclick="updateInstructions('{{ recipe_info.title }}', document.getElementById('ingredients_{{ loop.index }}').innerText)">Update Ingredients</button>
+                </div>
+            </div>
+            <div class="recipe-meal-image">
+                <img src="{{ recipe_info.image }}" alt="{{ recipe_name }}">
+            </div>
+            <div class="timer-container">
+                <div class="timer-controls">
+                    <button id="startButton">Start Timer</button>
+                    <button id="pauseButton" style="display: none;">Pause Timer</button>
+                    <button id="resetButton" style="display: none;">Reset Timer</button>
+                    <button id="closeButton" style="display: none;">Close Timer</button>
+                </div>
+                <div id="timerDisplay"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="backdrop" id="backdrop"></div>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content update-modal-content">
+            <p class="success-message">Ingredients updated successfully!</p>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content delete-modal-content">
+            <p class="success-message">Recipe removed from favorites!</p>
+        </div>
+    </div>
+
+    <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
+    <script>
+        var successModal = document.getElementById("successModal");
+        var deleteModal = document.getElementById("deleteModal");
+        var backdrop = document.getElementById("backdrop");
+
+        function openSuccessModal() {
+            successModal.style.display = "block";
+            backdrop.style.display = "block";
+            setTimeout(function() {
+                successModal.style.display = "none";
+                backdrop.style.display = "none";
+            }, 10000);
+        }
+
+        function openDeleteModal() {
+            deleteModal.style.display = "block";
+            backdrop.style.display = "block";
+            setTimeout(function() {
+                deleteModal.style.display = "none";
+                backdrop.style.display = "none";
+            }, 10000);
+        }
+
+        function deleteRecipe(form) {
+            var recipeTitle = form.dataset.recipe;
+            var recipeId = form.querySelector("input[name='recipe_id']").value;
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost:5000/delete_recipe", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    openDeleteModal();
+                    window.location.href = "get_test_data";
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(JSON.stringify({ "r_title": recipeTitle }));
+        }
+
+        function updateInstructions(title, newIngredients) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", "http://localhost:5000/update_recipe_instructions", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    openSuccessModal();
+                    window.location.reload(true);
+                } else {
+                    alert("Error: " + xhr.responseText);
+                }
+            };
+            xhr.send(JSON.stringify({ "r_title": title, "r_instructions": newIngredients }));
+        }
+    </script>    
+</body>
+</html>

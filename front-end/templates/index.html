@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Recipe Hub{% endblock %}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/styles.css">
 </head>
 <body>
-    <a href="/" class="home-icon">Home</a>
+
+    <div class="dropdown">
+        <button class="dropbtn">Menu <i class="fas fa-chevron-down"></i></button>
+        <div class="dropdown-content">
+            <a href="/" class="home-icon">Home</a>
+            <form action="{{ url_for('get_test_data')}}" method="post"> 
+                <button type="submit" class="myrecipe-button" id="myrecipe-button">Favorites</button>
+            </form>
+        </div>
+    </div>
+    
+    {% block random %}
     <a id="random-button" class="random-button"></a>
     <form action="{{ url_for('get_random_recipe')}}" method="post"> 
         <button type="submit" class="random-button" id="random-button">Random</button>
     </form>
+    {% endblock %}
+    {% block timer %}
     <div class="timer-container">
         <div class="timer-controls">
             <button id="startButton">Start Timer</button>
@@ -23,9 +35,13 @@
         </div>
         <div id="timerDisplay"></div>
     </div>
+    {% endblock %}
     <div class="meal-wrapper">
         <div class="meal-search">
-            <h2 class="title"> Find meals for your ingredients</h2>
+            {% block title %}
+            <h2 class="title">Find meals for your ingredients</h2>
+            {% endblock %}
+            {% block search %}
             <div class="meal-search-box">
                 <form action="{{ url_for('search')}}" method="post"> 
                     <div class="search-container">
@@ -41,6 +57,7 @@
                 <input type="number" id="max-calories" placeholder="Max Calories">
             </div>
         </div>
+        {% endblock %}
         <div class="meal-result" id="meal">
             {% block content %}{% endblock %}
         </div>
