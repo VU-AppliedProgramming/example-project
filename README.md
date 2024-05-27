@@ -20,5 +20,6 @@ Márton Bodó
 The repository for this project consists of 2 folders (back end, front end) and this README file.
 The folder architecture can find bellow:
 
-![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/d2e475d2-7ace-42fb-9889-38616f4d6822)
+![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/35cda78c-e6d9-4fbb-bc97-833872cb6e34)
+
 
