@@ -27,6 +27,12 @@
         </div>
         {% endfor %}
     </div>
+    <div id="favoriteModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <p id="favoriteModalMessage">Recipe added to favorites successfully!</p>
+        </div>
+    </div>
     <script>
         document.querySelectorAll("form[id^='addToFavoritesForm']").forEach(form => {
             form.addEventListener("submit", function(event) {
@@ -54,7 +60,7 @@
                         xhr.open("POST", "{{ url_for('add_to_favorites')}}", true);
                         xhr.onload = function() {
                             if (xhr.status === 200) {
-                                alert("Recipe added to favorites successfully!");
+                                showFavoriteModal();
                             } else if (xhr.status === 409) {
                                 alert("Error: Recipe with this title already exists");
                             } else {
@@ -67,8 +73,62 @@
                         console.error('Error fetching recipe info:', error);
                         alert('Failed to get recipe info. Please try again later.');
                     });
-                            });
+            });
         });
+
+        function showFavoriteModal() {
+            var modal = document.getElementById("favoriteModal");
+            modal.classList.add("show");
+            setTimeout(function() {
+                modal.classList.remove("show");
+            }, 2000);
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("favoriteModal");
+            modal.classList.remove("show");
+        }
     </script>
-    
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4); 
+        }
+
+        .modal-content {
+            background-color: green;
+            margin: 15% auto;
+            color: white;
+            padding: 20px;
+            border: 1px solid green;
+            width: 80%;
+        }
+
+        .modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .show {
+            display: block;
+        }
+
+    </style>
 {% endblock %}

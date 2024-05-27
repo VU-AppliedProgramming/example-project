@@ -13,13 +13,6 @@
         "ingredients": "3 dash Cayenne Pepper, 1 pound Boneless Chicken Breasts, 1 1/2 cup Cornflakes,crushed, 1 whole Egg White, 1/4 teaspoons Italian Seasoning, 1/4 teaspoons Paprika, 2 teaspoons Parmesan Cheese, 1 Tablespoon Water, and some LOVE",
         "image": "https://img.spoonacular.com/recipes/638086-556x370.jpg"
     },
-    "Autumn Salad": {
-        "title": "Autumn Salad",
-        "recipe_id": "633105",
-        "instructions": "Melt butter in small saucepan., Add almonds and sesame seeds and saute until golden brown. Cool.In a large glass salad bowl, combine greens and scallions., Layer in order listed: chicken, cheese, apples, and raisins., Add cooled almonds, sesame seeds and bacon., Whisk together all ingredients., Drizzle dressing to taste over top., ",
-        "ingredients": "54 cup blanched almonds, 2 tablespoons butter, 1/2 cup orange cheddar cheese, 4 broiler-fryer breast halves, cooked, 5 strips bacon, cooked crisp, 1/4 teaspoon dry mustard, 1 clove garlic, pressed, cup golden raisins, 2 cups each kale, escarole, 1/4 teaspoon lemon pepper, 2 large McIntosh or other crisp red apples, chopped, 1/2 cup Muenster cheese, 1/2 cup olive oil, cup Monuka raisin, red leaf lettuce, torn into bite-size pieces, 1/2 teaspoon salt or to taste, 4 scallions, chopped, including green tops, 1/4 cup sesame seeds, 1 teaspoon sugar, 1 teaspoon tarragon, 1/2 cup white vinegar,",
-        "image": "https://img.spoonacular.com/recipes/633105-556x370.jpg"
-    },
     "Fig, Goat Cheese and Walnut Salad": {
         "title": "Fig, Goat Cheese and Walnut Salad",
         "recipe_id": "642809",
@@ -27,26 +20,12 @@
         "ingredients": "5 fresh figs, sliced, 10 teaspoons soft goat cheese, 2 tablespoons lemon juice, 3 cups torn lettuce or mixed greens, one small head of lettuce, 2 tablespoons olive oil, salt and pepper to taste, 1 handful (1/2 cup/125 ml) walnuts, roughly chopped into halves or quarters,",
         "image": "https://img.spoonacular.com/recipes/642809-556x370.jpg"
     },
-    "Goat Cheese and Fig Crostini": {
-        "title": "Goat Cheese and Fig Crostini",
-        "recipe_id": "646660",
-        "instructions": "",
-        "ingredients": "",
-        "image": "https://img.spoonacular.com/recipes/646660-312x231.jpg"
-    },
     "Goat Cheese, Fig And Proscuitto Crostini": {
         "title": "Goat Cheese, Fig And Proscuitto Crostini",
         "recipe_id": "644965",
         "instructions": "",
         "ingredients": "",
         "image": "https://img.spoonacular.com/recipes/644965-312x231.jpg"
-    },
-    "Warm Goat Cheese Salad": {
-        "title": "Warm Goat Cheese Salad",
-        "recipe_id": "664961",
-        "instructions": "Whisk together 3 tablespoons of walnut oil with lemon juice, minced shallot, salt and pepper to make a vinaigrette. Coat each goat cheese round with walnut oil and then the bread crumbs, patting the crumbs to adhere., Combine the greens and the walnuts in a large bowl., Add in enough of the vinaigrette and toss well. Adjust the seasoning and divide among two serving plates., Heat a nonstick skillet over medium heat., Add in olive oil. When the oil is hot, add the goat cheese rounds. Cook until nicely browned, about 30 seconds. Turn and cook the other side. Do not allow it to burn or melt., Transfer the goat cheese to the plates, placing 2 or 3 atop each salad., Sprinkle the cheese with freshly ground pepper and garnish with grape wedges., ",
-        "ingredients": "Some bread crumbs, 100 grams / 5 rounds Fresh goat cheese, 5 Grapes, cut into wedges, 2 tablespoons freshly squeezed lemon juice, 2 tablespoons olive oil, Freshly ground pepper to taste, 60 grams Salad greens, Salt and pepper, 1 Shallot, finely minced, 1 tablespoon Walnut oil, 30 grams Walnuts, toasted and coarsely chopped, ",
-        "image": "https://img.spoonacular.com/recipes/664961-556x370.jpg"
     },
     "Chicken Lo Mein": {
         "title": "Chicken Lo Mein",
@@ -69,11 +48,32 @@
         "ingredients": "1.5 Tablespoons suya spice, 1 pound chicken, 1 teaspoon chilli powder, 1  cooking spoon groundnut oil, 1 serving seasoning cubes, 1 serving onions and tomatoes, 1 serving salt",
         "image": "https://img.spoonacular.com/recipes/716342-312x231.jpg"
     },
-    "Corn Bread": {
-        "title": "Corn Bread",
-        "recipe_id": "640067",
-        "instructions": "Preheat oven to 350 degrees. Generously grease a 9 x 13 inch baking pan or a 12 inch cast iron skillet. Sift the dry ingredients into a large bowl. In another bowl, combine the wet ingredients and stir until mixed. Fold the wet ingredients into the dry ingredients. Smooth the batter into the baking pan or skillet and bake for 25 to 30 minutes, or until a knife inserted into the center comes out clean. Allow the corn bread to cool for at least 10 minutes before serving.",
-        "ingredients": "1.5 cups cornmeal, 2  eggs, 0.25 cup butter, 1 cup flour, 1 cup unbleached flour, 1 tablespoon baking powder, 1 teaspoon baking soda, 1 teaspoon salt, 2 cups buttermilk, 0.5 cup milk, 0.25 cup maple syrup",
-        "image": "https://img.spoonacular.com/recipes/640067-312x231.jpg"
+    "Chicken In A Pot": {
+        "title": "Chicken In A Pot",
+        "recipe_id": "638125",
+        "instructions": "Adjust oven rack to lowest position and pre- heat oven to 250 degrees Rinse chicken under cold water and pat dry. Season well with salt and pepper on each side Heat olive oil in large Dutch Oven (9 quarts), over medium heat. Do not allow oil to smoke Place chicken breast side down. Cook until breast is lightly browned, about 5 minutes Using a wooden spoon inserted into cavity of the bird and flip chicken breast side up, add remaining ingredients except lemon juice, and cook about 6 to 8 minutes Remove from heat. Place a large aluminum sheet over the pot, place the lid on top. This is to ensure a tight seal, so that no vapors escape during the cooking process Transfer the Dutch Oven in your pre heated oven. Cook approximately 1:30 minutes Removed pot from the oven and check the chicken internal temperature (must be at least 160 degrees) Remove chicken and place onto a carving board, tent with foil and allow to rest about 20 minutes Strain chicken juices from the pot through a fine mesh. Place the juices into a fat separator Pour the juices into a saucepan (discard any of the fat left in the separator), add lemon juice and any juices from the carving board.  Cook approximately 5 minutes and serve!",
+        "ingredients": "4.5 pounds chicken, 2 teaspoons kosher salt, 0.25 teaspoon ground pepper, 1 tablespoon olive oil, 1.5 cup onion, 1.25 cup celery, 6 medium garlic cloves, 5 small bay leaves, 4 sprigs thyme, 0.5  lemon juice",
+        "image": "https://img.spoonacular.com/recipes/638125-312x231.jpg"
+    },
+    "Herbed Goat Cheese Yogurt Dip w. Caramelized Onions": {
+        "title": "Herbed Goat Cheese Yogurt Dip w. Caramelized Onions",
+        "recipe_id": "716435",
+        "instructions": "",
+        "ingredients": "1 cup caramelized onions, 2 T dill, 1 T parsley, 0.25 cup chives, 4 ounce goat cheese, 1 cup greek yogurt, 1 serving steak seasoning",
+        "image": "https://img.spoonacular.com/recipes/716435-312x231.jpg"
+    },
+    "Coastal Avocado Salad with Grapes and Shrimp": {
+        "title": "Coastal Avocado Salad with Grapes and Shrimp",
+        "recipe_id": "639672",
+        "instructions": "In a medium bowl, combine the shrimp, grapes, celery, water chestnuts and the sliced whites of the green onion. In a small bowl, combine the mayonnaise, sherry, salt, pepper, sesame oil and dry mustard. Gently mix with shrimp and grape mixture. Sprinkle with the sliced green part of the onion and the sesame seeds. Refrigerate until ready to serve. Serves",
+        "ingredients": "1 pound pink bay shrimp, 1 cup california grapes, 0.5 cup celery, 0.5 cup water chestnuts, 2  green onions, 2 tablespoons mayonnaise, 2 tablespoons sherry, 0.25 teaspoon salt, 0.25 teaspoon pepper, 3 drops sesame oil, 1 pinch mustard, 1 tablespoon sesame seeds",
+        "image": "https://img.spoonacular.com/recipes/639672-312x231.jpg"
+    },
+    "Test meal": {
+        "title": "Test meal",
+        "recipe_id": "id_ga2jojunz",
+        "instructions": "A rakott krumpli elk\u00e9sz\u00edt\u00e9s\u00e9hez a krumplikat 10-15 percre be\u00e1ztatjuk hideg v\u00edzbe, majd alaposan megsik\u00e1ljuk \u00e9s le\u00f6bl\u00edtj\u00fck. A toj\u00e1sokat megmossuk. A krumplit annyi hideg v\u00edzzel \u00f6ntj\u00fck fel, hogy b\u0151ven ellepje. Hozz\u00e1adjuk a s\u00f3t, \u00e9s a forr\u00e1st\u00f3l sz\u00e1m\u00edtott 20 percig, fed\u0151 alatt puh\u00e1ra f\u0151zz\u00fck. A toj\u00e1sokat s\u00f3s, hideg v\u00edzben feltessz\u00fck f\u0151ni, \u00e9s a forr\u00e1st\u00f3l sz\u00e1m\u00edtott 8 percig f\u0151zz\u00fck, majd hideg v\u00edzbe mer\u00edtve azonnal leh\u0171tj\u00fck. A krumplir\u00f3l le\u00f6ntj\u00fck a vizet, m\u00e9g melegen megh\u00e1mozzuk, \u00e9s h\u0171lni hagyjuk.",
+        "ingredients": "krumpli,toj\u00e1s, s\u00f3, kolb\u00e1sz, tejf\u00f6l, toj\u00e1ss\u00e1rg\u00e1ja, vaj, bacon",
+        "image": "https://www.mindmegette.hu/images/359/XL/lead_XL_rakott-krumpli-recept.jpg"
     }
 }

@@ -48,13 +48,21 @@
         </form>
 
         <div id="priceBreakdownContainer"></div>
-        <div id="recipePriceInfo"></div>
+        <div id="recipePriceInfo" style="display: none;">
+            <h3>Price Breakdown:</h3>
+            <div class="priceGrid">
+                <div class="ingredientColumn">
+                </div>
+                <div class="priceColumn">
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="favoriteModal" class="modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
-            <p>Recipe added to favorites successfully!</p>
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>Added to Favorites!</p>
         </div>
     </div>
 
@@ -113,8 +121,12 @@
                     var response_json = xhr2.response;
 
                     // Parse JSON and format price information
-                    var priceInfoContainer = document.getElementById("recipePriceInfo");
-                    priceInfoContainer.innerHTML = "<h3>Price Breakdown:</h3>";
+                    var ingredientColumn = document.querySelector('.ingredientColumn');
+                    var priceColumn = document.querySelector('.priceColumn');
+
+                    // Clear previous content
+                    ingredientColumn.innerHTML = "";
+                    priceColumn.innerHTML = "";
 
                     var ingredients = response_json[0];
                     var prices = response_json[1];
@@ -123,10 +135,19 @@
                         var ingredient = ingredients[i];
                         var price = prices[i];
 
-                        var ingredientPrice = document.createElement('p');
-                        ingredientPrice.textContent = ingredient + ": " + price;
-                        priceInfoContainer.appendChild(ingredientPrice);
+                        var ingredientCell = document.createElement('div');
+                        ingredientCell.textContent = ingredient;
+                        ingredientCell.className = 'tableCell';
+                        ingredientColumn.appendChild(ingredientCell);
+
+                        var priceCell = document.createElement('div');
+                        priceCell.textContent = price;
+                        priceCell.className = 'tableCell';
+                        priceColumn.appendChild(priceCell);
                     }
+
+                    // Display the price info container
+                    document.getElementById("recipePriceInfo").style.display = "block";
                 } else {
                     alert("Error: Failed to fetch price breakdown info");
                 }
@@ -159,21 +180,51 @@
     <style>
         #recipePriceInfo {
             margin-top: 20px;
-            padding: 10px;
-            background-color: #f8f8f8;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
             border: 1px solid #ddd;
             border-radius: 5px;
+            backdrop-filter: blur(5px);
+            color: white; 
         }
 
         #recipePriceInfo h3 {
             margin-top: 0;
-            color: #333;
+            color: white; 
+        }
+
+        .priceGrid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .ingredientColumn,
+        .priceColumn {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .ingredientColumn {
+            border-right: 1px solid #ddd;
+        }
+
+        .priceColumn {
+            border-left: 1px solid #ddd;
+        }
+
+        .priceGrid::after {
+            content: "";
+            display: table;
+            clear: both;
         }
 
         #recipePriceInfo p {
             margin: 0;
-            color: #666;
+            color: white;
+            line-height: 1.5;
         }
+
     </style>
 </body>
 </html>
+
