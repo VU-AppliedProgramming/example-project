@@ -35,7 +35,7 @@ Once the servers are running, you should be able to access them using the provid
 ## Architecture
 
 The repository for this project consists of 2 folders (back end, front end) and this README file.
-The folder architecture can find bellow:
+The folder architecture can be found bellow:
 
 ![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/550ef9bc-672e-4fc2-9b4f-718b75568a9c)
 
