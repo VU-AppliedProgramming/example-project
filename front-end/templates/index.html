@@ -41,6 +41,7 @@
             {% block title %}
             <h2 class="title">Find meals for your ingredients</h2>
             {% endblock %}
+            {% block search %}
             <div class="meal-search-box">
                 <form action="{{ url_for('search')}}" method="post"> 
                     <div class="search-container">
@@ -56,6 +57,7 @@
                 <input type="number" id="max-calories" placeholder="Max Calories">
             </div>
         </div>
+        {% endblock %}
         <div class="meal-result" id="meal">
             {% block content %}{% endblock %}
         </div>

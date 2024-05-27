@@ -245,5 +245,22 @@ def get_price_breakdown(meal_id: int) -> Union[str, Response]:
     
     return data, 200
 
+
+@app.route('/api/recipe/info/<meal_id>', methods=['POST', 'GET'])
+def recipe_info(meal_id: str) -> str:
+    """
+    Endpoint to retrieve information about a specific recipe.
+    Args:
+        meal_id (str): The ID of the recipe.
+    Returns:
+        str: Rendered HTML template with recipe information.
+    """
+
+    backend_url = f'{BACKEND_ENDPOINT}/api/recipe/info/{meal_id}'
+    response = requests.get(backend_url)
+    meal = response.json()
+    print(meal)
+    return meal
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

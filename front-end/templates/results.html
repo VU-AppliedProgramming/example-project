@@ -13,12 +13,12 @@
             <div class="meal-name">
                 <h3>{{ meal.title }}</h3>
                 <form id="getRecipeForm-{{ meal.id }}" action="{{ url_for('recipe', meal_id=meal.id)}}" method="post"> 
-                    <button type="submit" class="search-button" id="search-button">Get Recipe</button>
+                    <button type="submit" class="get-button" id="get-button">Get Recipe</button>
                 </form>
             </div>
             <form id="addToFavoritesForm-{{ meal.id }}" action="{{ url_for('add_to_favorites')}}" method="post"> 
                 <input type="hidden" name="recipe_title" value="{{ meal.title }}">
-                <input type="hidden" name="recipe_instructions" value=''>
+                <input type="hidden" name="recipe_instructions" value="">
                 <input type="hidden" name="recipe_ingredients" value="">
                 <input type="hidden" name="recipe_image" value="{{ meal.image }}">
                 <input type="hidden" name="recipe_id" value="{{ meal.id }}">
@@ -31,22 +31,43 @@
         document.querySelectorAll("form[id^='addToFavoritesForm']").forEach(form => {
             form.addEventListener("submit", function(event) {
                 event.preventDefault();
-    
-                var formData = new FormData(this);
-                
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{{ url_for('add_to_favorites')}}", true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        alert("Recipe added to favorites successfully!");
-                    } else if (xhr.status === 409) {
-                        alert("Error: Recipe with this title already exists");
-                    } else {
-                        alert("Error: " + xhr.responseText);
-                    }
-                };
-                xhr.send(formData);
-            });
+
+                var mealId = this.querySelector("input[name='recipe_id']").value;
+
+                fetch(`/api/recipe/info/${mealId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var instructions = data.analyzedInstructions.map(instruction => 
+                            instruction.steps.map(step => step.step).join(' ')
+                        ).join(' ');
+                        
+                        var ingredients = data.extendedIngredients.map(ingredient => 
+                            `${ingredient.amount} ${ingredient.unit} ${ingredient.name}`
+                        ).join(', ');
+
+                        this.querySelector("input[name='recipe_instructions']").value = instructions;
+                        this.querySelector("input[name='recipe_ingredients']").value = ingredients;
+
+                        var formData = new FormData(this);
+
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "{{ url_for('add_to_favorites')}}", true);
+                        xhr.onload = function() {
+                            if (xhr.status === 200) {
+                                alert("Recipe added to favorites successfully!");
+                            } else if (xhr.status === 409) {
+                                alert("Error: Recipe with this title already exists");
+                            } else {
+                                alert("Error: " + xhr.responseText);
+                            }
+                        };
+                        xhr.send(formData);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching recipe info:', error);
+                        alert('Failed to get recipe info. Please try again later.');
+                    });
+                            });
         });
     </script>
     
