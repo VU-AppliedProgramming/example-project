@@ -1,25 +1,27 @@
-                                                        # FeastFinder - Your Guide to Gastronomic Greatness
+# FeastFinder - Your Guide to Gastronomic Greatness
+
 ![alt text](image.png)
 
-**Brief description of the project**
+### Brief description of the project
 
 We are group 101 and our project is called FeastFinder. It is a dynamic recipe management system which combines cooking and web development. The project is driven by a two Flask servers (back end and front end) and uses the Spoonacular API for fetching recipes. Additionally, it leverages multiple custom made classes and functions to ensure persistance and enable CRUD operations. Using CSS, HTML, JavaScript and Bootstrap, our frontend provides a responsive and visually appealing UI, featuring interactive elements like cooking timers, brice breakdown plots, calorie filters and more. Through this project, we aimed to create a user-friendly and distinctive recipe application that elevates the cooking experience and reflects our passion towards both technology and culinary delights.
 
-**Frontend mockup**
+### Frontend mockup
 ![alt text](image-1.png)
 
-**Team members**
+### Team members
 
-Márton Bodó
+**Márton Bodó**
 
-**Installation details**
+### Installation details
 
 
-**Architecture**
+### Architecture
 
 The repository for this project consists of 2 folders (back end, front end) and this README file.
 The folder architecture can find bellow:
 
-![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/35cda78c-e6d9-4fbb-bc97-833872cb6e34)
+![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/550ef9bc-672e-4fc2-9b4f-718b75568a9c)
+
 
 
