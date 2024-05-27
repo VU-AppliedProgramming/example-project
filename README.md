@@ -19,6 +19,7 @@ Márton Bodó
 
 The repository for this project consists of 2 folders (back end, front end) and this README file.
 The folder architecture can find bellow:
+
 FeastFinder/
 │
 ├── back-end/
@@ -29,10 +30,29 @@ FeastFinder/
 │   ├── requirements.txt (necessary dependencies)
 │      
 │
-└── front-end/
-    ├── static/
-    |   ├── css
-            ├──
-        ├──
-
-    └── file4.txt
+│── front-end/
+│    ├── static/
+│    |   ├── css/
+│    |   |    ├── add_fav.css (styles for the page where users can add their own favorite recipes)
+│    |   |    ├── b3.jpg (background of the webapp)
+│    |   |    ├── onefav.css (styles for the page where users can see a selected favorite recipes)
+│    |   |    ├── recipe.css (styles for the page where users can see many recipes)
+│    |   |    ├── singlerecipe.css (styles for the page where users can see a selected non favorite recipes)
+│    |   |    ├── styles.css (general styles for the whole webapp)
+│    |   |
+│    |   |── js
+│    |        ├── scripts.js (main js functions)
+│    |
+│    |
+│    |── templates/
+│    |        ├── addfav.html (html for the page where users can add their own favorite recipes)
+│    |        ├── onefavourite.html (html for the page where users can see a selected favorite recipes)
+│    |        ├── results.html (html for the page where users can see many non favorite recipes)
+│    |        ├── onerecipe.html (html for the page where users can see a selected non favorite recipes)
+│    |        ├── index.html (general html for the whole webapp - used for inheritance)
+│    |        ├── test.html (html for the page where users can see many favorite recipes)
+│    |        
+│    ├── app.py (front end flask server)
+│    ├── requirements.txt (necessary dependencies)
+│
+├── README
