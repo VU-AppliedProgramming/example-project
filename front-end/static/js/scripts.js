@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let elapsedTime = 0;
     let isRunning = false;
 
-    // Initially hide the pause, reset, and close buttons
     pauseButton.style.display = 'none';
     resetButton.style.display = 'none';
     closeButton.style.display = 'none';
@@ -35,9 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
             timer = setInterval(function() {
                 elapsedTime = Date.now() - startTime;
                 displayTime(elapsedTime);
-            }, 1000); // Change interval to 1000ms (1 second)
+            }, 1000);
 
-            // Show the pause, reset, and close buttons
             pauseButton.style.display = 'inline-block';
             resetButton.style.display = 'inline-block';
             closeButton.style.display = 'inline-block';
@@ -58,12 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function closeTimer() {
-        // Hide the pause, reset, and close buttons
         pauseButton.style.display = 'none';
         resetButton.style.display = 'none';
         closeButton.style.display = 'none';
 
-        // Clear the timer display
         timerDisplay.textContent = '';
     }
 
@@ -74,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
         timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
-    // Event listeners
     searchButton.addEventListener('click', getMealList);
     mealList.addEventListener('click', handleMealListClick);
     randomButton.addEventListener('click', getRandomRecipe);
@@ -82,26 +77,21 @@ document.addEventListener('DOMContentLoaded', function() {
         mealDetailsContent.parentElement.classList.remove('showRecipe');
     });
 
-    // Initially hide the calorie input fields
     if (!calorieFilterCheckbox.checked) {
         minCaloriesInput.style.display = 'none';
         maxCaloriesInput.style.display = 'none';
     }
 
     calorieFilterCheckbox.addEventListener('change', () => {
-        // Toggle visibility of calorie input fields based on checkbox state
         if (calorieFilterCheckbox.checked) {
-            // Show the calorie input fields if the checkbox is checked
             minCaloriesInput.style.display = 'inline-block';
             maxCaloriesInput.style.display = 'inline-block';
         } else {
-            // Hide the calorie input fields if the checkbox is unchecked
             minCaloriesInput.style.display = 'none';
             maxCaloriesInput.style.display = 'none';
         }
     });
 
-    // Function to handle clicks on the meal list
     function handleMealListClick(event) {
         const target = event.target;
         if (target.classList.contains('recipe-button')) {
@@ -155,12 +145,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     setInterval(checkBackendStatus, 5000);
 
-    // Function to fetch meal list based on ingredients
     function getMealList() {
         let searchInputTxt = document.getElementById('search-input').value.trim();
         let url = `/api/meals?query=${searchInputTxt}`;
 
-        // Add calorie filter parameters if checkbox is checked and inputs have values
         if (calorieFilterCheckbox.checked && minCaloriesInput.value && maxCaloriesInput.value) {
             let minCalories = minCaloriesInput.value.trim();
             let maxCalories = maxCaloriesInput.value.trim();
@@ -178,57 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching meals:', error);
             });
     }
-
-    // Function to get price breakdown and display
-    function getPriceBreakdownAndDisplay(mealId, window) {
-        fetch(`/api/price_breakdown_widget/${mealId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch meal HTML');
-                }
-                return response.text();
-            })
-            .then(html => {
-                // Send the HTML content to the backend for cleaning
-                fetch('/clean_html', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ html_string: html })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to clean HTML');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Extract cleaned data from the response
-                    console.log('Received base64-encoded image data:', data);
-                    const pieChartImageBase64 = data.pie_chart_image_base64;
-
-                    // Display the pie chart
-                    displayPriceBreakdown(pieChartImageBase64, window);
-                })
-                .catch(error => {
-                    console.error('Error processing meal HTML:', error);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching meal HTML:', error);
-            });
-    }
-
-    // Function to display price breakdown
-    function displayPriceBreakdown(pieChartImage, window) {
-        const chartContainer = window.document.getElementById('chart-container');
-        chartContainer.innerHTML = `<img src="data:image/png;base64,${pieChartImage}" alt="Pie Chart">`;
-    }
-
-
-
-    // Function to fetch and display a random recipe
     function getRandomRecipe(event) {
         event.preventDefault();
         fetch('/api/random')

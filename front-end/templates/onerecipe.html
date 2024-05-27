@@ -120,11 +120,9 @@
                 if (xhr2.status === 200) {
                     var response_json = xhr2.response;
 
-                    // Parse JSON and format price information
                     var ingredientColumn = document.querySelector('.ingredientColumn');
                     var priceColumn = document.querySelector('.priceColumn');
 
-                    // Clear previous content
                     ingredientColumn.innerHTML = "";
                     priceColumn.innerHTML = "";
 
@@ -146,7 +144,6 @@
                         priceColumn.appendChild(priceCell);
                     }
 
-                    // Display the price info container
                     document.getElementById("recipePriceInfo").style.display = "block";
                 } else {
                     alert("Error: Failed to fetch price breakdown info");

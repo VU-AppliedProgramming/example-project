@@ -252,7 +252,16 @@ def clean_html_response(html: str) -> Tuple[Optional[List[str]], Optional[List[s
 
 
 @app.route('/api/price_breakdown/<int:meal_id>')
-def get_price_breakdown(meal_id):
+def get_price_breakdown(meal_id: int) -> jsonify:
+    """
+    Fetches the price breakdown widget for a meal from Spoonacular API.
+
+    Parameters:
+        meal_id (int): The ID of the meal for which the price breakdown widget is requested.
+
+    Returns:
+        jsonify: JSON response containing the price breakdown widget information.
+    """
     url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
     response = requests.get(url)
     if response.status_code != 200:
@@ -262,40 +271,6 @@ def get_price_breakdown(meal_id):
     #price_info = clean_html_response(response.text)
 
     return jsonify(clean_html_response(response.text))
-    
-
-
-'''
-
-@app.route('/clean_html', methods=['POST'])
-def clean_html():
-    html_string = request.data.decode("utf-8")
-    ingredient_names, prices = clean_html_response(html_string)
-    
-    pie_chart_image_base64 = create_pie_chart(ingredient_names, prices) 
-
-    return jsonify({'pie_chart_image_base64': pie_chart_image_base64})
-
-
-def create_pie_chart(labels, values):
-    values = [float(v) for v in values]
-
-    plt.figure(figsize=(15, 8))
-    patches, _, _ = plt.pie(values, labels=None, startangle=140, autopct=lambda p: '${:.2f}'.format(p * sum(values) / 100), pctdistance=0.85)
-
-    plt.legend(patches, labels, loc="best")
-    plt.title("Ingredients Distribution")
-    plt.axis('equal')
-
-    # Save the pie chart as a PNG image
-    img_data = io.BytesIO()
-    plt.savefig(img_data, format='png')
-    img_data.seek(0)
-    img_base64 = base64.b64encode(img_data.read()).decode('utf-8')
-
-    return img_base64
-
-'''
 
 @app.route('/api/recipe/info/<int:meal_id>')
 def get_recipe_info(meal_id: int) -> Union[dict, Response]:
@@ -320,13 +295,3 @@ def get_recipe_info(meal_id: int) -> Union[dict, Response]:
 if __name__ == '__main__':
     app.run(debug=True)
 
-
-
-
-
-###################################
-###################################
-
-
-
-### https://api.spoonacular.com/recipes/1082038/priceBreakdownWidget?apiKey=25f10c03748a4a99bed2f8dfb40d284f ### to check response

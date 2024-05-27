@@ -26,6 +26,13 @@
         <input type="submit" value="Create Recipe">
     </form>
 
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
     <script>
         document.getElementById("recipeForm").addEventListener("submit", function(event) {
             event.preventDefault(); 
@@ -38,15 +45,34 @@
             xhr.open("POST", "http://localhost:5000/create_recipe", true);
             xhr.onload = function() {
                 if (xhr.status === 201) {
-                    alert("Recipe created successfully!");
+                    showModal("Recipe created successfully!");
                 } else if (xhr.status === 409) {
-                    alert("Error: Recipe with this title already exists");
+                    showModal("Error: Recipe with this title already exists");
                 } else {
-                    alert("Error: " + xhr.responseText);
+                    showModal("Error: " + xhr.responseText);
                 }
             };
             xhr.send(formData);
         });
+
+        function showModal(message) {
+            var modal = document.getElementById("myModal");
+            var modalMessage = document.getElementById("modalMessage");
+            modalMessage.innerText = message;
+            modal.style.display = "block";
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            var closeBtn = document.getElementsByClassName("close")[0];
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+            setTimeout(function() {
+                modal.style.display = "none";
+            }, 3000);
+            }
     </script>
 </body>
 </html>
