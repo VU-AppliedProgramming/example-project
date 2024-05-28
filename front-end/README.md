@@ -16,8 +16,15 @@
 
 ### Landing page - timer on:
 
-
 <p float="left">
     <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/43661bbe-10c4-468e-9ead-4c1f5936211b" width="400" />
     <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/b6d53778-fdca-468d-9ea8-dc1f0d518beb" width="400" />
 </p>
+
+### Recipe search results:
+
+<p float="left">
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/6a3b499c-c050-4f9e-9409-23c71acec333" width="400" />
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/b6d53778-fdca-468d-9ea8-dc1f0d518beb" width="400" />
+</p>
+
