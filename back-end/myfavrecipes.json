@@ -10,7 +10,7 @@
         "title": "Chicken Fingers",
         "recipe_id": "638086",
         "instructions": "Preheat oven to 400 degrees, Line a baking sheet with parchment paper or line the bottom with foil and place a cookie rack on top and spray with cooking spray, set aside, In a shallow bowl add egg whites and water, In another shallow bowl add cornflakes, cheese, and seasonings, stir until combined, Cut chicken breasts horizontally and then cut into strips.Dredge the chicken in egg whites, then dip into cornflake mixture., Place on baking sheet. Do the same for all the chicken., Bake for 18 minutes or until chicken is done., ",
-        "ingredients": "3 dash Cayenne Pepper, 1 pound Boneless Chicken Breasts, 1 1/2 cup Cornflakes,crushed, 1 whole Egg White, 1/4 teaspoons Italian Seasoning, 1/4 teaspoons Paprika, 2 teaspoons Parmesan Cheese, 1 Tablespoon Water, and some LOVE",
+        "ingredients": "5 dash Cayenne Pepper, 1 pound Boneless Chicken Breasts, 1 1/2 cup Cornflakes,crushed, 1 whole Egg White, 1/4 teaspoons Italian Seasoning, 1/4 teaspoons Paprika, 2 teaspoons Parmesan Cheese, 1 Tablespoon Water, and some LOVE",
         "image": "https://img.spoonacular.com/recipes/638086-556x370.jpg"
     },
     "Fig, Goat Cheese and Walnut Salad": {
@@ -48,13 +48,6 @@
         "ingredients": "1.5 Tablespoons suya spice, 1 pound chicken, 1 teaspoon chilli powder, 1  cooking spoon groundnut oil, 1 serving seasoning cubes, 1 serving onions and tomatoes, 1 serving salt",
         "image": "https://img.spoonacular.com/recipes/716342-312x231.jpg"
     },
-    "Chicken In A Pot": {
-        "title": "Chicken In A Pot",
-        "recipe_id": "638125",
-        "instructions": "Adjust oven rack to lowest position and pre- heat oven to 250 degrees Rinse chicken under cold water and pat dry. Season well with salt and pepper on each side Heat olive oil in large Dutch Oven (9 quarts), over medium heat. Do not allow oil to smoke Place chicken breast side down. Cook until breast is lightly browned, about 5 minutes Using a wooden spoon inserted into cavity of the bird and flip chicken breast side up, add remaining ingredients except lemon juice, and cook about 6 to 8 minutes Remove from heat. Place a large aluminum sheet over the pot, place the lid on top. This is to ensure a tight seal, so that no vapors escape during the cooking process Transfer the Dutch Oven in your pre heated oven. Cook approximately 1:30 minutes Removed pot from the oven and check the chicken internal temperature (must be at least 160 degrees) Remove chicken and place onto a carving board, tent with foil and allow to rest about 20 minutes Strain chicken juices from the pot through a fine mesh. Place the juices into a fat separator Pour the juices into a saucepan (discard any of the fat left in the separator), add lemon juice and any juices from the carving board.  Cook approximately 5 minutes and serve!",
-        "ingredients": "4.5 pounds chicken, 2 teaspoons kosher salt, 0.25 teaspoon ground pepper, 1 tablespoon olive oil, 1.5 cup onion, 1.25 cup celery, 6 medium garlic cloves, 5 small bay leaves, 4 sprigs thyme, 0.5  lemon juice",
-        "image": "https://img.spoonacular.com/recipes/638125-312x231.jpg"
-    },
     "Herbed Goat Cheese Yogurt Dip w. Caramelized Onions": {
         "title": "Herbed Goat Cheese Yogurt Dip w. Caramelized Onions",
         "recipe_id": "716435",
@@ -75,5 +68,12 @@
         "instructions": "A rakott krumpli elk\u00e9sz\u00edt\u00e9s\u00e9hez a krumplikat 10-15 percre be\u00e1ztatjuk hideg v\u00edzbe, majd alaposan megsik\u00e1ljuk \u00e9s le\u00f6bl\u00edtj\u00fck. A toj\u00e1sokat megmossuk. A krumplit annyi hideg v\u00edzzel \u00f6ntj\u00fck fel, hogy b\u0151ven ellepje. Hozz\u00e1adjuk a s\u00f3t, \u00e9s a forr\u00e1st\u00f3l sz\u00e1m\u00edtott 20 percig, fed\u0151 alatt puh\u00e1ra f\u0151zz\u00fck. A toj\u00e1sokat s\u00f3s, hideg v\u00edzben feltessz\u00fck f\u0151ni, \u00e9s a forr\u00e1st\u00f3l sz\u00e1m\u00edtott 8 percig f\u0151zz\u00fck, majd hideg v\u00edzbe mer\u00edtve azonnal leh\u0171tj\u00fck. A krumplir\u00f3l le\u00f6ntj\u00fck a vizet, m\u00e9g melegen megh\u00e1mozzuk, \u00e9s h\u0171lni hagyjuk.",
         "ingredients": "krumpli,toj\u00e1s, s\u00f3, kolb\u00e1sz, tejf\u00f6l, toj\u00e1ss\u00e1rg\u00e1ja, vaj, bacon",
         "image": "https://www.mindmegette.hu/images/359/XL/lead_XL_rakott-krumpli-recept.jpg"
+    },
+    "Granola": {
+        "title": "Granola",
+        "recipe_id": "645175",
+        "instructions": "Preheat oven to 300F degrees. Mix together the oats, sesame seeds almonds and sunflower seeds. Pour honey, oil Water over this mixture and stir well. Spread on a large cookie sheet and bake 35 minutes until nicely browned on top.Stir the granola often while baking (about every 5 minutes). Remove from oven allow to cool and add raisins, coconut and crasins.Makes 6 cups. Nutritional information is for 1/3 cup serving.",
+        "ingredients": "0.5 cup almonds, 0.75 cup coconut, 0.75 cup craisins, 1 cup honey, 0.75 cup raisins, 4 cups rolled oats, 0.5 cup sesame seeds, 1 cup sunflower oil, 0.75 cup sunflower seeds, 2 tablespoons water",
+        "image": "https://img.spoonacular.com/recipes/645175-312x231.jpg"
     }
 }
