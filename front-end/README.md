@@ -25,6 +25,26 @@
 
 <p float="left">
     <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/6a3b499c-c050-4f9e-9409-23c71acec333" width="400" />
-    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/b6d53778-fdca-468d-9ea8-dc1f0d518beb" width="400" />
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/235ea215-a588-400a-8963-fc0862c39757" width="400" />
 </p>
+
+
+### One recipe:
+
+<p float="left">
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/91af0fdb-c0d3-4f6e-b87e-f0b09d564c93" width="400" />
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/1eb12cbd-ebd3-41b3-aef6-021cfd6768c8" width="400" />
+</p>
+
+### Price breakdown info:
+
+<p float="left">
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/f2dcc7fe-e6ad-4c0d-b10c-671744f95e57" width="400" />
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/bee030ce-f4b6-4c7e-a218-cf371750f853" width="400" />
+</p>
+<p float="left">
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/eae64ce0-1723-4a38-8998-6fbb3445a367" width="400" />
+    <img src="https://github.com/VU-AppliedProgramming/example-project/assets/119077341/5aa61a6f-3e61-4eac-81d4-0260df3e12d8" width="400" />
+</p>
+
 
