@@ -6,6 +6,9 @@
 + Select Open With.
 + Choose your web browser from the list (e.g., Chrome, Firefox).
 
+## Frontend folder architecture:
+![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/4c0abdd6-f902-412d-bfd0-8c30c2947a75)
+
 
 ## Landing page:
 
