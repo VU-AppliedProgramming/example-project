@@ -270,7 +270,8 @@ def get_price_breakdown(meal_id: int) -> jsonify:
     #return response.text, 200, {'Content-Type': 'text/html'}
     #price_info = clean_html_response(response.text)
 
-    return jsonify(clean_html_response(response.text))
+    data = clean_html_response(response.text)
+    return jsonify(data), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 @app.route('/api/recipe/info/<int:meal_id>')
 def get_recipe_info(meal_id: int) -> Union[dict, Response]:

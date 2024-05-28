@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5001/static/css/singlerecipe.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Recipe</title>
 </head>
 <body>
@@ -47,17 +48,26 @@
             <button type="submit" class="breakdown-button" id="breakdown-button">Get Breakdown</button>
         </form>
 
-        <div id="priceBreakdownContainer"></div>
-        <div id="recipePriceInfo" style="display: none;">
-            <h3>Price Breakdown:</h3>
-            <div class="priceGrid">
-                <div class="ingredientColumn">
+        <div id="priceBreakdownContainer">
+            <div id="recipePriceInfo" style="display: none;">
+                <div class="chartContainer">
+                    <h3>Price Breakdown:</h3>
+                    <div class="chartColumn">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
                 </div>
-                <div class="priceColumn">
+                <div class="ingredientsContainer">
+                    <h3>Ingredients:</h3>
+                    <div class="ingredientColumn">
+                    </div>
+                </div>
+                <div class="pricesContainer">
+                    <h3>Prices:</h3>
+                    <div class="priceColumn">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
     <div id="favoriteModal" class="modal">
         <div class="modal-content">
@@ -88,29 +98,6 @@
 
         document.getElementById("breakdown-button").addEventListener("click", function(event) {
             event.preventDefault(); 
-            
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "{{ url_for('get_price_breakdown_widget', meal_id=meal.id)}}", true);
-            xhr.responseType = 'blob';
-            
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var blob = xhr.response;
-                    var imageUrl = URL.createObjectURL(blob);
-                    
-                    var img = document.createElement('img');
-                    img.src = imageUrl;
-                    img.alt = "Price Breakdown";
-                    img.className = "price-breakdown-image";
-                    
-                    document.getElementById("priceBreakdownContainer").appendChild(img);
-                } else {
-                    alert("Error: Failed to fetch price breakdown widget");
-                }
-            };
-
-            
-            xhr.send();
 
             var xhr2 = new XMLHttpRequest();
             xhr2.open("POST", "{{ url_for('get_price_breakdown', meal_id=meal.id)}}", true);
@@ -129,9 +116,9 @@
                     var ingredients = response_json[0];
                     var prices = response_json[1];
 
-                    for (var i = 0; i < ingredients.length; i++) {
-                        var ingredient = ingredients[i];
-                        var price = prices[i];
+                    for (var i = 1; i < ingredients.length; i++) {
+                        var ingredient = decodeURIComponent(ingredients[i]);
+                        var price = parseFloat(prices[i].replace('$', ''));
 
                         var ingredientCell = document.createElement('div');
                         ingredientCell.textContent = ingredient;
@@ -139,19 +126,52 @@
                         ingredientColumn.appendChild(ingredientCell);
 
                         var priceCell = document.createElement('div');
-                        priceCell.textContent = price;
+                        priceCell.textContent = prices[i];
                         priceCell.className = 'tableCell';
                         priceColumn.appendChild(priceCell);
                     }
 
                     document.getElementById("recipePriceInfo").style.display = "block";
-                } else {
-                    alert("Error: Failed to fetch price breakdown info");
-                }
-            };
+
+                    var doughnutChartCanvas = document.getElementById('doughnutChart');
+                    var doughnutChartData = {
+                        labels: ingredients.slice(1),
+                        datasets: [{
+                            data: prices.slice(1).map(price => parseFloat(price.replace('$', ''))),
+                            backgroundColor: generateRandomColors(prices.length - 1),
+                            hoverOffset: 4
+                        }]
+                    };
+
+                    var doughnutChart = new Chart(doughnutChartCanvas, {
+                        type: 'doughnut',
+                        data: doughnutChartData,
+                        options: {
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: 'white'
+                                    }
+                                }
+                            }
+                        }
+                    });
+    } else {
+        alert("Error: Failed to fetch price breakdown info");
+    }
+};
 
             xhr2.send();
         });
+
+        function generateRandomColors(numColors) {
+            var colors = [];
+            for (var i = 0; i < numColors; i++) {
+                var color = 'rgb(' + Math.floor(Math.random() * 256) + ', ' + Math.floor(Math.random() * 256) + ', ' + Math.floor(Math.random() * 256) + ')';
+                colors.push(color);
+            }
+            return colors;
+        }
 
 
         function showFavoriteModal() {
@@ -174,54 +194,6 @@
     </script>
     <script src="http://127.0.0.1:5001/static/js/scripts.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-    <style>
-        #recipePriceInfo {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            backdrop-filter: blur(5px);
-            color: white; 
-        }
-
-        #recipePriceInfo h3 {
-            margin-top: 0;
-            color: white; 
-        }
-
-        .priceGrid {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .ingredientColumn,
-        .priceColumn {
-            flex: 1;
-            padding: 10px;
-        }
-
-        .ingredientColumn {
-            border-right: 1px solid #ddd;
-        }
-
-        .priceColumn {
-            border-left: 1px solid #ddd;
-        }
-
-        .priceGrid::after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-
-        #recipePriceInfo p {
-            margin: 0;
-            color: white;
-            line-height: 1.5;
-        }
-
-    </style>
 </body>
 </html>
 
