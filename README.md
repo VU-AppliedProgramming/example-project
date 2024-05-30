@@ -18,7 +18,6 @@ We are group 101 and our project is called FeastFinder. It is a dynamic recipe m
 ### Prerequisites:
 
 - Ensure you have all dependencies installed. These are listed in a file named `requirements.txt`. You can install them using `pip install -r requirements.txt`.
-- Verify that both your front-end and back-end Flask servers have the necessary imports. (you can find teh import at the very top of the 2 py files)
 
 ### Starting the servers:
 
