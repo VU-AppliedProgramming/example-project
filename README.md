@@ -8,7 +8,7 @@ We are group 101 and our project is called FeastFinder. It is a dynamic recipe m
 
 ## Architecture
 
-![architecture](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/7f9d62ca-de5a-42a9-bd15-1809ff094fbe)
+![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/25aa668d-23d0-4a38-a6d5-e0c54971bbaa)
 
 
 ## Frontend mockup
