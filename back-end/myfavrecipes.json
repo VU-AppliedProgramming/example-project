@@ -89,5 +89,68 @@
         "instructions": "Divide sausage into 8 portions. On a lightly crumb sprinkled surface, pat out each portion to about 1/8 inch thickness. Wrap 1 sausage portion completely around 1 hard boiled egg, pressing edges together to seal. Repeat with remaining sausage and hard boiled eggs.Dip sausage-covered eggs in 1 beaten egg and then roll in breadcrumbs.Deep fry or place on baking sheet and bake in a 375 degree oven for 20 minutes until lightly browned., ",
         "ingredients": "1 pound bulk sausage, 1 cup bread crumbs or corn meal, 9 eggs, ",
         "image": "https://img.spoonacular.com/recipes/659581-556x370.jpg"
+    },
+    "Test Recipe": {
+        "title": "Test Recipe",
+        "recipe_id": "123",
+        "instructions": "Test instructions",
+        "ingredients": "ingredient1, ingredient2",
+        "image": "http://example.com/image.jpg"
+    },
+    "Create Test": {
+        "title": "Create Test",
+        "recipe_id": "456",
+        "instructions": "Do something",
+        "ingredients": "ingredient1, ingredient2",
+        "image": "http://example.com/image.jpg"
+    },
+    "Update Test": {
+        "title": "Update Test",
+        "recipe_id": "321",
+        "instructions": "Old instructions",
+        "ingredients": "New instructions",
+        "image": "http://example.com/image.jpg"
+    },
+    "Test Recipe 1": {
+        "title": "Test Recipe 1",
+        "recipe_id": "123",
+        "instructions": "Test instructions",
+        "ingredients": "ingredient1, ingredient2",
+        "image": "http://example.com/image.jpg"
+    },
+    "Test Recipe 2": {
+        "title": "Test Recipe 2",
+        "recipe_id": "123",
+        "instructions": "Test instructions",
+        "ingredients": "ingredient1, ingredient2",
+        "image": "http://example.com/image.jpg"
+    },
+    "TestRecipeUnique1": {
+        "title": "TestRecipeUnique1",
+        "recipe_id": "123",
+        "instructions": "Test instructions for unique1",
+        "ingredients": "ingredient1, ingredient2",
+        "image": "http://example.com/unique1.jpg"
+    },
+    "TestRecipeUnique2": {
+        "title": "TestRecipeUnique2",
+        "recipe_id": "234",
+        "instructions": "Test instructions for unique2",
+        "ingredients": "ingredient1, ingredient2",
+        "image": "http://example.com/unique2.jpg"
+    },
+    "CreateTestUnique3": {
+        "title": "CreateTestUnique3",
+        "recipe_id": "456",
+        "instructions": "Instructions for unique3",
+        "ingredients": "ingredientA, ingredientB",
+        "image": "http://example.com/unique3.jpg"
+    },
+    "UpdateTestUnique5": {
+        "title": "UpdateTestUnique5",
+        "recipe_id": "321",
+        "instructions": "Old instructions for unique5",
+        "ingredients": "New instructions for unique5",
+        "image": "http://example.com/unique5.jpg"
     }
 }

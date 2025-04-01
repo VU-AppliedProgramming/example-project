@@ -1,10 +1,11 @@
-from flask import Flask, jsonify, request,Response
+from flask import Flask, jsonify, request, Response
 import os
 import requests
 from flask_cors import CORS
 import re
 from favrecipes import FavRecipes, Recipe
 from typing import Union, Tuple, Optional, List
+
 try: 
     from BeautifulSoup import BeautifulSoup
 except ImportError:
@@ -15,10 +16,10 @@ CORS(app)
 
 # Spoonacular API key
 API_KEY = os.environ.get('API_KEY')
-
 SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
 
-fav_recipes = FavRecipes('myfavrecipes.json')
+# Default storage file (only used if not overridden in testing)
+app.fav_recipes = FavRecipes('myfavrecipes.json')
 
 @app.route('/health')
 def health_check():
@@ -37,12 +38,9 @@ def test():
     Returns:
         Response: JSON response containing the favorite recipes.
     """
-
-    recipes= fav_recipes.get_recipes()
+        
+    recipes = app.fav_recipes.get_recipes()
     return jsonify(recipes)
-
-
-
 
 @app.route('/show_one_favorite/<recipe_id>')
 def s_one_fav(recipe_id: str) -> Response:
@@ -54,7 +52,7 @@ def s_one_fav(recipe_id: str) -> Response:
         Response: JSON response containing information about the requested recipe.
     """
 
-    recipes = fav_recipes.get_recipes()
+    recipes = app.fav_recipes.get_recipes()
     if recipe_id in recipes:
         return jsonify({recipe_id: recipes[recipe_id]})
     else:
@@ -69,21 +67,20 @@ def add_to_favorites() -> Response:
     Returns:
         Response: JSON response indicating the success or failure of the operation.
     """
+
     recipe_title = request.form['recipe_title']
     recipe_instructions = request.form['recipe_instructions']
     recipe_ingredients = request.form['recipe_ingredients']
     recipe_image = request.form['recipe_image']
     recipe_id = request.form['recipe_id']
 
-    recipe = Recipe(recipe_title,  recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
-    
-    success = fav_recipes.add_recipe(recipe)
-    
+    recipe = Recipe(recipe_title, recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
+    success = app.fav_recipes.add_recipe(recipe)
+
     if success:
         return jsonify({"message": "Recipe added to favorites successfully"})
     else:
         return jsonify({"error": "Failed to add recipe to favorites"})
-
 
 @app.route('/create_recipe', methods=['POST'])
 def create_recipe() -> Response:
@@ -99,16 +96,13 @@ def create_recipe() -> Response:
     recipe_ingredients = request.form['r_ingredients']
     recipe_image = request.form['r_image']
 
-    recipe = Recipe(recipe_title,  recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
-    
-    recipe_added = fav_recipes.add_recipe(recipe)
-    
+    recipe = Recipe(recipe_title, recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
+    recipe_added = app.fav_recipes.add_recipe(recipe)
+
     if recipe_added:
         return jsonify({"message": "Recipe added successfully"}), 201
     else:
         return jsonify({"error": "Recipe with this title already exists"}), 409
-    
-
 
 @app.route('/delete_recipe', methods=['DELETE'])
 def delete_recipe() -> Response:
@@ -120,16 +114,21 @@ def delete_recipe() -> Response:
 
     data = request.get_json()
     r_title = data.get('r_title')
-
-    recipes = fav_recipes.get_recipes()
+    recipes = app.fav_recipes.get_recipes()
 
     if r_title in recipes:
-        recipe = Recipe(recipes[r_title]["title"], recipes[r_title]["recipe_id"], recipes[r_title]["instructions"], recipes[r_title]["ingredients"], recipes[r_title]["image"])
+        recipe = Recipe(
+            recipes[r_title]["title"],
+            recipes[r_title]["recipe_id"],
+            recipes[r_title]["instructions"],
+            recipes[r_title]["ingredients"],
+            recipes[r_title]["image"]
+        )
 
-        if fav_recipes.delete_recipe(recipe):
+        if app.fav_recipes.delete_recipe(recipe):
             return jsonify({"message": "Recipe deleted successfully"}), 200
+
     return jsonify({"error": "Recipe with this title does not exist"}), 404
-    
 
 @app.route('/update_recipe_instructions', methods=['PUT'])
 def update_recipe() -> Response:
@@ -143,17 +142,23 @@ def update_recipe() -> Response:
     r_title = data.get('r_title')
     new_instructions = data.get('r_instructions')
 
-    recipes = fav_recipes.get_recipes()
+    recipes = app.fav_recipes.get_recipes()
 
     if r_title in recipes:
-        recipe = Recipe(recipes[r_title]["title"], recipes[r_title]["recipe_id"], recipes[r_title]["instructions"], recipes[r_title]["ingredients"], recipes[r_title]["image"])
+        recipe = Recipe(
+            recipes[r_title]["title"],
+            recipes[r_title]["recipe_id"],
+            recipes[r_title]["instructions"],
+            recipes[r_title]["ingredients"],
+            recipes[r_title]["image"]
+        )
 
-        if fav_recipes.update_recipe(recipe, new_instructions):
+        if app.fav_recipes.update_recipe(recipe, new_instructions):
             return jsonify({"message": "Ingredients updated successfully"}), 200
+
     return jsonify({"error": "Recipe with this title does not exist"}), 404
 
-
-### CRUD OPERATIONS ###
+### END OF CRUD OPERATIONS ###
 
 @app.route('/api/meals')
 def get_meals() -> Union[dict, Response]:
@@ -166,15 +171,15 @@ def get_meals() -> Union[dict, Response]:
     query = request.args.get('query')
     min_calories = request.args.get('minCalories', type=int)
     max_calories = request.args.get('maxCalories', type=int)
-    
+
     url = f'{SPOONACULAR_API}/complexSearch?query={query}&apiKey={API_KEY}'
     if min_calories is not None and max_calories is not None:
         url += f'&minCalories={min_calories}&maxCalories={max_calories}'
-    
+
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch meals'}), 500
-    
+
     return response.json()
 
 @app.route('/api/recipe/<int:meal_id>')
@@ -191,9 +196,8 @@ def get_recipe(meal_id: int) -> Union[dict, Response]:
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch recipe'}), 500
-    
-    data = response.json()
-    return data
+
+    return response.json()
 
 @app.route('/api/random')
 def get_random_recipe() -> Union[dict, Response]:
@@ -207,7 +211,7 @@ def get_random_recipe() -> Union[dict, Response]:
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch random recipe'}), 500
-    
+
     data = response.json()
     return jsonify(data['recipes'][0])
 
@@ -225,9 +229,8 @@ def get_price_breakdown_widget(meal_id: int) -> Union[Response, tuple]:
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
-    
-    image_data = response.content
-    return Response(image_data, content_type='image/png')
+
+    return Response(response.content, content_type='image/png')
 
 def clean_html_response(html: str) -> Tuple[Optional[List[str]], Optional[List[str]]]:
     """
@@ -240,16 +243,15 @@ def clean_html_response(html: str) -> Tuple[Optional[List[str]], Optional[List[s
 
     parsed_html = BeautifulSoup(html, "html.parser")
 
-    # Extracting ingredients
-    ingredients_container = parsed_html.find('div', attrs={'id': 'spoonacularPriceBreakdownTable'}).find('div', style=lambda value: value and 'float:left;max-width:80%' in value)
+    ingredients_container = parsed_html.find('div', id='spoonacularPriceBreakdownTable') \
+        .find('div', style=lambda value: value and 'float:left;max-width:80%' in value)
     ingredients = [ingredient.strip() for ingredient in ingredients_container.stripped_strings]
 
-    # Extracting prices
-    prices_container = parsed_html.find('div', attrs={'id': 'spoonacularPriceBreakdownTable'}).find('div', style=lambda value: value and 'text-align:right;display:inline-block;float:left;padding-left:1em' in value)
+    prices_container = parsed_html.find('div', id='spoonacularPriceBreakdownTable') \
+        .find('div', style=lambda value: value and 'text-align:right;display:inline-block;float:left;padding-left:1em' in value)
     prices = [price.strip() for price in prices_container.stripped_strings]
 
     return ingredients, prices
-
 
 @app.route('/api/price_breakdown/<int:meal_id>')
 def get_price_breakdown(meal_id: int) -> jsonify:
@@ -262,13 +264,11 @@ def get_price_breakdown(meal_id: int) -> jsonify:
     Returns:
         jsonify: JSON response containing the price breakdown widget information.
     """
+
     url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
-    
-    #return response.text, 200, {'Content-Type': 'text/html'}
-    #price_info = clean_html_response(response.text)
 
     data = clean_html_response(response.text)
     return jsonify(data), 200, {'Content-Type': 'application/json; charset=utf-8'}
@@ -282,17 +282,13 @@ def get_recipe_info(meal_id: int) -> Union[dict, Response]:
     Returns:
         Union[dict, Response]: JSON response containing the recipe or an error message.
     """
-
+    
     url = f'{SPOONACULAR_API}/{meal_id}/information?apiKey={API_KEY}'
     response = requests.get(url)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch recipe'}), 500
-    
-    data = response.json()
-    return data
 
-
+    return response.json()
 
 if __name__ == '__main__':
     app.run(debug=True)
-
