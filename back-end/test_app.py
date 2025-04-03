@@ -197,7 +197,7 @@ def test_update_recipe(client):
     response = client.put("/update_recipe_instructions", json={"r_title": "Nonexistent", "r_instructions": "Test"})
     assert response.status_code == 404
 
-# --------------------- External API (Mocked) Tests via monkeypatch --------------------- #
+# --------------------- External API Tests via monkeypatch --------------------- #
 
 def test_get_meals(client, monkeypatch):
     """
