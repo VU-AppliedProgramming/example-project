@@ -2,9 +2,10 @@ import json
 import os
 import pytest
 from favrecipes import Recipe, FavRecipes
+from pathlib import Path
 
 @pytest.fixture
-def temp_file(tmp_path):
+def temp_file(tmp_path: Path) -> str:
     """
     Fixture to create a temporary file path for storing recipes.
     
@@ -21,7 +22,7 @@ def temp_file(tmp_path):
     return str(file_path)
 
 @pytest.fixture
-def fav_recipes(temp_file):
+def fav_recipes(temp_file: str) -> FavRecipes:
     """
     Fixture to create a fresh instance of FavRecipes using a temporary file.
     
@@ -35,7 +36,7 @@ def fav_recipes(temp_file):
     return FavRecipes(temp_file)
 
 @pytest.fixture
-def sample_recipe():
+def sample_recipe() -> Recipe:
     """
     Fixture to create a sample Recipe instance for use in tests.
     
@@ -52,7 +53,7 @@ def sample_recipe():
         image="http://example.com/pancakes.jpg"
     )
 
-def test_add_recipe(fav_recipes, sample_recipe):
+def test_add_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     """
     Test that a recipe is successfully added to the favorites.
 
@@ -68,7 +69,7 @@ def test_add_recipe(fav_recipes, sample_recipe):
     assert sample_recipe.title in recipes
     assert recipes[sample_recipe.title]["recipe_id"] == sample_recipe.id
 
-def test_add_duplicate_recipe(fav_recipes, sample_recipe):
+def test_add_duplicate_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     """
     Test that adding a duplicate recipe (same title) fails.
 
@@ -85,7 +86,7 @@ def test_add_duplicate_recipe(fav_recipes, sample_recipe):
     # second addition should fail due to duplicate title
     assert result2 is False
 
-def test_delete_recipe(fav_recipes, sample_recipe):
+def test_delete_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     """
     Test deleting a recipe from the favorites.
 
@@ -102,7 +103,7 @@ def test_delete_recipe(fav_recipes, sample_recipe):
     recipes = fav_recipes.get_recipes()
     assert sample_recipe.title not in recipes
 
-def test_delete_nonexistent_recipe(fav_recipes, sample_recipe):
+def test_delete_nonexistent_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     """
     Test deleting a recipe that does not exist.
 
@@ -113,7 +114,7 @@ def test_delete_nonexistent_recipe(fav_recipes, sample_recipe):
     result = fav_recipes.delete_recipe(sample_recipe)
     assert result is False
 
-def test_update_recipe(fav_recipes, sample_recipe):
+def test_update_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     """
     Test updating the ingredients of an existing recipe.
 
@@ -129,7 +130,7 @@ def test_update_recipe(fav_recipes, sample_recipe):
     recipes = fav_recipes.get_recipes()
     assert recipes[sample_recipe.title]["ingredients"] == new_ingredients
 
-def test_update_nonexistent_recipe(fav_recipes, sample_recipe):
+def test_update_nonexistent_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     """
     Test updating a recipe that does not exist.
 
@@ -140,7 +141,7 @@ def test_update_nonexistent_recipe(fav_recipes, sample_recipe):
     result = fav_recipes.update_recipe(sample_recipe, "New Ingredients")
     assert result is False
 
-def test_persistence(temp_file, sample_recipe):
+def test_persistence(temp_file: str, sample_recipe: Recipe) -> None:
     """
     Test persistence of recipes through file I/O.
 

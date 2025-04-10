@@ -6,7 +6,7 @@ from typing import Tuple, Union
 app = Flask(__name__)
 CORS(app)
 
-BACKEND_ENDPOINT = 'http://localhost:5000'
+BACKEND_ENDPOINT = 'http://localhost:5002'
 
 @app.route('/check_backend')
 def check_backend() -> Tuple[str, int]:

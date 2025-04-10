@@ -291,4 +291,4 @@ def get_recipe_info(meal_id: int) -> Union[dict, Response]:
     return response.json()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port = 5002)

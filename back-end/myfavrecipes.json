@@ -152,5 +152,19 @@
         "instructions": "Old instructions for unique5",
         "ingredients": "New instructions for unique5",
         "image": "http://example.com/unique5.jpg"
+    },
+    "Pork Schnitzel And Apple Salad": {
+        "title": "Pork Schnitzel And Apple Salad",
+        "recipe_id": "656817",
+        "instructions": "<ol><li>1. Using a meat mallet, pound pork slices evenly to 5mm thick. Marinate it with cornflour, cooking wine and lightly beaten egg for about 3 - 5 minutes.</li><li>2. Coat marinated pork slices evenly with breadcrumbs by pressing the meat down against the crumbs.</li><li>3. Heat oil in a frying pan on medium heat, cook pork schnitzel for 3 minutes on each side or until golden and cooked through. Drain well on paper towels.</li><li>4. Meanwhile, toss the pre-packed salad with accompany dressing before transferring them to a serving plate and top with apple slices. (you can soak apple slices with some lightly salted water to prevent it from oxidized and turns brown)</li><li>5. Next thickly slice pork and arrange on salad and drizzle mustard dressing over pork and serve.</li></ol>",
+        "ingredients": "1 cup breadcrumbs or Panko\r\n1/2 Tablespoon Cornflour\r\n1 Egg, lightly beaten\r\n2 Green Apple, cored, halved and thinly sliced\r\nSome Mayonnaise\r\n1/3 cup Olive Oil\r\n1 Packet Ready-to-serve Salad Green with dressing\r\n4 Pork Sirloin Steaks, fat trimmed\r\nSome Wholegrain/Creamy Mustard Sauce\r\n1/2 Tablespoon Cooking Wine",
+        "image": "https://img.spoonacular.com/recipes/656817-556x370."
+    },
+    "Greek Yogurt Chicken Salad": {
+        "title": "Greek Yogurt Chicken Salad",
+        "recipe_id": "645384",
+        "instructions": "<ol><li>Start by cooking some chicken breasts. I like boiling them in chicken broth or stock, but feel free to boil in water, too. Boiling the chicken in broth, however, will give it significantly more flavor. Bring the chicken broth/stock to a boil and put in whole chicken breasts. Cook until no pink remains. Depending on the size of the chicken breasts, this could take anywhere from 15 - 20 minutes.</li><li>While the chicken is boiling, put together your sauce. Whisk together greek yogurt, dijon mustard, and garlic powder together until well mixed. Add in salt and pepper, to taste.</li><li>Next, stir in dried cranberries or raisins and cashews. If you're worried about the cashews getting too soft, you could add them right before serving!</li><li>After the chicken is done boiling, I like to let it rest for about 5 minutes. This ensures that the juice stays in the chicken instead of spilling out when you cut it!</li><li>Dice up the chicken and mix it into the sauce. Serve.</li></ol>",
+        "ingredients": "\u00bd cup cashews, roughly chopped\r\n1 pound chicken breasts, cooked and cubed into bite sized pieces\r\n1/3 cup craisins (raisins work, too)\r\n2 teaspoon Dijon mustard\r\ngarlic powder\r\n\u00bd cup plain Greek yogurt\r\nsalt",
+        "image": "https://img.spoonacular.com/recipes/645384-556x370.jpg"
     }
 }

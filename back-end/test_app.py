@@ -3,10 +3,15 @@ import pytest
 import requests
 from app import app
 from favrecipes import FavRecipes, Recipe
+from typing import Any, Optional
+from pathlib import Path
+from typing import Generator
+from flask.testing import FlaskClient
+from _pytest.monkeypatch import MonkeyPatch
 
 # dummy response class to simulate external API calls
 class DummyResponse:
-    def __init__(self, json_data=None, status_code=200, content=b"", text=""):
+    def __init__(self, json_data: Optional[Any] = None, status_code: int = 200, content: bytes = b"", text: str = "") -> None:
         """
         A mock response to simulate 'requests.get' in tests.
         
@@ -20,11 +25,11 @@ class DummyResponse:
         self.content = content
         self.text = text
 
-    def json(self):
+    def json(self) -> Any:
         return self._json_data
 
 @pytest.fixture
-def client(tmp_path):
+def client(tmp_path: Path) -> Generator[FlaskClient, None, None]:
     """
     A pytest fixture that provides a Flask test client with a new FavRecipes instance.
     
@@ -39,7 +44,7 @@ def client(tmp_path):
 
 # --------------------- Internal Endpoints (CRUD) Tests --------------------- #
 
-def test_health_check(client):
+def test_health_check(client: FlaskClient) -> None:
     """
     Test the /health endpoint to verify that the server is running.
 
@@ -51,7 +56,7 @@ def test_health_check(client):
     assert response.data.decode("utf-8") == "OK"
 
 
-def test_test_endpoint(client):
+def test_test_endpoint(client: FlaskClient) -> None:
     """
     Test the /test endpoint to verify that it returns a JSON object.
 
@@ -64,7 +69,7 @@ def test_test_endpoint(client):
     assert isinstance(data, dict)
 
 
-def test_add_to_favorites(client):
+def test_add_to_favorites(client: FlaskClient) -> None:
     """
     Test the /add_to_favorites endpoint for successfully adding a recipe.
 
@@ -84,7 +89,7 @@ def test_add_to_favorites(client):
     assert "message" in json_data
 
 
-def test_show_one_favorite(client):
+def test_show_one_favorite(client: FlaskClient) -> None:
     """
     Test the /show_one_favorite/<recipe_id> endpoint to retrieve a specific favorite recipe.
 
@@ -111,7 +116,7 @@ def test_show_one_favorite(client):
     assert unique_title in data
 
 
-def test_create_recipe(client):
+def test_create_recipe(client: FlaskClient) -> None:
     """
     Test the /create_recipe endpoint for creating a new recipe.
 
@@ -138,7 +143,7 @@ def test_create_recipe(client):
     assert "error" in data
 
 
-def test_delete_recipe(client):
+def test_delete_recipe(client: FlaskClient) -> None:
     """
     Test the /delete_recipe endpoint for deleting a recipe.
 
@@ -168,7 +173,7 @@ def test_delete_recipe(client):
     assert "error" in data
 
 
-def test_update_recipe(client):
+def test_update_recipe(client: FlaskClient) -> None:
     """
     Test the /update_recipe_instructions endpoint for updating a recipe's instructions.
 
@@ -199,7 +204,7 @@ def test_update_recipe(client):
 
 # --------------------- External API Tests via monkeypatch --------------------- #
 
-def test_get_meals(client, monkeypatch):
+def test_get_meals(client: FlaskClient, monkeypatch: MonkeyPatch) -> None:
     """
     Test that the /api/meals endpoint returns a valid meal list for a query, using mocked requests.
     """
@@ -215,7 +220,7 @@ def test_get_meals(client, monkeypatch):
     assert "results" in data
 
 
-def test_get_recipe(monkeypatch, client):
+def test_get_recipe(monkeypatch: MonkeyPatch, client: FlaskClient) -> None:
     """
     Test that the /api/recipe/<id> endpoint returns the correct recipe details, using mocked requests.
     """
@@ -231,7 +236,7 @@ def test_get_recipe(monkeypatch, client):
     assert data.get("title") == "Fake Recipe"
 
 
-def test_get_random_recipe(monkeypatch, client):
+def test_get_random_recipe(monkeypatch: MonkeyPatch, client: FlaskClient) -> None:
     """
     Test that the /api/random endpoint returns a random recipe, using mocked requests.
     """
@@ -247,7 +252,7 @@ def test_get_random_recipe(monkeypatch, client):
     assert data.get("title") == "Random Recipe"
 
 
-def test_price_breakdown_widget(monkeypatch, client):
+def test_price_breakdown_widget(monkeypatch: MonkeyPatch, client: FlaskClient) -> None:
     """
     Test that the /api/price_breakdown_widget/<meal_id> endpoint returns correct image data, using mocked requests.
     """
@@ -262,7 +267,7 @@ def test_price_breakdown_widget(monkeypatch, client):
     assert response.data == b"fake_image_data"
 
 
-def test_price_breakdown(monkeypatch, client):
+def test_price_breakdown(monkeypatch: MonkeyPatch, client: FlaskClient) -> None:
     """
     Test that the /api/price_breakdown/<meal_id> endpoint parses HTML to extract ingredients and prices, using mocked requests.
     """
@@ -291,7 +296,7 @@ def test_price_breakdown(monkeypatch, client):
     assert "price1" in prices[0]
 
 
-def test_get_recipe_info(monkeypatch, client):
+def test_get_recipe_info(monkeypatch: MonkeyPatch, client: FlaskClient) -> None:
     """
     Test that the /api/recipe/info/<meal_id> endpoint returns correct recipe info, using mocked requests.
     """
