@@ -1,591 +1,822 @@
-// scripts.js
-
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Configuration ---
-    const FRONTEND_BASE_URL = 'http://localhost:5001'; // Your front-end Flask app
-    const BACKEND_BASE_URL = 'http://localhost:5002'; // Your back-end Flask app
-
-    // --- DOM References ---
-    const searchSection = document.getElementById('search-section');
-    const resultsSection = document.getElementById('results-section');
-    const recipeDetailSection = document.getElementById('recipe-detail-section');
-    const favoritesSection = document.getElementById('favorites-section');
-    const allSections = [searchSection, resultsSection, recipeDetailSection, favoritesSection];
-
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
     const searchForm = document.getElementById('search-form');
-    const searchQueryInput = document.getElementById('search-query');
-    const minCaloriesInput = document.getElementById('min-calories');
-    const maxCaloriesInput = document.getElementById('max-calories');
+    const searchResults = document.getElementById('search-results');
+    const searchLoader = document.getElementById('search-loader');
+    const noResults = document.getElementById('no-results');
     const randomRecipeBtn = document.getElementById('random-recipe-btn');
-    const resultsGrid = document.getElementById('results-grid');
-    const backToSearchBtn = document.getElementById('back-to-search-btn');
-    const backToResultsBtn = document.getElementById('back-to-results-btn');
-
-    // Recipe Detail Elements
-    const recipeTitle = document.getElementById('recipe-title');
-    const recipeImage = document.getElementById('recipe-image');
-    const recipeSummary = document.getElementById('recipe-summary');
-    const recipeIngredients = document.getElementById('recipe-ingredients');
-    const recipeInstructions = document.getElementById('recipe-instructions');
-    const addToFavoritesBtn = document.getElementById('add-to-favorites-btn');
-    const fetchPriceBtn = document.getElementById('fetch-price-btn');
-    const priceDetailsDiv = document.getElementById('price-details');
-    const priceIngredientsUl = document.getElementById('price-ingredients');
-    const priceCostsUl = document.getElementById('price-costs');
-    const priceTotalP = document.getElementById('price-total');
-    // const priceWidgetImg = document.getElementById('price-widget-img');
-
-    // Favorites Elements
+    const randomRecipeResult = document.getElementById('random-recipe-result');
+    const randomRecipeLoader = document.getElementById('random-recipe-loader');
+    const refreshFavoritesBtn = document.getElementById('refresh-favorites');
     const favoritesList = document.getElementById('favorites-list');
-    const createNewFavoriteBtn = document.getElementById('create-new-favorite-btn');
-    const createFavoriteModal = document.getElementById('create-favorite-modal');
-    const createFavoriteForm = document.getElementById('create-favorite-form');
-    const updateFavoriteModal = document.getElementById('update-favorite-modal');
-    const updateFavoriteForm = document.getElementById('update-favorite-form');
-    const updateTitleInput = document.getElementById('update-r_title');
-    const updateInstructionsInput = document.getElementById('update-r_instructions');
+    const favoritesLoader = document.getElementById('favorites-loader');
+    const noFavorites = document.getElementById('no-favorites');
+    const createRecipeBtn = document.getElementById('create-recipe-btn');
 
+    // Modals
+    const recipeModal = document.getElementById('recipe-modal');
+    const recipeDetailContent = document.getElementById('recipe-detail-content');
+    const closeModal = recipeModal.querySelector('.close-modal'); // Corrected selector
+    const addToFavoritesBtn = document.getElementById('add-to-favorites-btn');
 
-    // Navigation Links
-    const homeLink = document.getElementById('home-link');
-    const navSearchLink = document.getElementById('nav-search-link');
-    const navFavoritesLink = document.getElementById('nav-favorites-link');
+    const createRecipeModal = document.getElementById('create-recipe-modal');
+    const createRecipeForm = document.getElementById('create-recipe-form');
+    const closeCreateModal = createRecipeModal.querySelector('.close-create-modal'); // Corrected selector
 
-    // --- State ---
-    let currentRecipeDetails = null; // Store details of the recipe being viewed
-    let lastSearchResults = []; // Store last search results for back navigation
-    let currentView = 'search'; // 'search', 'results', 'detail', 'favorites'
+    const editRecipeModal = document.getElementById('edit-recipe-modal');
+    const editRecipeForm = document.getElementById('edit-recipe-form');
+    const closeEditModal = editRecipeModal.querySelector('.close-edit-modal'); // Corrected selector
 
-    // --- Utility Functions ---
-    const showSection = (sectionToShow) => {
-        allSections.forEach(section => {
-            if (section) {
-                section.classList.add('hidden');
+    const priceBreakdownModal = document.getElementById('price-breakdown-modal');
+    const priceBreakdownImg = document.getElementById('price-breakdown-img');
+    const priceBreakdownData = document.getElementById('price-breakdown-data');
+    const closePriceModal = priceBreakdownModal.querySelector('.close-price-modal'); // Corrected selector
+
+    // Notification
+    const notification = document.getElementById('notification');
+    const notificationMessage = document.getElementById('notification-message');
+
+    // Timer elements
+    const timerMinutes = document.getElementById('minutes');
+    const timerSeconds = document.getElementById('seconds');
+    const timerMinutesInput = document.getElementById('timer-minutes');
+    const timerSecondsInput = document.getElementById('timer-seconds');
+    const timerStartBtn = document.getElementById('timer-start');
+    const timerPauseBtn = document.getElementById('timer-pause');
+    const timerResetBtn = document.getElementById('timer-reset');
+
+    // Current recipe for modal
+    let currentRecipe = null;
+
+    // Timer variables
+    let timerInterval = null; // Renamed from timer for clarity
+    let totalSeconds = 0;
+    let isTimerRunning = false;
+
+    // Navigation active state
+    const navLinks = document.querySelectorAll('nav ul li a');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Prevent default jump
+            // e.preventDefault();
+            navLinks.forEach(navLink => navLink.classList.remove('active'));
+            this.classList.add('active');
+            // Smooth scroll if href is an ID
+            const targetId = this.getAttribute('href');
+            if (targetId && targetId.startsWith('#')) {
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
             }
         });
-        if (sectionToShow) {
-            sectionToShow.classList.remove('hidden');
-        }
-        // Scroll to top might be useful
-        window.scrollTo(0, 0);
-    };
+    });
 
-    const displayError = (message, container = resultsGrid) => {
-        console.error("Error:", message);
-        if (container) {
-             container.innerHTML = `<p class="error-message">Error: ${message}. Please try again later.</p>`;
+    // --- Helper Functions ---
+
+    function showNotification(message, isError = false) {
+        notificationMessage.textContent = message;
+        notification.className = 'notification show';
+        if (isError) {
+            notification.classList.add('error');
         } else {
-            alert(`Error: ${message}`); // Fallback
+            notification.classList.remove('error');
         }
-    };
+        setTimeout(() => {
+            notification.className = 'notification';
+        }, 3000); // Hide after 3 seconds
+    }
 
-    // --- API Call Functions ---
+    function showLoader(loaderElement) {
+        if (loaderElement) loaderElement.style.display = 'block';
+    }
 
-    // Fetch search results (via front-end proxy)
-    const searchRecipes = async (query, minCal, maxCal) => {
-        const params = new URLSearchParams();
-        params.append('query', query);
-        if (minCal) params.append('minCalories', minCal);
-        if (maxCal) params.append('maxCalories', maxCal);
+    function hideLoader(loaderElement) {
+        if (loaderElement) loaderElement.style.display = 'none';
+    }
 
-        // We use GET here as the proxy endpoint /api/meals supports GET
-        const url = `${FRONTEND_BASE_URL}/api/meals?${params.toString()}`;
+    // --- Search Functionality ---
 
-        try {
-            const response = await fetch(url, { method: 'GET' }); // Change to GET
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: `HTTP error! status: ${response.status}` }));
-                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json(); // The proxy endpoint returns JSON for GET
-            lastSearchResults = data; // Assuming data is the array of results
-            displaySearchResults(data);
-            currentView = 'results';
-        } catch (error) {
-            displayError(`Failed to search recipes: ${error.message}`, resultsGrid);
-            showSection(resultsSection); // Show results section even on error to display message
-            currentView = 'results';
-        }
-    };
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    // Get random recipe (via front-end proxy)
-    const getRandomRecipe = async () => {
-        // The front-end proxy /api/random uses POST, but fetches from back-end GET /api/random
-        // Let's trigger the detail view directly after getting the ID
-        try {
-             // First, get the random recipe data (which includes the ID) from the backend via the frontend proxy
-            const randomResponse = await fetch(`${FRONTEND_BASE_URL}/api/random`, { method: 'POST' });
-             if (!randomResponse.ok) {
-                 const errorData = await randomResponse.json().catch(() => ({ error: `HTTP error! status: ${randomResponse.status}` }));
-                 throw new Error(errorData.error || `Failed to fetch random recipe info: Status ${randomResponse.status}`);
-             }
-             const meal = await randomResponse.json(); // Proxy returns the meal json directly
+        const query = document.getElementById('search-query').value.trim();
+        const minCalories = document.getElementById('min-calories').value;
+        const maxCalories = document.getElementById('max-calories').value;
 
-             if (meal && meal.id) {
-                 // Now display this recipe directly
-                 await getRecipeDetails(meal.id, true); // Pass flag indicating it's a random recipe
-             } else {
-                 throw new Error('Random recipe data is invalid.');
-             }
-
-        } catch (error) {
-            displayError(`Failed to get random recipe: ${error.message}`, resultsGrid);
-            showSection(resultsSection); // Show error in results area
-            currentView = 'results';
-        }
-    };
-
-
-    // Get full recipe details (via front-end proxy which calls back-end)
-    const getRecipeDetails = async (mealId, isRandom = false) => {
-        // We need to call the proxy's /api/recipe/info/<meal_id> which returns JSON
-        const url = `${FRONTEND_BASE_URL}/api/recipe/info/${mealId}`;
-        try {
-             // Using GET as the proxy endpoint supports GET
-            const response = await fetch(url, { method: 'GET' });
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: `HTTP error! status: ${response.status}` }));
-                throw new Error(errorData.error || `Failed to fetch recipe details: Status ${response.status}`);
-            }
-            const mealData = await response.json();
-            currentRecipeDetails = mealData; // Store for potential 'add to favorites'
-            displayRecipeDetails(mealData);
-            if (isRandom) {
-                backToResultsBtn.classList.add('hidden'); // Hide back button if coming from random
-            } else {
-                 backToResultsBtn.classList.remove('hidden'); // Show back button if coming from results
-            }
-            currentView = 'detail';
-        } catch (error) {
-            displayError(`Failed to load recipe details: ${error.message}`);
-            showSection(resultsSection); // Go back to results on error
-             currentView = 'results';
-        }
-    };
-
-    // Get price breakdown (via front-end proxy)
-    const getPriceBreakdown = async (mealId) => {
-        const url = `${FRONTEND_BASE_URL}/api/price_breakdown/${mealId}`;
-         priceDetailsDiv.classList.remove('hidden');
-         priceIngredientsUl.innerHTML = '<li>Loading...</li>';
-         priceCostsUl.innerHTML = '';
-         priceTotalP.textContent = 'Total Cost: calculating...';
-         // priceWidgetImg.classList.add('hidden'); // Hide image initially
-
-        try {
-            // Use GET, as the proxy endpoint supports GET
-            const response = await fetch(url, { method: 'GET' });
-            if (!response.ok) {
-                 const errorData = await response.json().catch(() => ({ error: `HTTP error! status: ${response.status}` }));
-                 throw new Error(errorData.error || `Failed to fetch price breakdown: Status ${response.status}`);
-            }
-            const data = await response.json(); // Proxy returns JSON [ingredients, prices]
-
-            if (data && Array.isArray(data) && data.length === 2) {
-                 const [ingredients, prices] = data;
-                 priceIngredientsUl.innerHTML = ingredients.map(ing => `<li>${ing}</li>`).join('');
-                 priceCostsUl.innerHTML = prices.slice(0, -1).map(price => `<li>${price}</li>`).join(''); // Exclude total from prices list
-                 priceTotalP.textContent = `Total Cost: ${prices[prices.length - 1] || 'N/A'}`;
-
-                 // Optionally fetch and display the widget image too
-                 // const widgetUrl = `${FRONTEND_BASE_URL}/api/price_breakdown_widget/${mealId}`;
-                 // priceWidgetImg.src = widgetUrl;
-                 // priceWidgetImg.classList.remove('hidden');
-
-             } else {
-                 throw new Error('Invalid price breakdown data format received.');
-             }
-        } catch (error) {
-             displayError(`Failed to load price breakdown: ${error.message}`, priceIngredientsUl);
-             priceCostsUl.innerHTML = '';
-             priceTotalP.textContent = 'Total Cost: Error';
-        }
-    };
-
-     // --- Favorite CRUD Operations (Directly to Backend API) ---
-
-     // Fetch all favorites (via front-end proxy /get_test_data)
-     const loadFavorites = async () => {
-         const url = `${FRONTEND_BASE_URL}/get_test_data`; // Proxy endpoint
-         try {
-             const response = await fetch(url, { method: 'GET' }); // Use GET
-             if (!response.ok) {
-                 // This endpoint renders HTML, so handle non-OK differently
-                 throw new Error(`Failed to load favorites page: Status ${response.status}`);
-             }
-             // Since the proxy returns HTML for this route, we can't easily get JSON.
-             // For a SPA feel, ideally the backend /test endpoint should be called directly.
-             // Let's call the backend /test directly for JSON data.
-             const backendUrl = `${BACKEND_BASE_URL}/test`;
-             const backendResponse = await fetch(backendUrl);
-             if (!backendResponse.ok) {
-                const errorData = await backendResponse.json().catch(() => ({ error: `HTTP error! status: ${backendResponse.status}` }));
-                throw new Error(errorData.error || `Failed to fetch favorites: Status ${backendResponse.status}`);
-             }
-             const favorites = await backendResponse.json();
-             displayFavorites(favorites);
-             currentView = 'favorites';
-         } catch (error) {
-             displayError(`Failed to load favorites: ${error.message}`, favoritesList);
-             showSection(favoritesSection); // Ensure section is visible for error message
-             currentView = 'favorites';
-         }
-     };
-
-    // Add recipe to favorites (using front-end proxy /add_to_favorites)
-    const addFavorite = async (recipeData) => {
-        if (!recipeData) {
-            alert("No recipe details available to add.");
+        if (!query) {
+            showNotification('Please enter a search term.', true);
             return;
         }
 
-        // Extract ingredients correctly
-        const ingredients = Array.from(recipeData.extendedIngredients || []).map(ing => ing.original);
+        searchResults.innerHTML = '';
+        searchResults.style.display = 'none';
+        noResults.style.display = 'none';
+        showLoader(searchLoader);
 
-        const formData = new FormData();
-        formData.append('recipe_title', recipeData.title || 'Untitled');
-        formData.append('recipe_id', recipeData.id ? String(recipeData.id) : `custom_${Date.now()}`); // Ensure ID is string
-        formData.append('recipe_instructions', recipeData.instructions || 'No instructions provided.');
-        // Join ingredients array into a string (assuming backend expects a string)
-        formData.append('recipe_ingredients', ingredients.join('\n'));
-        formData.append('recipe_image', recipeData.image || '');
+        let url = `/api/meals?query=${encodeURIComponent(query)}`;
 
-        const url = `${FRONTEND_BASE_URL}/add_to_favorites`; // Proxy endpoint
+        if (minCalories && maxCalories) {
+            url += `&minCalories=${minCalories}&maxCalories=${maxCalories}`;
+        } else if (minCalories) {
+            url += `&minCalories=${minCalories}`;
+        } else if (maxCalories) {
+            url += `&maxCalories=${maxCalories}`;
+        }
 
-        try {
-             // Use POST as defined in the proxy app
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData // Sending as form data
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoader(searchLoader);
+                if (data.results && data.results.length > 0) {
+                    displaySearchResults(data.results);
+                    searchResults.style.display = 'grid';
+                } else {
+                    noResults.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching search results:', error);
+                hideLoader(searchLoader);
+                showNotification('Error fetching search results. Please try again.', true);
             });
-            const result = await response.json();
-            if (!response.ok) {
-                 throw new Error(result.error || `HTTP error! status: ${response.status}`);
-            }
-            alert(result.message || "Recipe added to favorites!");
-            addToFavoritesBtn.disabled = true; // Disable button after adding
-            addToFavoritesBtn.textContent = "Added!";
-        } catch (error) {
-            displayError(`Failed to add to favorites: ${error.message}`);
-            // Don't change section on error here
-        }
-    };
+    });
 
-    // Create a new favorite recipe from scratch (direct to backend /create_recipe)
-    const createFavorite = async (event) => {
-        event.preventDefault();
-        const formData = new FormData(createFavoriteForm);
-        const url = `${BACKEND_BASE_URL}/create_recipe`; // Direct backend endpoint
+    function displaySearchResults(results) {
+        searchResults.innerHTML = ''; // Clear previous results
 
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData
+        results.forEach(recipe => {
+            const recipeCard = document.createElement('div');
+            recipeCard.className = 'recipe-card';
+            recipeCard.innerHTML = `
+                <div class="recipe-image">
+                    <img src="${recipe.image}" alt="${recipe.title}" loading="lazy">
+                </div>
+                <div class="recipe-content">
+                    <h3 class="recipe-title">${recipe.title}</h3>
+                    <div class="recipe-actions">
+                        <button class="action-btn view-recipe" data-id="${recipe.id}">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            searchResults.appendChild(recipeCard);
+
+            // Add event listener to view button
+            recipeCard.querySelector('.view-recipe').addEventListener('click', function() {
+                const recipeId = this.getAttribute('data-id');
+                fetchRecipeDetails(recipeId);
             });
-            const result = await response.json();
-             if (!response.ok) { // Check for 201 Created or other success codes if needed
-                 throw new Error(result.error || `HTTP error! status: ${response.status}`);
-             }
-            alert(result.message || "Recipe created successfully!");
-            createFavoriteModal.classList.add('hidden');
-            createFavoriteForm.reset();
-            loadFavorites(); // Refresh favorites list
-        } catch (error) {
-            displayError(`Failed to create recipe: ${error.message}`);
-            // Keep modal open on error
-        }
-    };
+        });
+    }
 
+    // --- Random Recipe Functionality ---
 
-     // Update favorite recipe instructions (direct to backend /update_recipe_instructions)
-     const updateFavorite = async (event) => {
-         event.preventDefault();
-         const title = updateTitleInput.value;
-         const instructions = updateInstructionsInput.value;
-         const url = `${BACKEND_BASE_URL}/update_recipe_instructions`; // Direct backend endpoint
+    randomRecipeBtn.addEventListener('click', function() {
+        randomRecipeResult.innerHTML = '';
+        randomRecipeResult.style.display = 'none';
+        showLoader(randomRecipeLoader);
 
-         try {
-             const response = await fetch(url, {
-                 method: 'PUT',
-                 headers: {
-                     'Content-Type': 'application/json',
-                 },
-                 // Backend expects r_title and r_instructions in JSON body
-                 body: JSON.stringify({
-                     r_title: title,
-                     r_instructions: instructions
-                 })
-             });
-             const result = await response.json();
-             if (!response.ok) {
-                 throw new Error(result.error || `HTTP error! status: ${response.status}`);
-             }
-             alert(result.message || "Instructions updated successfully!");
-             updateFavoriteModal.classList.add('hidden');
-             loadFavorites(); // Refresh favorites list
-         } catch (error) {
-             displayError(`Failed to update recipe: ${error.message}`);
-             // Keep modal open on error
-         }
-     };
-
-    // Delete favorite recipe (direct to backend /delete_recipe)
-    const deleteFavorite = async (recipeTitle) => {
-        if (!confirm(`Are you sure you want to delete the recipe "${recipeTitle}"?`)) {
-            return;
-        }
-        const url = `${BACKEND_BASE_URL}/delete_recipe`; // Direct backend endpoint
-
-        try {
-            const response = await fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // Backend expects r_title in JSON body
-                body: JSON.stringify({ r_title: recipeTitle })
+        fetch('/api/random')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoader(randomRecipeLoader);
+                if (data && data.id) {
+                    displayRandomRecipe(data);
+                    randomRecipeResult.style.display = 'block';
+                } else {
+                    throw new Error("Invalid random recipe data received.");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching random recipe:', error);
+                hideLoader(randomRecipeLoader);
+                showNotification('Error fetching random recipe. Please try again.', true);
             });
-            const result = await response.json();
-            if (!response.ok) {
-                 throw new Error(result.error || `HTTP error! status: ${response.status}`);
-            }
-            alert(result.message || "Recipe deleted successfully!");
-            loadFavorites(); // Refresh favorites list
-        } catch (error) {
-            displayError(`Failed to delete recipe: ${error.message}`);
-            // Show error, but don't change view
-        }
-    };
+    });
 
-    // --- DOM Manipulation Functions ---
+    function displayRandomRecipe(recipe) {
+        // Basic check for essential properties
+        const imageUrl = recipe.image || 'static/images/placeholder.png'; // Fallback image
+        const title = recipe.title || 'Unknown Recipe';
+        const readyInMinutes = recipe.readyInMinutes || 'N/A';
+        const servings = recipe.servings || 'N/A';
 
-    const createRecipeCard = (recipe, isFavorite = false) => {
-        const card = document.createElement('article');
-        card.classList.add('recipe-card');
-        // Use different keys for search results vs favorites
-        const title = isFavorite ? recipe.title : recipe.title;
-        const image = isFavorite ? recipe.image : recipe.image; // Assuming favorite has 'image', search has 'image'
-        const id = isFavorite ? recipe.recipe_id : recipe.id; // Favorites use 'recipe_id', search uses 'id'
-
-        card.innerHTML = `
-            <img src="${image || 'placeholder.jpg'}" alt="${title}" loading="lazy">
-            <div class="recipe-card-content">
-                <h3>${title}</h3>
-                <div class="button-group">
-                    ${!isFavorite ? `<button class="btn btn-primary view-details-btn" data-id="${id}">View Details</button>` : ''}
-                     ${isFavorite ? `<button class="btn btn-primary view-fav-details-btn" data-id="${id}" data-title="${title}">View Details</button>` : ''}
-                    ${isFavorite ? `<button class="btn btn-secondary update-fav-btn" data-title="${title}">Update</button>` : ''}
-                    ${isFavorite ? `<button class="btn btn-danger delete-fav-btn" data-title="${title}">Delete</button>` : ''}
+        randomRecipeResult.innerHTML = `
+            <div class="recipe-detail-image">
+                <img src="${imageUrl}" alt="${title}">
+            </div>
+            <div class="recipe-detail-content">
+                <h2 class="recipe-detail-title">${title}</h2>
+                <div class="recipe-stats">
+                    <div class="recipe-stat"><i class="fas fa-clock"></i> Ready in ${readyInMinutes} min</div>
+                    <div class="recipe-stat"><i class="fas fa-utensils"></i> Serves ${servings}</div>
+                    ${recipe.vegetarian ? '<div class="recipe-stat"><i class="fas fa-leaf"></i> Vegetarian</div>' : ''}
+                    ${recipe.vegan ? '<div class="recipe-stat"><i class="fas fa-seedling"></i> Vegan</div>' : ''}
+                    ${recipe.glutenFree ? '<div class="recipe-stat"><i class="fas fa-bread-slice"></i> Gluten-Free</div>' : ''}
+                    ${recipe.dairyFree ? '<div class="recipe-stat"><i class="fas fa-cheese"></i> Dairy-Free</div>' : ''}
+                </div>
+                <div class="recipe-actions-large">
+                    <button class="btn btn-primary view-full-recipe" data-id="${recipe.id}">
+                        <i class="fas fa-eye"></i> View Full Recipe
+                    </button>
+                    <button class="btn btn-secondary view-price-breakdown" data-id="${recipe.id}">
+                        <i class="fas fa-dollar-sign"></i> Price Breakdown
+                    </button>
                 </div>
             </div>
         `;
 
-         // Add event listeners for buttons within the card
-         if (!isFavorite) {
-             card.querySelector('.view-details-btn').addEventListener('click', () => getRecipeDetails(id));
-         } else {
-             card.querySelector('.view-fav-details-btn').addEventListener('click', () => {
-                 // Need to fetch favorite details separately if needed, or display stored info
-                 // Let's assume clicking view on a favorite shows the stored data for simplicity now
-                 // Or better: fetch its details using the ID. Let's try fetching.
-                 getRecipeDetails(id); // Use the standard detail fetcher
-             });
-             card.querySelector('.update-fav-btn').addEventListener('click', () => {
-                // Pre-fill and show update modal
-                updateTitleInput.value = title;
-                // Find the current instructions (need the full favorite object here)
-                // This requires the `loadFavorites` function to store the full objects or refetch
-                // Let's assume `recipe.instructions` exists from the loaded favorites data
-                updateInstructionsInput.value = recipe.instructions || '';
-                updateFavoriteModal.classList.remove('hidden');
-             });
-             card.querySelector('.delete-fav-btn').addEventListener('click', () => deleteFavorite(title));
-         }
-
-        return card;
-    };
-
-    const displaySearchResults = (results) => {
-        showSection(resultsSection);
-        resultsGrid.innerHTML = ''; // Clear previous results
-        if (!results || results.length === 0) {
-            resultsGrid.innerHTML = '<p>No recipes found. Try different keywords or adjust calories.</p>';
-            backToSearchBtn.classList.remove('hidden');
-            return;
-        }
-        results.forEach(recipe => {
-            resultsGrid.appendChild(createRecipeCard(recipe, false));
-        });
-         backToSearchBtn.classList.remove('hidden'); // Show back button
-    };
-
-    const displayRecipeDetails = (meal) => {
-        showSection(recipeDetailSection);
-        recipeTitle.textContent = meal.title || 'Recipe Details';
-        recipeImage.src = meal.image || 'placeholder.jpg';
-        recipeImage.alt = meal.title || 'Recipe Image';
-        recipeSummary.innerHTML = meal.summary || 'No summary available.'; // Use innerHTML for potential HTML tags
-
-        // Ingredients
-        recipeIngredients.innerHTML = '';
-        if (meal.extendedIngredients && meal.extendedIngredients.length > 0) {
-            meal.extendedIngredients.forEach(ing => {
-                const li = document.createElement('li');
-                li.textContent = ing.original;
-                recipeIngredients.appendChild(li);
+        // Add event listeners
+        const viewFullBtn = randomRecipeResult.querySelector('.view-full-recipe');
+        if (viewFullBtn) {
+            viewFullBtn.addEventListener('click', function() {
+                const recipeId = this.getAttribute('data-id');
+                fetchRecipeDetails(recipeId);
             });
-        } else {
-            recipeIngredients.innerHTML = '<li>Ingredients not available.</li>';
         }
 
-        // Instructions
-        if (meal.instructions) {
-             // Spoonacular instructions can contain HTML, so use innerHTML
-             recipeInstructions.innerHTML = meal.instructions;
-        } else if (meal.analyzedInstructions && meal.analyzedInstructions.length > 0) {
-            // Fallback to analyzed instructions if plain instructions aren't available
-            let instructionsHtml = '<ol>';
-            meal.analyzedInstructions[0].steps.forEach(step => {
-                instructionsHtml += `<li>${step.step}</li>`;
+        const priceBreakdownBtn = randomRecipeResult.querySelector('.view-price-breakdown');
+        if (priceBreakdownBtn) {
+            priceBreakdownBtn.addEventListener('click', function() {
+                const recipeId = this.getAttribute('data-id');
+                viewPriceBreakdown(recipeId);
             });
-            instructionsHtml += '</ol>';
-            recipeInstructions.innerHTML = instructionsHtml;
-        } else {
-            recipeInstructions.innerHTML = '<p>Instructions not available.</p>';
+        }
+    }
+
+    // --- Recipe Detail Modal Functionality ---
+
+    function fetchRecipeDetails(recipeId) {
+        recipeDetailContent.innerHTML = '<div class="loader-small"></div>'; // Show a small loader inside modal
+        recipeModal.style.display = 'block';
+        currentRecipe = null; // Reset current recipe
+
+        fetch(`/api/recipe/info/${recipeId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.id) {
+                    currentRecipe = data; // Store the fetched recipe details
+                    displayRecipeDetails(data);
+                } else {
+                    throw new Error("Invalid recipe detail data received.");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching recipe details:', error);
+                recipeDetailContent.innerHTML = '<p class="error-message">Error loading recipe details. Please try again.</p>';
+                showNotification('Error fetching recipe details.', true);
+            });
+    }
+
+    function displayRecipeDetails(recipe) {
+        // Extract ingredients safely
+        const ingredients = (recipe.extendedIngredients || []).map(ingredient => ingredient.original || 'Unknown ingredient');
+
+        // Extract instructions safely
+        let instructions = [];
+        if (recipe.analyzedInstructions && recipe.analyzedInstructions.length > 0 && recipe.analyzedInstructions[0].steps) {
+            instructions = recipe.analyzedInstructions[0].steps.map(step => step.step || 'Instruction step missing');
+        } else if (recipe.instructions) {
+            // Basic split for plain text instructions
+            instructions = recipe.instructions.split('\n').map(line => line.trim()).filter(line => line);
+        }
+         if (instructions.length === 0) {
+            instructions.push("No instructions available for this recipe.");
         }
 
-        // Reset and prepare Price Breakdown button
-        fetchPriceBtn.disabled = false;
-        fetchPriceBtn.textContent = 'Show Price Breakdown';
-        fetchPriceBtn.dataset.id = meal.id;
-        priceDetailsDiv.classList.add('hidden'); // Hide details initially
-        priceIngredientsUl.innerHTML = '';
-        priceCostsUl.innerHTML = '';
-        priceTotalP.textContent = '';
-       // priceWidgetImg.classList.add('hidden');
 
-        // Reset and prepare Add to Favorites button
-        addToFavoritesBtn.disabled = false;
-        addToFavoritesBtn.textContent = 'Add to Favorites';
-        addToFavoritesBtn.onclick = () => addFavorite(meal); // Use current meal data
+        const imageUrl = recipe.image || 'static/images/placeholder.png';
+        const title = recipe.title || 'Unknown Recipe';
+        const readyInMinutes = recipe.readyInMinutes || 'N/A';
+        const servings = recipe.servings || 'N/A';
 
-    };
+        // *** COMPLETE THE HTML STRUCTURE HERE ***
+        recipeDetailContent.innerHTML = `
+            <div class="recipe-detail-image">
+                <img src="${imageUrl}" alt="${title}">
+            </div>
+            <div class="recipe-detail-main-content">
+                <h2 class="recipe-detail-title">${title}</h2>
+                <div class="recipe-stats">
+                    <div class="recipe-stat"><i class="fas fa-clock"></i> Ready in ${readyInMinutes} min</div>
+                    <div class="recipe-stat"><i class="fas fa-utensils"></i> Serves ${servings}</div>
+                    ${recipe.vegetarian ? '<div class="recipe-stat"><i class="fas fa-leaf"></i> Vegetarian</div>' : ''}
+                    ${recipe.vegan ? '<div class="recipe-stat"><i class="fas fa-seedling"></i> Vegan</div>' : ''}
+                    ${recipe.glutenFree ? '<div class="recipe-stat"><i class="fas fa-bread-slice"></i> Gluten-Free</div>' : ''}
+                    ${recipe.dairyFree ? '<div class="recipe-stat"><i class="fas fa-cheese"></i> Dairy-Free</div>' : ''}
+                </div>
 
-    const displayFavorites = (favoritesData) => {
-         showSection(favoritesSection);
-         favoritesList.innerHTML = ''; // Clear previous list
-         // The backend /test returns a dictionary { title: {details} }
-         const favoritesArray = Object.values(favoritesData);
+                <div class="recipe-detail-section">
+                    <h3>Ingredients</h3>
+                    <ul class="ingredients-list">
+                        ${ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                    </ul>
+                </div>
 
-         if (!favoritesArray || favoritesArray.length === 0) {
-             favoritesList.innerHTML = '<p>You haven\'t saved any favorite recipes yet.</p>';
+                <div class="recipe-detail-section">
+                    <h3>Instructions</h3>
+                    <ol class="instructions-list">
+                        ${instructions.map(instruction => `<li>${instruction}</li>`).join('')}
+                    </ol>
+                </div>
+                 <div class="recipe-actions-large modal-specific-actions">
+                     <button class="btn btn-secondary view-price-breakdown" data-id="${recipe.id}">
+                          <i class="fas fa-dollar-sign"></i> Price Breakdown
+                      </button>
+                 </div>
+            </div>
+        `; // *** END OF COMPLETED HTML ***
+
+        // *** ADD EVENT LISTENER FOR PRICE BREAKDOWN BUTTON WITHIN MODAL ***
+        const priceBreakdownBtnModal = recipeDetailContent.querySelector('.view-price-breakdown');
+         if (priceBreakdownBtnModal) {
+            priceBreakdownBtnModal.addEventListener('click', function() {
+                 const recipeId = this.getAttribute('data-id');
+                 viewPriceBreakdown(recipeId);
+             });
+        } else {
+             console.warn("Price breakdown button not found inside recipe detail modal content.");
+        }
+    }
+
+
+    // --- Price Breakdown Modal Functionality ---
+
+    function viewPriceBreakdown(recipeId) {
+        // Show modal and potentially a loader
+        priceBreakdownModal.style.display = 'block';
+        priceBreakdownImg.style.display = 'none'; // Hide previous image
+        priceBreakdownData.innerHTML = '<div class="loader-small"></div>'; // Show loader
+
+        // Set the image source directly - browser fetches it
+        priceBreakdownImg.src = `/api/price_breakdown_widget/${recipeId}`;
+        priceBreakdownImg.onload = () => { priceBreakdownImg.style.display = 'block'; }; // Show when loaded
+        priceBreakdownImg.onerror = () => {
+            priceBreakdownImg.style.display = 'none'; // Hide if error
+            // Optionally show a placeholder or error message for the image
+            console.error('Failed to load price breakdown image.');
+        };
+
+
+        // Fetch the structured price data
+        fetch(`/api/price_breakdown/${recipeId}`)
+            .then(response => {
+                 if (!response.ok) {
+                     throw new Error(`HTTP error! status: ${response.status}`);
+                 }
+                return response.json();
+            })
+            .then(data => {
+                // Data should be [ingredients, prices]
+                if (Array.isArray(data) && data.length === 2 && Array.isArray(data[0]) && Array.isArray(data[1])) {
+                     const ingredients = data[0];
+                     const prices = data[1];
+
+                    // Check if data looks reasonable (skip title/total if present)
+                     let dataHtml = '<dl class="price-breakdown-list">';
+                     let hasData = false;
+                     for (let i = 0; i < ingredients.length; i++) {
+                         // Simple check to skip summary lines often included by the backend parser
+                         if (ingredients[i] && prices[i] && !ingredients[i].toLowerCase().includes('total')) {
+                             dataHtml += `<dt>${ingredients[i]}</dt><dd>${prices[i]}</dd>`;
+                             hasData = true;
+                         }
+                     }
+                     dataHtml += '</dl>';
+
+                    if (hasData) {
+                        priceBreakdownData.innerHTML = dataHtml;
+                    } else {
+                        priceBreakdownData.innerHTML = '<p>Price breakdown data is not available or empty.</p>';
+                    }
+                } else {
+                    throw new Error('Invalid price breakdown data format received.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching price breakdown data:', error);
+                priceBreakdownData.innerHTML = '<p class="error-message">Could not load price breakdown details.</p>';
+                // Optionally hide the image as well if data fails
+                // priceBreakdownImg.style.display = 'none';
+            });
+    }
+
+    // --- Favorites Functionality ---
+
+    function loadFavorites() {
+        favoritesList.innerHTML = '';
+        favoritesList.style.display = 'none';
+        noFavorites.style.display = 'none';
+        showLoader(favoritesLoader);
+
+        fetch('/test') // Assuming '/test' fetches all favorites
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+             })
+            .then(data => {
+                hideLoader(favoritesLoader);
+                 if (data && Object.keys(data).length > 0) {
+                    displayFavorites(data);
+                    favoritesList.style.display = 'grid';
+                 } else {
+                    noFavorites.style.display = 'block';
+                 }
+             })
+            .catch(error => {
+                console.error('Error fetching favorites:', error);
+                hideLoader(favoritesLoader);
+                showNotification('Could not load your favorite recipes.', true);
+                noFavorites.textContent = 'Error loading favorites.';
+                noFavorites.style.display = 'block';
+             });
+     }
+
+    function displayFavorites(recipes) {
+        favoritesList.innerHTML = ''; // Clear previous favorites
+        Object.values(recipes).forEach(recipe => { // Iterate through recipe objects
+             const recipeCard = document.createElement('div');
+             recipeCard.className = 'recipe-card favorite-card'; // Add specific class if needed
+             recipeCard.innerHTML = `
+                <div class="recipe-image">
+                     <img src="${recipe.image}" alt="${recipe.title}" loading="lazy">
+                 </div>
+                 <div class="recipe-content">
+                     <h3 class="recipe-title">${recipe.title}</h3>
+                     </div>
+                 <div class="recipe-actions">
+                     <button class="action-btn view-fav-recipe" data-id="${recipe.recipe_id}" data-title="${recipe.title}">
+                         <i class="fas fa-eye"></i> View
+                     </button>
+                      <button class="action-btn edit-recipe" data-title="${recipe.title}">
+                          <i class="fas fa-edit"></i> Edit
+                      </button>
+                      <button class="action-btn delete-recipe" data-title="${recipe.title}">
+                          <i class="fas fa-trash-alt"></i> Delete
+                      </button>
+                 </div>
+             `;
+             favoritesList.appendChild(recipeCard);
+
+             // Add event listeners for favorite actions
+            recipeCard.querySelector('.view-fav-recipe').addEventListener('click', function() {
+                const recipeId = this.getAttribute('data-id');
+                // If favorite recipe only has basic info, fetch full details
+                 if (recipeId && recipeId !== 'null' && !isNaN(parseInt(recipeId))) { // Check if it's a valid Spoonacular ID
+                    fetchRecipeDetails(recipeId);
+                 } else {
+                     // If it's a user-created recipe without a Spoonacular ID, display from local data
+                     displayFavoriteDetails(recipe); // You'll need to create this function
+                 }
+             });
+
+             recipeCard.querySelector('.edit-recipe').addEventListener('click', function() {
+                 openEditModal(recipe); // Pass the full recipe object
+             });
+
+             recipeCard.querySelector('.delete-recipe').addEventListener('click', function() {
+                 const titleToDelete = this.getAttribute('data-title');
+                 if (confirm(`Are you sure you want to delete "${titleToDelete}"?`)) {
+                     deleteFavorite(titleToDelete);
+                 }
+             });
+         });
+     }
+
+     // Function to display details for a favorite (especially user-created ones)
+     function displayFavoriteDetails(recipe) {
+        currentRecipe = recipe; // Set as current recipe for potential actions
+        recipeDetailContent.innerHTML = `
+            <div class="recipe-detail-image">
+                <img src="${recipe.image}" alt="${recipe.title}">
+            </div>
+            <div class="recipe-detail-main-content">
+                <h2 class="recipe-detail-title">${recipe.title}</h2>
+                 </div>
+
+                 <div class="recipe-detail-section">
+                    <h3>Ingredients</h3>
+                     <ul class="ingredients-list">
+                         ${(recipe.ingredients || '').split('\n').map(item => item.trim()).filter(item => item).map(ingredient => `<li>${ingredient}</li>`).join('') || '<li>No ingredients listed.</li>'}
+                     </ul>
+                 </div>
+
+                 <div class="recipe-detail-section">
+                    <h3>Instructions</h3>
+                     <ol class="instructions-list">
+                         ${(recipe.instructions || '').split('\n').map(item => item.trim()).filter(item => item).map(instruction => `<li>${instruction}</li>`).join('') || '<li>No instructions listed.</li>'}
+                     </ol>
+                 </div>
+                </div>
+             `;
+        recipeModal.style.display = 'block';
+        // Hide 'Add to Favorites' button for favorites modal if it's already a favorite
+        addToFavoritesBtn.style.display = 'none';
+    }
+
+    // Refresh Favorites Button
+    refreshFavoritesBtn.addEventListener('click', loadFavorites);
+
+
+    // *** ADD TO FAVORITES BUTTON LOGIC ***
+    addToFavoritesBtn.addEventListener('click', function() {
+         if (!currentRecipe || !currentRecipe.id) {
+             showNotification('No recipe selected or recipe data missing.', true);
              return;
          }
-         favoritesArray.forEach(recipe => {
-             favoritesList.appendChild(createRecipeCard(recipe, true)); // Pass true for isFavorite
+
+         // Prepare data for the backend
+        const formData = new FormData();
+        formData.append('recipe_title', currentRecipe.title);
+        formData.append('recipe_id', currentRecipe.id); // Use Spoonacular ID
+        formData.append('recipe_image', currentRecipe.image || '');
+
+        // Format ingredients and instructions as simple strings (newline separated)
+        const ingredientsString = (currentRecipe.extendedIngredients || []).map(ing => ing.original).join('\n');
+         let instructionsString = '';
+         if (currentRecipe.analyzedInstructions && currentRecipe.analyzedInstructions.length > 0 && currentRecipe.analyzedInstructions[0].steps) {
+             instructionsString = currentRecipe.analyzedInstructions[0].steps.map(step => step.step).join('\n');
+         } else if (currentRecipe.instructions) {
+            instructionsString = currentRecipe.instructions; // Assume it's already a suitable string
+         }
+
+        formData.append('recipe_ingredients', ingredientsString);
+        formData.append('recipe_instructions', instructionsString);
+
+
+        // Send request to backend
+         fetch('/add_to_favorites', {
+             method: 'POST',
+             body: formData
+         })
+         .then(response => response.json())
+         .then(data => {
+             if (data.message) {
+                 showNotification(data.message);
+                 recipeModal.style.display = 'none'; // Close modal on success
+                 loadFavorites(); // Refresh the favorites list
+             } else if (data.error) {
+                 showNotification(data.error, true);
+             } else {
+                 showNotification('An unknown error occurred.', true);
+             }
+         })
+         .catch(error => {
+             console.error('Error adding to favorites:', error);
+             showNotification('Failed to add recipe to favorites. Check console.', true);
          });
-     };
+     });
 
+    // --- Create Recipe Modal ---
+     createRecipeBtn.addEventListener('click', () => {
+        createRecipeForm.reset(); // Clear form
+        createRecipeModal.style.display = 'block';
+    });
 
-    // --- Event Listeners ---
-    searchForm.addEventListener('submit', (e) => {
+     createRecipeForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const query = searchQueryInput.value.trim();
-        const minCal = minCaloriesInput.value.trim();
-        const maxCal = maxCaloriesInput.value.trim();
-        if (query) {
-            searchRecipes(query, minCal, maxCal);
-        } else {
-            alert("Please enter a search term.");
-        }
-    });
+        const formData = new FormData(this);
 
-    randomRecipeBtn.addEventListener('click', getRandomRecipe);
-
-    fetchPriceBtn.addEventListener('click', (e) => {
-         const mealId = e.target.dataset.id;
-         if (mealId) {
-             getPriceBreakdown(mealId);
-             e.target.disabled = true; // Prevent multiple clicks while loading
-             e.target.textContent = 'Loading Price...';
+         // Basic validation (can be enhanced)
+         if (!formData.get('r_title') || !formData.get('r_id') || !formData.get('r_ingredients') || !formData.get('r_instructions') || !formData.get('r_image')) {
+            showNotification('Please fill in all fields.', true);
+            return;
          }
-    });
 
-     // Navigation
-     homeLink.addEventListener('click', (e) => {
-         e.preventDefault();
-         showSection(searchSection);
-         currentView = 'search';
-     });
-     navSearchLink.addEventListener('click', (e) => {
-         e.preventDefault();
-         // If already in results or detail, just go back to search form
-         showSection(searchSection);
-         currentView = 'search';
-     });
-     navFavoritesLink.addEventListener('click', (e) => {
-         e.preventDefault();
-         loadFavorites(); // Fetch and display favorites
+
+        fetch('/create_recipe', {
+             method: 'POST',
+             body: formData
+         })
+        .then(response => {
+             // Check status code for success (201) or conflict (409)
+             if (response.status === 201) {
+                 return response.json().then(data => ({ success: true, message: data.message }));
+             } else if (response.status === 409) {
+                 return response.json().then(data => ({ success: false, message: data.error }));
+             } else {
+                 // Other errors
+                 return response.json().then(data => Promise.reject(data.error || 'Failed to create recipe.'));
+             }
+         })
+        .then(result => {
+            showNotification(result.message, !result.success);
+             if (result.success) {
+                 createRecipeModal.style.display = 'none';
+                 loadFavorites(); // Refresh list
+             }
+         })
+         .catch(error => {
+            console.error('Error creating recipe:', error);
+            showNotification(`Error: ${error}`, true);
+         });
      });
 
-     // Back buttons
-     backToSearchBtn.addEventListener('click', () => {
-         showSection(searchSection);
-         currentView = 'search';
-     });
-      backToResultsBtn.addEventListener('click', () => {
-         if (lastSearchResults.length > 0) {
-             displaySearchResults(lastSearchResults); // Re-display last results
-             currentView = 'results';
-         } else {
-             showSection(searchSection); // Fallback to search if no results history
-             currentView = 'search';
+    // --- Edit Recipe Modal ---
+    function openEditModal(recipe) {
+        // Populate the edit form
+         document.getElementById('edit_r_title').value = recipe.title; // Hidden input stores title
+        document.getElementById('edit_r_instructions').value = recipe.instructions || ''; // Populate textarea
+        editRecipeModal.style.display = 'block';
+     }
+
+     editRecipeForm.addEventListener('submit', function(e) {
+         e.preventDefault();
+         const titleToUpdate = document.getElementById('edit_r_title').value;
+         const newInstructions = document.getElementById('edit_r_instructions').value;
+
+         if (!titleToUpdate || newInstructions.trim() === '') {
+             showNotification('Instructions cannot be empty.', true);
+             return;
          }
+
+        fetch('/update_recipe_instructions', {
+             method: 'PUT',
+             headers: {
+                 'Content-Type': 'application/json',
+             },
+             body: JSON.stringify({
+                 r_title: titleToUpdate,
+                 r_instructions: newInstructions
+             })
+         })
+         .then(response => {
+             if (response.status === 200) {
+                 return response.json().then(data => ({ success: true, message: data.message }));
+             } else if (response.status === 404) {
+                 return response.json().then(data => ({ success: false, message: data.error }));
+             } else {
+                 return response.json().then(data => Promise.reject(data.error || 'Failed to update recipe.'));
+             }
+         })
+         .then(result => {
+            showNotification(result.message, !result.success);
+             if (result.success) {
+                 editRecipeModal.style.display = 'none';
+                 loadFavorites(); // Refresh list
+             }
+         })
+         .catch(error => {
+            console.error('Error updating recipe:', error);
+            showNotification(`Error: ${error}`, true);
+         });
      });
 
-     // Modals
-     createNewFavoriteBtn.addEventListener('click', () => {
-         createFavoriteForm.reset();
-         createFavoriteModal.classList.remove('hidden');
+
+    // --- Delete Favorite Recipe ---
+    function deleteFavorite(recipeTitle) {
+        fetch('/delete_recipe', {
+             method: 'DELETE',
+             headers: {
+                 'Content-Type': 'application/json',
+             },
+             body: JSON.stringify({ r_title: recipeTitle })
+         })
+        .then(response => {
+             if (response.status === 200) {
+                 return response.json().then(data => ({ success: true, message: data.message }));
+             } else if (response.status === 404) {
+                 return response.json().then(data => ({ success: false, message: data.error }));
+             } else {
+                 return response.json().then(data => Promise.reject(data.error || 'Failed to delete recipe.'));
+             }
+         })
+        .then(result => {
+            showNotification(result.message, !result.success);
+             if (result.success) {
+                 loadFavorites(); // Refresh the list
+             }
+         })
+         .catch(error => {
+            console.error('Error deleting recipe:', error);
+            showNotification(`Error: ${error}`, true);
+         });
+     }
+
+
+    // --- Modal Closing Logic ---
+     function closeModalHandler(modal) {
+         modal.style.display = 'none';
+         // Reset specific modal states if necessary
+         if (modal === recipeModal) {
+            recipeDetailContent.innerHTML = ''; // Clear content
+            currentRecipe = null; // Clear current recipe
+            addToFavoritesBtn.style.display = 'block'; // Ensure add button is visible again by default
+         }
+         if (modal === priceBreakdownModal) {
+             priceBreakdownImg.src = ''; // Clear image
+             priceBreakdownData.innerHTML = ''; // Clear data
+         }
+     }
+
+    closeModal.addEventListener('click', () => closeModalHandler(recipeModal));
+    closeCreateModal.addEventListener('click', () => closeModalHandler(createRecipeModal));
+    closeEditModal.addEventListener('click', () => closeModalHandler(editRecipeModal));
+    closePriceModal.addEventListener('click', () => closeModalHandler(priceBreakdownModal));
+
+     // Close modal if clicking outside the content
+    window.addEventListener('click', function(event) {
+        if (event.target === recipeModal) closeModalHandler(recipeModal);
+        if (event.target === createRecipeModal) closeModalHandler(createRecipeModal);
+        if (event.target === editRecipeModal) closeModalHandler(editRecipeModal);
+        if (event.target === priceBreakdownModal) closeModalHandler(priceBreakdownModal);
      });
 
-    // Close modal buttons (delegated listener or direct as in HTML)
-    document.querySelectorAll('.modal .close-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.target.closest('.modal').classList.add('hidden');
-        });
-    });
-    // Close modal if clicking outside the content
-    window.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal')) {
-            e.target.classList.add('hidden');
+    // --- Cooking Timer Functionality ---
+
+     function updateTimerDisplay() {
+         const minutes = Math.floor(totalSeconds / 60);
+         const seconds = totalSeconds % 60;
+         timerMinutes.textContent = String(minutes).padStart(2, '0');
+         timerSeconds.textContent = String(seconds).padStart(2, '0');
+     }
+
+    function startTimer() {
+        if (isTimerRunning) return; // Prevent multiple intervals
+
+        const minutes = parseInt(timerMinutesInput.value) || 0;
+        const seconds = parseInt(timerSecondsInput.value) || 0;
+        totalSeconds = (minutes * 60) + seconds;
+
+         if (totalSeconds <= 0) {
+            showNotification("Please set a valid timer duration.", true);
+            return;
         }
-    });
 
-    // Form submissions for modals
-    createFavoriteForm.addEventListener('submit', createFavorite);
-    updateFavoriteForm.addEventListener('submit', updateFavorite);
+        isTimerRunning = true;
+        timerStartBtn.disabled = true;
+        timerPauseBtn.disabled = false;
+        timerMinutesInput.disabled = true;
+        timerSecondsInput.disabled = true;
 
+        updateTimerDisplay(); // Show initial time
 
-    // --- Initialization ---
-    showSection(searchSection); // Start on the search page
-    // Set current year in footer
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-    // Optional: Check backend status on load
-    // checkBackendStatus(); // Implement checkBackendStatus if needed
-});
+        timerInterval = setInterval(() => {
+             totalSeconds--;
+             if (totalSeconds < 0) {
+                 resetTimer();
+                 showNotification("Time's up!", false);
+                 // Optional: Play a sound
+                 // const alarm = new Audio('path/to/alarm.mp3');
+                 // alarm.play();
+             } else {
+                 updateTimerDisplay();
+             }
+         }, 1000);
+     }
 
-// Helper function to check backend status (optional)
-// async function checkBackendStatus() {
-//     const statusSpan = document.getElementById('backend-status');
-//     if (!statusSpan) return;
-//     try {
-//         const response = await fetch('http://localhost:5001/check_backend'); // Call proxy checker
-//         const text = await response.text();
-//         statusSpan.textContent = text;
-//         statusSpan.style.color = response.ok ? 'var(--success-color)' : 'var(--primary-color)';
-//     } catch (error) {
-//         statusSpan.textContent = 'Error connecting to backend.';
-//         statusSpan.style.color = 'var(--primary-color)';
-//     }
-// }
+     function pauseTimer() {
+         if (!isTimerRunning) return;
+         clearInterval(timerInterval);
+         isTimerRunning = false;
+         timerStartBtn.disabled = false;
+         timerPauseBtn.disabled = true;
+         timerStartBtn.textContent = 'Resume'; // Change button text
+     }
+
+     function resetTimer() {
+         clearInterval(timerInterval);
+         isTimerRunning = false;
+         totalSeconds = 0;
+         timerMinutesInput.value = 5; // Default back to 5 mins
+         timerSecondsInput.value = 0;
+         updateTimerDisplay(); // Display 00:00
+        timerStartBtn.disabled = false;
+        timerPauseBtn.disabled = true;
+        timerStartBtn.textContent = 'Start'; // Reset button text
+         timerMinutesInput.disabled = false;
+        timerSecondsInput.disabled = false;
+
+    }
+
+    timerStartBtn.addEventListener('click', startTimer);
+    timerPauseBtn.addEventListener('click', pauseTimer);
+    timerResetBtn.addEventListener('click', resetTimer);
+
+    // --- Initial Load ---
+    loadFavorites(); // Load favorites when the page loads
+    updateTimerDisplay(); // Initialize timer display
+
+}); // End of DOMContentLoaded

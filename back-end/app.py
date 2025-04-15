@@ -5,13 +5,19 @@ from flask_cors import CORS
 import re
 from favrecipes import FavRecipes, Recipe
 from typing import Union, Tuple, Optional, List
+from flask import render_template
 
 try: 
     from BeautifulSoup import BeautifulSoup
 except ImportError:
     from bs4 import BeautifulSoup
 
-app = Flask(__name__)
+#app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="../ai-front-end/templates",  # Path relative to back-end/
+    static_folder="../ai-front-end/static"       # Path relative to back-end/
+)
 CORS(app)
 
 # Spoonacular API key
@@ -20,6 +26,10 @@ SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
 
 # Default storage file (only used if not overridden in testing)
 app.fav_recipes = FavRecipes('myfavrecipes.json')
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/health')
 def health_check():

@@ -3,15 +3,8 @@
         "title": "Beef Lo Mein Noodles",
         "recipe_id": "634629",
         "instructions": "Drop noodles into a large quantity of boiling water and cook 3-5 minutes, until barely tender to the bite., Drain, rinse with cold water and reserve., Combine the beef and oyster sauce in a bowl; stir to coat., Let stand for 10 minutes., In another bowl, combine the chicken broth, soy sauce and sesame oil. Set aside., Heat a wok over high heat. When hot, add the vegetable oil, swirling to coat the sides., Add the garlic, ginger, and green onions and cook, stirring until fragrant, about 30 seconds., Add the beef and cook, stirring constantly, about 1 minute., Add the sauce and noodles., Gently toss until heated through and sauce has thickened., Serve immediately., ",
-        "ingredients": "8 ounces dried Chinese egg noodles or soba (buckwheat) noodles, 3/4 pound flank steak, trimmed of any fat and cut into thin strips, 1 tablespoon oyster sauce, 1/2 cup chicken stock, 2 tablespoons soy sauce, 2 teaspoons sesame oil, 3 tablespoons vegetable oil, 2 teaspoons garlic, minced, 2 teaspoon ginger, minced, 1/4 cup green onions, chopped, ",
+        "ingredients": "kaka",
         "image": "https://img.spoonacular.com/recipes/634629-556x370.jpg"
-    },
-    "Chicken Fingers": {
-        "title": "Chicken Fingers",
-        "recipe_id": "638086",
-        "instructions": "Preheat oven to 400 degrees, Line a baking sheet with parchment paper or line the bottom with foil and place a cookie rack on top and spray with cooking spray, set aside, In a shallow bowl add egg whites and water, In another shallow bowl add cornflakes, cheese, and seasonings, stir until combined, Cut chicken breasts horizontally and then cut into strips.Dredge the chicken in egg whites, then dip into cornflake mixture., Place on baking sheet. Do the same for all the chicken., Bake for 18 minutes or until chicken is done., ",
-        "ingredients": "9 dash Cayenne Pepper, 1 pound Boneless Chicken Breasts, 1 1/2 cup Cornflakes,crushed, 1 whole Egg White, 1/4 teaspoons Italian Seasoning, 1/4 teaspoons Paprika, 2 teaspoons Parmesan Cheese, 1 Tablespoon Water, and some LOVE",
-        "image": "https://img.spoonacular.com/recipes/638086-556x370.jpg"
     },
     "Fig, Goat Cheese and Walnut Salad": {
         "title": "Fig, Goat Cheese and Walnut Salad",
@@ -33,13 +26,6 @@
         "instructions": "",
         "ingredients": "",
         "image": "https://img.spoonacular.com/recipes/638174-312x231.jpg"
-    },
-    "Chicken Satay": {
-        "title": "Chicken Satay",
-        "recipe_id": "638308",
-        "instructions": "Soak 20 bamboo skewers for at least 2 hours in a glass of water. This is to prevent the sticks from burning and breaking when placed under the grill or over the coals., Add the ground coriander, ground cumin, turmeric powder, chilli powder, salt, saugar, coconut cream and vegetable oil in a large bowl., Mix well., Cut the chicken into long thin strips.Marinate the chicken in the sauce. Ensure the chicken are well coated.Tightly seal the bowl with cling wrap and place in the fridge. Leave to marinade for at least 4 hours. The longer, the better.In the meantime, prepare the sauce.Look for a reputable brand of satay sauce. I always use Lee Kum Kee., Add about 6 tablespoons of the satay sauce into a bowl.The rest of these steps are to be done, subject to taste. I like to taste as I add the other condiments., Add the crunchy peanut butter, coconut cream and water. If the sauce is too thick, thin it down with a little more water., Add the dark soy sauce, sugar and ground peanuts, Seal the bowl with cling wrap and set aside until ready to serve. Before serving, warm the satay sauce in the microwave oven, covered slightly, for approximately 1.5 to 2mins.When you are ready to grill the chicken, start forming satays by piercing the chicken through the bamboo skewers. I find it alot easier to pierce the meat into the sticks when they are long strips and I pierce through in an undulating manner.  Set aside until ready to use.Preheat your oven to 200 deg Celsius at GRILL., Place your oven shelf higher and closer to the top too., Lay the satay sticks on a cooling mesh sitting over a flat baking sheet to collect drippings., Place the tray of satay under the grill. And grill for 10 to 20 mins. It really depends on how thick your chicken sticks are., Remove the tray from the oven when one side of the satay is a golden brown (not dark brown!). Turn over the satay to the other side. And continue to grill till it has a nice dark golden brown. I like it a little burnt., Serve warm with satay sauce and sliced cucumber., ",
-        "ingredients": "500 grams chicken thigh meat (with fat), 500 grams chicken thigh meat (with fat), 1 teaspoon chilli powder, 3/4 cup coconut cream, 6 tablespoons coconut cream, 1 tablespoon crunchy peanut butter, 1 tablespoon ground coriander, 1 1/2 tablespoons ground cumin, 1/2 cup of ground peanuts, 1 jar of ready made satay sauce (about 6 tablespoons), 1 teaspoon salt, 2 teaspoons dark soy sauce, 1 teaspoon sugar, 2 teaspoons sugar, 2 teaspoons turmeric powder, 1/4 cup vegetable oil, 1/4 cup water, ",
-        "image": "https://img.spoonacular.com/recipes/638308-556x370.jpg"
     },
     "Herbed Goat Cheese Yogurt Dip w. Caramelized Onions": {
         "title": "Herbed Goat Cheese Yogurt Dip w. Caramelized Onions",
@@ -152,5 +138,12 @@
         "instructions": "Old instructions for unique5",
         "ingredients": "New instructions for unique5",
         "image": "http://example.com/unique5.jpg"
+    },
+    "Chicken 65": {
+        "title": "Chicken 65",
+        "recipe_id": "637876",
+        "instructions": "Take a large bowl mix in the ginger and garlic paste, yogurt, red chilly powder, turmeric powder, and salt.\r\nMix well to from smooth and thick paste, add the chicken pieces to the masala paste and  marinaded for 4 hours.\r\nHeat enough oil in a pan to deep fry the marinaded chicken pieces. Deep fry the chicken pieces in batches till crisp and golden color.Note: The taste of the Chicken 65 depends mainly on the amount of time it gets marinated in the masala, it is best to marinate the chicken pieces the day before.",
+        "ingredients": "500 grams boneless chicken breast\r\n2-3 tsp chili powder\r\n4 tbsp Ginger and Garlic paste\r\n\u00bd tbsp. salt\r\n1/4 tsp Turmeric powder\r\n4 tbsp yogurt",
+        "image": "https://img.spoonacular.com/recipes/637876-556x370.jpg"
     }
 }

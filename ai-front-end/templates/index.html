@@ -3,137 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FeastFinder - Find Your Next Meal</title>
+    <title>FeastFinder - Discover Delicious Recipes</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <div class="container nav-container">
-            <a href="#" id="home-link" class="logo-link">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="FeastFinder Logo" class="logo">
+        <div class="container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="FeastFinder Logo">
                 <h1>FeastFinder</h1>
-            </a>
+            </div>
             <nav>
                 <ul>
-                    <li><a href="#" id="nav-search-link">Search</a></li>
-                    <li><a href="#" id="nav-favorites-link">My Favorites</a></li>
+                    <li><a href="#search-section" class="active">Search</a></li>
+                    <li><a href="#random-recipe">Random Recipe</a></li>
+                    <li><a href="#favorites-section">Favorites</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        <section id="search-section">
-            <h2>Find Recipes</h2>
-            <form id="search-form">
-                <div class="form-group">
-                    <input type="text" id="search-query" name="query" placeholder="Search by keyword (e.g., pasta, chicken)" required>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Find Your Perfect Recipe</h2>
+                    <p>Discover thousands of recipes to suit your taste, dietary needs, and calorie goals.</p>
                 </div>
-                <div class="form-group calorie-group">
-                    <label for="min-calories">Calories:</label>
-                    <input type="number" id="min-calories" name="minCalories" placeholder="Min">
-                    <span>-</span>
-                    <input type="number" id="max-calories" name="maxCalories" placeholder="Max">
-                </div>
-                <div class="button-group">
-                    <button type="submit" class="btn btn-primary">Search Recipes</button>
-                    <button type="button" id="random-recipe-btn" class="btn btn-secondary">Get Random Recipe</button>
-                </div>
-            </form>
-        </section>
-
-        <section id="results-section" class="hidden">
-            <h2>Results</h2>
-            <div id="results-grid" class="results-grid">
-                </div>
-             <button id="back-to-search-btn" class="btn btn-secondary hidden">Back to Search</button>
-        </section>
-
-        <section id="recipe-detail-section" class="hidden recipe-detail">
-             <button id="back-to-results-btn" class="btn btn-secondary">Back to Results</button>
-            <h2 id="recipe-title">Recipe Title</h2>
-            <img id="recipe-image" src="#" alt="Recipe Image" style="max-width: 100%; height: auto;">
-            <h3>Summary</h3>
-            <p id="recipe-summary">Summary...</p>
-            <h3>Ingredients</h3>
-            <ul id="recipe-ingredients">
-                </ul>
-             <h3>Instructions</h3>
-            <div id="recipe-instructions">
-                </div>
-            <h3>Price Breakdown</h3>
-            <div id="price-breakdown-container">
-                <button id="fetch-price-btn" class="btn btn-info">Show Price Breakdown</button>
-                <div id="price-details" class="hidden">
-                    <ul id="price-ingredients"></ul>
-                    <ul id="price-costs"></ul>
-                    <p id="price-total">Total Cost: calculating...</p>
-                     </div>
             </div>
-            <button id="add-to-favorites-btn" class="btn btn-success">Add to Favorites</button>
         </section>
 
-        <section id="favorites-section" class="hidden">
-            <h2>My Favorite Recipes</h2>
-             <button id="create-new-favorite-btn" class="btn btn-primary">Create New Recipe</button>
-            <div id="favorites-list" class="results-grid">
-                </div>
-        </section>
-
-        <div id="create-favorite-modal" class="modal hidden">
-            <div class="modal-content">
-                <span class="close-btn" onclick="document.getElementById('create-favorite-modal').classList.add('hidden');">&times;</span>
-                <h2>Create New Favorite Recipe</h2>
-                <form id="create-favorite-form">
+        <!-- Search Section -->
+        <section id="search-section" class="section">
+            <div class="container">
+                <h2 class="section-title">Search Recipes</h2>
+                <form id="search-form" class="search-form">
                     <div class="form-group">
-                        <label for="create-r_title">Title:</label>
-                        <input type="text" id="create-r_title" name="r_title" required>
+                        <input type="text" id="search-query" placeholder="Search for recipes..." required>
                     </div>
-                    <div class="form-group">
-                         <label for="create-r_id">Recipe ID (optional, can be custom):</label>
-                         <input type="text" id="create-r_id" name="r_id" placeholder="e.g., custom-pasta-1">
+                    <div class="calorie-filter">
+                        <h3>Calorie Range (Optional)</h3>
+                        <div class="calorie-inputs">
+                            <div class="form-group">
+                                <label for="min-calories">Min Calories</label>
+                                <input type="number" id="min-calories" placeholder="Min">
+                            </div>
+                            <div class="form-group">
+                                <label for="max-calories">Max Calories</label>
+                                <input type="number" id="max-calories" placeholder="Max">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="create-r_ingredients">Ingredients (one per line):</label>
-                        <textarea id="create-r_ingredients" name="r_ingredients" rows="5" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="create-r_instructions">Instructions:</label>
-                        <textarea id="create-r_instructions" name="r_instructions" rows="8" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="create-r_image">Image URL:</label>
-                        <input type="url" id="create-r_image" name="r_image" placeholder="https://example.com/image.jpg">
-                    </div>
-                    <button type="submit" class="btn btn-success">Save Recipe</button>
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </form>
-            </div>
-        </div>
 
-         <div id="update-favorite-modal" class="modal hidden">
-            <div class="modal-content">
-                 <span class="close-btn" onclick="document.getElementById('update-favorite-modal').classList.add('hidden');">&times;</span>
-                <h2>Update Recipe Instructions</h2>
-                <form id="update-favorite-form">
-                    <input type="hidden" id="update-r_title" name="r_title">
-                    <div class="form-group">
-                        <label for="update-r_instructions">New Instructions:</label>
-                        <textarea id="update-r_instructions" name="r_instructions" rows="10" required></textarea>
+                <div id="search-results" class="recipe-grid"></div>
+                <div id="search-loader" class="loader"></div>
+                <div id="no-results" class="message">No recipes found. Try different search terms.</div>
+            </div>
+        </section>
+
+        <!-- Random Recipe Section -->
+        <section id="random-recipe" class="section bg-light">
+            <div class="container">
+                <h2 class="section-title">Feeling Lucky?</h2>
+                <p class="section-description">Get a random recipe to inspire your next meal!</p>
+                <div class="cta-container">
+                    <button id="random-recipe-btn" class="btn btn-accent">Get Random Recipe</button>
+                </div>
+                <div id="random-recipe-result" class="recipe-detail">
+                    <!-- Random recipe will be inserted here via JS -->
+                </div>
+                <div id="random-recipe-loader" class="loader"></div>
+            </div>
+        </section>
+
+        <!-- Favorites Section -->
+        <section id="favorites-section" class="section">
+            <div class="container">
+                <h2 class="section-title">Your Favorite Recipes</h2>
+                <div class="section-tools">
+                    <button id="refresh-favorites" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    <button id="create-recipe-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Recipe</button>
+                </div>
+                <div id="favorites-list" class="recipe-grid"></div>
+                <div id="favorites-loader" class="loader"></div>
+                <div id="no-favorites" class="message">You don't have any favorite recipes yet.</div>
+            </div>
+        </section>
+
+        <!-- Cooking Timer Section -->
+        <section id="cooking-timer" class="section bg-light">
+            <div class="container">
+                <h2 class="section-title">Cooking Timer</h2>
+                <div class="timer-container">
+                    <div class="timer-display">
+                        <span id="minutes">00</span>:<span id="seconds">00</span>
                     </div>
-                    <button type="submit" class="btn btn-success">Update Instructions</button>
-                </form>
+                    <div class="timer-controls">
+                        <div class="timer-input">
+                            <label for="timer-minutes">Minutes:</label>
+                            <input type="number" id="timer-minutes" min="0" max="180" value="5">
+                            <label for="timer-seconds">Seconds:</label>
+                            <input type="number" id="timer-seconds" min="0" max="59" value="0">
+                        </div>
+                        <div class="timer-buttons">
+                            <button id="timer-start" class="btn btn-primary">Start</button>
+                            <button id="timer-pause" class="btn btn-secondary" disabled>Pause</button>
+                            <button id="timer-reset" class="btn btn-accent">Reset</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-
+        </section>
     </main>
+
+    <!-- Recipe Detail Modal -->
+    <div id="recipe-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="recipe-detail-content"></div>
+            <div class="modal-actions">
+                <button id="add-to-favorites-btn" class="btn btn-primary">Add to Favorites</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Recipe Modal -->
+    <div id="create-recipe-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-create-modal">&times;</span>
+            <h2>Create New Recipe</h2>
+            <form id="create-recipe-form">
+                <div class="form-group">
+                    <label for="r_title">Recipe Title</label>
+                    <input type="text" id="r_title" name="r_title" required>
+                </div>
+                <div class="form-group">
+                    <label for="r_id">Recipe ID</label>
+                    <input type="text" id="r_id" name="r_id" required>
+                </div>
+                <div class="form-group">
+                    <label for="r_ingredients">Ingredients</label>
+                    <textarea id="r_ingredients" name="r_ingredients" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="r_instructions">Instructions</label>
+                    <textarea id="r_instructions" name="r_instructions" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="r_image">Image URL</label>
+                    <input type="url" id="r_image" name="r_image" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Recipe</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Recipe Modal -->
+    <div id="edit-recipe-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-edit-modal">&times;</span>
+            <h2>Edit Recipe Instructions</h2>
+            <form id="edit-recipe-form">
+                <input type="hidden" id="edit_r_title" name="r_title">
+                <div class="form-group">
+                    <label for="edit_r_instructions">Instructions</label>
+                    <textarea id="edit_r_instructions" name="r_instructions" rows="8" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Recipe</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Price Breakdown Modal -->
+    <div id="price-breakdown-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-price-modal">&times;</span>
+            <h2>Price Breakdown</h2>
+            <div id="price-breakdown-content">
+                <img id="price-breakdown-img" src="" alt="Price Breakdown">
+                <div id="price-breakdown-data"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
 
     <footer>
         <div class="container">
-            <p>&copy; <span id="current-year"></span> FeastFinder. All rights reserved.</p>
-            </div>
+            <p>&copy; 2025 FeastFinder. All rights reserved.</p>
+        </div>
     </footer>
 
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
