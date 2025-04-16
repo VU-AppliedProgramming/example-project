@@ -57,7 +57,7 @@ class RecipeCreationModificationTests(unittest.TestCase):
             'r_image': "http://example.com/image.jpg"
         }
         # check how many recipes we have before adding a new one
-        response = self.client.get("/test")
+        response = self.client.get("/favorites")
         recipes_before: Dict[str, Any] = response.get_json()
 
         count_before: int = len(recipes_before)
@@ -70,7 +70,7 @@ class RecipeCreationModificationTests(unittest.TestCase):
     
 
         # verify that the total recipe count increased by one
-        response = self.client.get("/test")
+        response = self.client.get("/favorites")
         recipes_after: Dict[str, Any] = response.get_json()
         self.assertEqual(len(recipes_after), count_before + 1)
 
@@ -108,7 +108,7 @@ class RecipeCreationModificationTests(unittest.TestCase):
         app.fav_recipes.recipes = app.fav_recipes.load_recipes()
 
         # get the current recipe count (should be >= 1)
-        response = self.client.get("/test")
+        response = self.client.get("/favorites")
         recipes_before: Dict[str, Any] = response.get_json()
         count_before: int = len(recipes_before)
         self.assertGreaterEqual(count_before, 1)
@@ -126,7 +126,7 @@ class RecipeCreationModificationTests(unittest.TestCase):
         self.assertEqual(response.status_code, 201) # <- created
 
         # confirm the count has incremented by one.
-        response = self.client.get("/test")
+        response = self.client.get("/favorites")
         recipes_after: Dict[str, Any] = response.get_json()
         self.assertEqual(len(recipes_after), count_before + 1)
         self.assertIn("Vegan Salad", recipes_after)
@@ -180,7 +180,7 @@ class RecipeCreationModificationTests(unittest.TestCase):
         self.assertEqual(update_response_data.get("message"), "Ingredients updated successfully")
 
         # retrieve the updated recipe to confirm changes (so we check if it is actually chanhed not just the message)
-        response = self.client.get("/test")
+        response = self.client.get("/favorites")
         recipes_after_update: Dict[str, Any] = response.get_json()
         self.assertIn("Pancakes", recipes_after_update)
         self.assertEqual(
