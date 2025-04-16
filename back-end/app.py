@@ -104,29 +104,16 @@ def create_recipe() -> Response:
     else:
         return jsonify({"error": msgs}), 400
 
-@app.route('/feastFinder/recipes/', methods=['DELETE'])
+@app.route('/feastFinder/recipes/favorites/', methods=['DELETE'])
 def delete_recipe() -> Response:
     """
     Endpoint to delete a recipe from the favorites list.
     Returns:
         Response: JSON response indicating the success or failure of the operation.
     """
-
-    data = request.get_json()
-    r_title = data.get('r_title')
-    recipes = app.fav_recipes.get_recipes()
-
-    if r_title in recipes:
-        recipe = Recipe(
-            recipes[r_title]["title"],
-            recipes[r_title]["recipe_id"],
-            recipes[r_title]["instructions"],
-            recipes[r_title]["ingredients"],
-            recipes[r_title]["image"]
-        )
-
-        if app.fav_recipes.delete_recipe(recipe):
-            return jsonify({"message": "Recipe deleted successfully"}), 200
+    recipe_id = request.json['recipe_id']
+    if app.feast_finder.delete_recipe(recipe_id):
+        return jsonify({"message": "Recipe deleted successfully"}), 200
 
     return jsonify({"error": "Recipe with this title does not exist"}), 404
 

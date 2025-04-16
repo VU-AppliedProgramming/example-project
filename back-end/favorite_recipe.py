@@ -78,6 +78,22 @@ class Feast_Finder:
         self.save_recipe()
         return True
     
+    def delete_recipe(self, recipe_id: str) -> bool:
+        """
+        Delete a recipe from the collection.
+
+        Parameters:
+            recipe (Recipe): The recipe to delete.
+
+        Returns:
+            bool: True if the recipe was successfully deleted, False otherwise.
+        """
+        if recipe_id in self.favorite_recipes:
+            del self.favorite_recipes[recipe_id]
+            self.save_recipe()
+            return True 
+        return False 
+    
     def save_recipe(self) -> None:
         """Save recipes to a JSON file."""
         with open(self.storage_path, 'w') as file:
@@ -93,23 +109,6 @@ class Favorite_Recipe:
             file_path (str): The file path to save the recipes.
         """
 
-    
-    
-    def delete_recipe(self, recipe: Recipe) -> bool:
-        """
-        Delete a recipe from the collection.
-
-        Parameters:
-            recipe (Recipe): The recipe to delete.
-
-        Returns:
-            bool: True if the recipe was successfully deleted, False otherwise.
-        """
-        if recipe.title in self.recipes:
-            del self.recipes[recipe.title]
-            self.save_recipe()
-            return True 
-        return False 
     
     
     def update_recipe(self, recipe: Recipe, new_ingredients: str) -> bool:
