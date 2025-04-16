@@ -105,7 +105,7 @@ class FavRecipes:
             bool: True if the recipe was successfully updated, False otherwise.
         """
         if recipe.title in self.recipes:
-            self.recipes[recipe.title]["ingredients"] = new_ingredients
+            self.recipes[recipe.title]["instructions"] = new_ingredients
             self.save_recipe()
             return True  
         return False
