@@ -42,7 +42,7 @@ def health_check():
     return 'OK', 200
 
 @app.route('/favorites')
-def test():
+def get_favorites():
     """
     Endpoint to retrieve recipes from favorites.
     Returns:

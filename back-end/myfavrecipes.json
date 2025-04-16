@@ -1,11 +1,4 @@
 {
-    "Beef Lo Mein Noodles": {
-        "title": "Beef Lo Mein Noodles",
-        "recipe_id": "634629",
-        "instructions": "Drop noodles into a large quantity of boiling water and cook 3-5 minutes, until barely tender to the bite., Drain, rinse with cold water and reserve., Combine the beef and oyster sauce in a bowl; stir to coat., Let stand for 10 minutes., In another bowl, combine the chicken broth, soy sauce and sesame oil. Set aside., Heat a wok over high heat. When hot, add the vegetable oil, swirling to coat the sides., Add the garlic, ginger, and green onions and cook, stirring until fragrant, about 30 seconds., Add the beef and cook, stirring constantly, about 1 minute., Add the sauce and noodles., Gently toss until heated through and sauce has thickened., Serve immediately., ",
-        "ingredients": "kaka",
-        "image": "https://img.spoonacular.com/recipes/634629-556x370.jpg"
-    },
     "Fig, Goat Cheese and Walnut Salad": {
         "title": "Fig, Goat Cheese and Walnut Salad",
         "recipe_id": "642809",
@@ -145,5 +138,12 @@
         "instructions": "Heat oil and saute shallots with ginger and garlic paste.\r\nAdd chicken and break it up into bits and pieces.\r\nPut in chili flakes, all spice and nutmeg powder, rosemary leaves and salt.\r\nStir all together; pour water and simmer.\r\nOnce heated through, add beans and cream.\r\nStir and after about 2-3 minutes, remove from heat.",
         "ingredients": "2 cups black eyed peas - soaked for 2-3 hours and boiled till soft and tender.\r\n400g minced chicken\r\n5 shallots - chopped/sliced thinly\r\n1 tbsp ginger paste\r\n1 tsp garlic paste\r\n1 tsp chili flakes (or as as per taste)\r\n1/2 tsp all spice powder\r\n1/2 tsp nutmeg powder\r\n3-4 sprigs rosemary - remove leaves from stems\r\n1/2 cup cream/milk\r\n1/4 cup water\r\n4 tbsp oil\r\nSalt for taste",
         "image": "https://img.spoonacular.com/recipes/638026-556x370.jpg"
+    },
+    "Chicken Tortilla Soup with Bone Broth": {
+        "title": "Chicken Tortilla Soup with Bone Broth",
+        "recipe_id": "1096226",
+        "instructions": "In a large stock pot over medium heat, warm the olive oil.\r\nAdd the onion, garlic and jalapeno, and cook until onions are translucent, about 5 minutes.\r\nAdd the remaining ingredients, minus the avocado, tortilla and cilantro. Turn the heat down to a simmer and cook, stirring occasionally, for 20 minutes.While the soup cooks, crisp the tortilla. On a medium non-stick pan over high heat, add the tortilla strips and cook, stirring, until golden brown on both sides.\r\nPour the soup into large bowls and garnish with avocado, tortilla strips and cilantro.",
+        "ingredients": "1 tablespoon olive oil\r\n1 small onion chopped\r\n1 garlic clove minced\r\n\u00bd jalapeno pepper chopped\r\n1 cup fresh corn\r\n\u00bd teaspoon cumin\r\n\u00bd teaspoon chili powder\r\n\u00bd teaspoon cayenne powder\r\n5 cups Kettle & Fire Chicken Bone Broth\r\n1 medium tomato chopped\r\n\u00be cup organic canned tomato sauce\r\n1 cup cooked chicken breast shredded\r\n1 avocado\r\n1 corn tortilla sliced into thin strips\r\n\u00bd tablespoon cilantro roughly chopped",
+        "image": "https://img.spoonacular.com/recipes/1096226-556x370.jpg"
     }
 }
