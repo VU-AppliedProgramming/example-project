@@ -3,7 +3,7 @@ import os
 import requests
 from flask_cors import CORS
 import re
-from favorite_recipe import Feast_Finder, Favorite_Recipe, Recipe, check_recipe_fields
+from feast_finder import Feast_Finder, Recipe, check_recipe_fields
 from typing import Union, Tuple, Optional, List
 import random
 

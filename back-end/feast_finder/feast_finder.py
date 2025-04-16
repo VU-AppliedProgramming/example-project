@@ -24,6 +24,12 @@ class Recipe:
 
 
 class Feast_Finder:
+    """
+        Initialize the Feast Finder app.
+
+        Parameters:
+            file_path (str): The file path to save the recipes.
+        """
 
     def __init__(self, file_path: str):
         self.favorite_recipes = {}
@@ -118,26 +124,3 @@ class Feast_Finder:
             serialized_recipes = {recipe: self.favorite_recipes[recipe].__dict__ for recipe in self.favorite_recipes}
             json.dump(serialized_recipes, file, indent=4)
 
-class Favorite_Recipe:
-    def __init__(self) -> None:
-        """
-        Initialize a favorite recipe object.
-
-        Parameters:
-            file_path (str): The file path to save the recipes.
-        """
-
-
-
-
-
-def check_recipe_fields(json_data: Dict) -> Tuple[bool, str]:
-    messages: List[str] = [] 
-    if 'title' not in json_data:
-        messages.append("title is required")
-    if 'instructions' not in json_data:
-        messages.append("instructions is required")
-    if 'ingredients' not in json_data:
-        messages.append("ingredients is required")
-    
-    return (True, messages) if len(messages) == 0 else (False, messages)
