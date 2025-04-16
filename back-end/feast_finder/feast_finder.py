@@ -2,7 +2,7 @@ from typing import Dict, List, Tuple
 import json
 
 class Recipe:
-    def __init__(self, title: str, id: int, instructions: str, ingredients: str, image: str) -> None:
+    def __init__(self, title: str, instructions: str, ingredients: str, image: str, id: int = None) -> None:
         """
         Initialize a Recipe object.
 

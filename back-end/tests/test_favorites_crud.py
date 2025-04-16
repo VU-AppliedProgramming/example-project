@@ -3,7 +3,7 @@ import os
 import json
 from pathlib import Path
 from typing import Any, Dict
-from context import app, FavRecipes
+from context import app, Feast_Finder, Recipe, check_recipe_fields
 from flask.testing import FlaskClient
 
 
@@ -24,7 +24,7 @@ def client_fixture():
         os.remove(test_file)
 
     # override the app's FavRecipes instance to use our test file
-    app.fav_recipes = FavRecipes(test_file)
+    app.feast_finder = Feast_Finder(test_file)
 
     # init the testing client
     app.config['TESTING'] = True
@@ -43,32 +43,32 @@ def test_create_recipe_success(client_fixture):
     It checks the count increment and verifies the stored details.
     """
 
-    recipe_data: Dict[str, Any] = {
-        'r_title': "Spaghetti Bolognese",
-        'r_instructions': "Boil pasta, cook sauce",
-        'r_ingredients': "Pasta, Tomato, Beef",
-        'r_image': "http://example.com/image.jpg"  # image is optional but included here
-    }
+    recipe = Recipe("Spaghetti Bolognese", "Boil pasta, cook sauce", "Pasta, Tomato, Beef", "http://example.com/image.jpg", id="4321")
+
     # check how many recipes we have before adding a new one
-    response = client_fixture.get("/favorites")
+    response = client_fixture.get("/feastFinder/recipes/favorites/")
     recipes_before: Dict[str, Any] = response.get_json()
     count_before: int = len(recipes_before)
 
     # send a request to create the new recipe
-    response = client_fixture.post("/create_recipe", data=recipe_data)
+    response = client_fixture.post(
+        "/feastFinder/recipe/", 
+        json=recipe.__dict__,  # Use json parameter instead of data
+        headers={'Content-Type': 'application/json'}
+    )
     assert response.status_code == 201  # <- created
     response_data: Dict[str, Any] = response.get_json()
-    assert response_data.get("message") == "Recipe added successfully"  # <- confirm the message also
+    assert response_data.get("message") == "Recipe added successfully with id 4321"  # <- confirm the message also
 
     # verify that the total recipe count increased by one
-    response = client_fixture.get("/favorites")
+    response = client_fixture.get("/feastFinder/recipes/favorites/")
     recipes_after: Dict[str, Any] = response.get_json()
     assert len(recipes_after) == count_before + 1
 
-    assert "Spaghetti Bolognese" in recipes_after
+    assert "4321" in recipes_after
 
     # verify details of the newly added recipe
-    recipe = recipes_after["Spaghetti Bolognese"]
+    recipe = recipes_after["4321"]
     assert recipe["instructions"] == "Boil pasta, cook sauce"
     assert recipe["ingredients"] == "Pasta, Tomato, Beef"
     assert recipe["image"] == "http://example.com/image.jpg"

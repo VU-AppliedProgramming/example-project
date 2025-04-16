@@ -78,7 +78,7 @@ def add_to_favorites() -> Response:
     recipe_image = request.form['recipe_image']
     recipe_id = request.form['recipe_id']
 
-    recipe = Recipe(recipe_title, recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
+    recipe = Recipe(recipe_title, recipe_instructions, recipe_ingredients, recipe_image, id = recipe_id)
     success = app.feast_finder.add_recipe(recipe)
 
     if success:
@@ -96,9 +96,9 @@ def create_recipe() -> Response:
     check, msgs = check_recipe_fields(request.json)
 
     if check:
-        recipe = Recipe(request.json['title'], request.json.get('id', f"{random.randint(0, 120000)}"), request.json['instructions'], request.json['ingredients'], request.json.get('image', None))
+        recipe = Recipe(request.json['title'], request.json['instructions'], request.json['ingredients'], request.json.get('image', None), id = request.json.get('recipe_id', f"{random.randint(0, 120000)}"))
         if app.feast_finder.add_recipe(recipe):
-            return jsonify({"message": "Recipe added successfully"}), 201
+            return jsonify({"message": f"Recipe added successfully with id {recipe.recipe_id}"}), 201
         else:
             return jsonify({"error": "Recipe with this title already exists"}), 409
     else:
