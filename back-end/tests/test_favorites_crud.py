@@ -139,12 +139,16 @@ def test_update_recipe_success(client_fixture):
     Test successful update of an existing recipe's instructions.
     """
     # create a recipe to update later
-    recipe_data: Dict[str, Any] = {
-        'r_title': "Pancakes",
-        'r_instructions': "Mix flour, eggs, milk",
-        'r_ingredients': "Flour, Eggs, Milk"
-    }
-    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
+    # recipe_data: Dict[str, Any] = {
+    #     'r_title': "Pancakes",
+    #     'r_instructions': "Mix flour, eggs, milk",
+    #     'r_ingredients': "Flour, Eggs, Milk"
+    # }
+    recipe = Recipe("Pancakes", "Mix flour, eggs, milk", "Flour, Eggs, Milk")
+    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, 
+                                   json=recipe.__dict__,
+                                   headers={'Content-Type': 'application/json'}
+                                   )
     assert response.status_code == 201  # <- created
 
     # update data for the recipe instructions
