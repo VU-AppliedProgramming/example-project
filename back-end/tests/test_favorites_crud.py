@@ -6,6 +6,8 @@ from typing import Any, Dict
 from context import app, Feast_Finder, Recipe, check_recipe_fields
 from flask.testing import FlaskClient
 
+GET_FAVORITE_RECIPES = "/feastFinder/recipes/favorites/"
+CREATE_RECIPE = "/feastFinder/recipe/"
 
 """
 Test suite for verifying custom recipe creation and modification functionalities.
@@ -46,14 +48,14 @@ def test_create_recipe_success(client_fixture):
     recipe = Recipe("Spaghetti Bolognese", "Boil pasta, cook sauce", "Pasta, Tomato, Beef", "http://example.com/image.jpg", id="4321")
 
     # check how many recipes we have before adding a new one
-    response = client_fixture.get("/feastFinder/recipes/favorites/")
+    response = client_fixture.get(GET_FAVORITE_RECIPES)
     recipes_before: Dict[str, Any] = response.get_json()
     count_before: int = len(recipes_before)
 
     # send a request to create the new recipe
     response = client_fixture.post(
         "/feastFinder/recipe/", 
-        json=recipe.__dict__,  # Use json parameter instead of data
+        json=recipe.__dict__,
         headers={'Content-Type': 'application/json'}
     )
     assert response.status_code == 201  # <- created
@@ -78,45 +80,37 @@ def test_create_recipe_with_existing_list(client_fixture):
     """
     Test creating a new recipe when the favorites list is already populated.
     """
-    # pre-populate with an existing recipe directly in the test file
-    pre_existing_recipe: Dict[str, Any] = {
-        "Chicken Curry": {
-            "title": "Chicken Curry",
-            "recipe_id": 99,
-            "instructions": "Cook chicken with curry spices",
-            "ingredients": "Chicken, Curry, Onion, Garlic",
-            "image": "http://example.com/chickencurry.jpg"
-        }
-    }
+    recipe = Recipe("Chicken Curry", "Cook chicken with curry spices", "Chicken, Curry, Onion, Garlic", "http://example.com/chickencurry.jpg", id = "99")
+
+    # FIX: Why aren't we using the save_recipe()?
     # write the pre-existing recipe to the file
     with open("test_favrecipes.json", "w") as file:
-        json.dump(pre_existing_recipe, file, indent=4)
-
+        json.dump({recipe.recipe_id : recipe.__dict__}, file, indent=4)
+    
     # reload the recipes from the file
-    app.fav_recipes.recipes = app.fav_recipes.load_recipes()
+    app.feast_finder.load_recipes()
 
     # get the current recipe count (should be >= 1)
-    response = client_fixture.get("/favorites")
+    response = client_fixture.get(GET_FAVORITE_RECIPES)
     recipes_before: Dict[str, Any] = response.get_json()
     count_before: int = len(recipes_before)
     assert count_before >= 1
 
-    # prepare new recipe data (again, no r_id needed)
-    recipe_data: Dict[str, Any] = {
-        'r_title': "Vegan Salad",
-        'r_instructions': "Mix all greens and add dressing",
-        'r_ingredients': "Lettuce, Spinach, Cucumber, Dressing",
-        'r_image': "http://example.com/vegansalad.jpg"
-    }
+    new_recipe = Recipe("Vegan Salad", "Mix all greens and add dressing", "Lettuce, Spinach, Cucumber, Dressing", "http://example.com/vegansalad.jpg", id="9876")
     # send create request for the new recipe
-    response = client_fixture.post("/create_recipe", data=recipe_data)
+    response = client_fixture.post(CREATE_RECIPE, 
+                                   json=new_recipe.__dict__, 
+                                   headers={'Content-Type': 'application/json'})
+    
     assert response.status_code == 201  # <- created
 
     # confirm the count has incremented by one.
-    response = client_fixture.get("/favorites")
+    response = client_fixture.get(GET_FAVORITE_RECIPES)
     recipes_after: Dict[str, Any] = response.get_json()
+
     assert len(recipes_after) == count_before + 1
-    assert "Vegan Salad" in recipes_after
+    
+    assert "9876" in recipes_after
 
 
 def test_create_duplicate_recipe(client_fixture):

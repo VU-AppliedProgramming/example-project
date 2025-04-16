@@ -45,9 +45,9 @@ class Feast_Finder:
         try:
             with open(self.storage_path) as file:
                 raw_json = json.load(file)
-
-                recipes = self.process_raw_json(raw_json)
-                self.favorite_recipes = recipes
+                if raw_json:
+                    recipes = self.process_raw_json(raw_json)
+                    self.favorite_recipes = recipes
 
         except FileNotFoundError:
             raise
@@ -56,7 +56,7 @@ class Feast_Finder:
         recipes = {}
         for recipe_name in raw_json:
             id: str = raw_json[recipe_name]['recipe_id']
-            recipes[id] = Recipe(recipe_name, raw_json[recipe_name]['recipe_id'], raw_json[recipe_name]['instructions'], raw_json[recipe_name]['ingredients'], raw_json[recipe_name]['image'])
+            recipes[id] = Recipe(recipe_name, raw_json[recipe_name]['instructions'], raw_json[recipe_name]['ingredients'], raw_json[recipe_name]['image'], id=id)
         return recipes
     
     def get_favorite_recipes(self) -> Dict[str, Recipe]:
