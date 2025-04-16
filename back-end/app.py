@@ -32,7 +32,7 @@ def health_check():
     return 'OK', 200
 
 @app.route('/favorites')
-def test():
+def favorites():
     """
     Endpoint to retrieve recipes from favorites.
     Returns:
@@ -90,11 +90,19 @@ def create_recipe() -> Response:
         Response: JSON response indicating the success or failure of the operation.
     """
 
+    # Check for required fields:
+    if 'r_title' not in request.form:
+        return jsonify({"error": "r_title is required"}), 400
+    if 'r_instructions' not in request.form:
+        return jsonify({"error": "r_instructions is required"}), 400
+    if 'r_ingredients' not in request.form:
+        return jsonify({"error": "r_ingredients is required"}), 400
+
     recipe_title = request.form['r_title']
-    recipe_id = request.form['r_id']
+    recipe_id = request.form.get('r_id', None) # since it is optional
     recipe_instructions = request.form['r_instructions']
     recipe_ingredients = request.form['r_ingredients']
-    recipe_image = request.form['r_image']
+    recipe_image = request.form.get('r_image', None) # since it is optional
 
     recipe = Recipe(recipe_title, recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
     recipe_added = app.fav_recipes.add_recipe(recipe)
@@ -154,7 +162,7 @@ def update_recipe() -> Response:
         )
 
         if app.fav_recipes.update_recipe(recipe, new_instructions):
-            return jsonify({"message": "Ingredients updated successfully"}), 200
+            return jsonify({"message": "Recipe instructions updated successfully"}), 200
 
     return jsonify({"error": "Recipe with this title does not exist"}), 404
 

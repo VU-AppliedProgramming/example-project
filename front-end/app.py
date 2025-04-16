@@ -41,7 +41,7 @@ def get_test_data() -> str:
         str: Rendered HTML template with favorites data.
     """
     
-    backend_url = f'{BACKEND_ENDPOINT}/test'
+    backend_url = f'{BACKEND_ENDPOINT}/favorites'
     response = requests.get(backend_url)
     recipes = response.json()
     return render_template('test.html', results=recipes)
