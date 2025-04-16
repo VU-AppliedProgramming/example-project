@@ -3,7 +3,7 @@ import os
 import requests
 from flask_cors import CORS
 import re
-from favrecipes import FavRecipes, Recipe
+from favorite_recipe import Feast_Finder, Favorite_Recipe, Recipe
 from typing import Union, Tuple, Optional, List
 
 try: 
@@ -19,7 +19,8 @@ API_KEY = os.environ.get('API_KEY')
 SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
 
 # Default storage file (only used if not overridden in testing)
-app.fav_recipes = FavRecipes('myfavrecipes.json')
+app.feast_finder = Feast_Finder()
+app.feast_finder.load_recipes('myfavrecipes.json')
 
 @app.route('/health')
 def health_check():
@@ -31,19 +32,21 @@ def health_check():
 
     return 'OK', 200
 
-@app.route('/favorites')
-def favorites():
+@app.route('/feastFinder/recipes/favorites/')
+def get_favorite_recipes():
     """
     Endpoint to retrieve recipes from favorites.
     Returns:
         Response: JSON response containing the favorite recipes.
     """
         
-    recipes = app.fav_recipes.get_recipes()
-    return jsonify(recipes)
+    recipes = app.feast_finder.get_favorite_recipes()
 
-@app.route('/show_one_favorite/<recipe_id>')
-def s_one_fav(recipe_id: str) -> Response:
+    serialized_recipes = {recipe: recipes[recipe].__dict__ for recipe in recipes}
+    return jsonify(serialized_recipes)
+
+@app.route('/feastFinder/recipes/favorites/<recipe_id>')
+def get_favorite_recipe_by_id(recipe_id: str) -> Response:
     """
     Endpoint to display information about a single favorite recipe based on its ID.
     Args:
@@ -51,16 +54,16 @@ def s_one_fav(recipe_id: str) -> Response:
     Returns:
         Response: JSON response containing information about the requested recipe.
     """
+    favorite_recipes = app.feast_finder.get_favorite_recipes()
 
-    recipes = app.fav_recipes.get_recipes()
-    if recipe_id in recipes:
-        return jsonify({recipe_id: recipes[recipe_id]})
+    if recipe_id in favorite_recipes:
+        return jsonify({recipe_id: favorite_recipes[recipe_id].__dict__})
     else:
         return jsonify({"error": "Recipe not found"})
     
 ### CRUD OPERATIONS ###
 
-@app.route('/add_to_favorites', methods=['POST', 'GET'])
+@app.route('/feastFinder/recipes/favorites/add_to_favorites', methods=['POST', 'GET'])
 def add_to_favorites() -> Response:
     """
     Endpoint to add a recipe to the favorites.
@@ -82,7 +85,7 @@ def add_to_favorites() -> Response:
     else:
         return jsonify({"error": "Failed to add recipe to favorites"})
 
-@app.route('/create_recipe', methods=['POST'])
+@app.route('/feastFinder/recipes/', methods=['POST'])
 def create_recipe() -> Response:
     """
     Endpoint to create a new recipe and add it to the favorites.
@@ -112,7 +115,7 @@ def create_recipe() -> Response:
     else:
         return jsonify({"error": "Recipe with this title already exists"}), 409
 
-@app.route('/delete_recipe', methods=['DELETE'])
+@app.route('/feastFinder/recipes/', methods=['DELETE'])
 def delete_recipe() -> Response:
     """
     Endpoint to delete a recipe from the favorites list.
@@ -138,7 +141,7 @@ def delete_recipe() -> Response:
 
     return jsonify({"error": "Recipe with this title does not exist"}), 404
 
-@app.route('/update_recipe_instructions', methods=['PUT'])
+@app.route('/feastFinder/recipes/', methods=['PUT'])
 def update_recipe() -> Response:
     """
     Endpoint to update the instructions of a recipe in the favorites.

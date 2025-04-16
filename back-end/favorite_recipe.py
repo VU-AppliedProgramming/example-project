@@ -19,20 +19,16 @@ class Recipe:
         self.ingredients = ingredients
         self.image = image
 
-
-class FavRecipes:
-    def __init__(self, file_path: str) -> None:
-        """
-        Initialize a FavRecipes object.
-
-        Parameters:
-            file_path (str): The file path to save the recipes.
-        """
-        self.file_path = file_path
-        self.recipes = self.load_recipes()
+    def __str__(self):
+        return f"[{self.id}] Recipe {self.title}"
 
 
-    def load_recipes(self) -> Dict[str, any]:
+class Feast_Finder:
+
+    def __init__(self):
+        self.favorite_recipes = {}
+        
+    def load_recipes(self, file_path: str) -> None:
         """
         Load recipes from a JSON file.
 
@@ -40,12 +36,39 @@ class FavRecipes:
             Dict[str, Any]: Dictionary containing loaded recipes.
         """
         try:
-            with open(self.file_path) as file:
-                recipes = json.load(file)
+            with open(file_path) as file:
+                raw_json = json.load(file)
+
+                recipes = self.process_raw_json(raw_json)
+                self.favorite_recipes = recipes
+
         except FileNotFoundError:
-            recipes = {}
+            pass
+    
+    def process_raw_json(self, raw_json) -> Dict[str, Recipe]:
+        recipes = {}
+        for recipe_name in raw_json:
+            id: str = raw_json[recipe_name]['recipe_id']
+            recipes[id] = Recipe(recipe_name, raw_json[recipe_name]['recipe_id'], raw_json[recipe_name]['instructions'], raw_json[recipe_name]['ingredients'], raw_json[recipe_name]['image'])
         return recipes
     
+    def get_favorite_recipes(self) -> Dict[str, Recipe]:
+        """
+        Get all recipes.
+
+        Returns:
+            Dict[str, Any]: Dictionary containing all recipes.
+        """
+        return self.favorite_recipes
+
+class Favorite_Recipe:
+    def __init__(self) -> None:
+        """
+        Initialize a favorite recipe object.
+
+        Parameters:
+            file_path (str): The file path to save the recipes.
+        """
     
     def save_recipe(self) -> None:
         """Save recipes to a JSON file."""
@@ -109,15 +132,4 @@ class FavRecipes:
             self.save_recipe()
             return True  
         return False
-    
-
-    def get_recipes(self) -> Dict[str, any]:
-        """
-        Get all recipes.
-
-        Returns:
-            Dict[str, Any]: Dictionary containing all recipes.
-        """
-        return self.recipes
-
 
