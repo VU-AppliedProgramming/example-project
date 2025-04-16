@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function() {
         noFavorites.style.display = 'none';
         showLoader(favoritesLoader);
 
-        fetch('/test') // Assuming '/test' fetches all favorites
+        fetch('/favorites')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
