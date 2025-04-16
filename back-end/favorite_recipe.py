@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List, Tuple
 import json
 
 class Recipe:
@@ -14,7 +14,7 @@ class Recipe:
             image (str): The URL of the image representing the recipe.
         """
         self.title = title
-        self.id = id
+        self.recipe_id = id
         self.instructions = instructions
         self.ingredients = ingredients
         self.image = image
@@ -25,10 +25,11 @@ class Recipe:
 
 class Feast_Finder:
 
-    def __init__(self):
+    def __init__(self, file_path: str):
         self.favorite_recipes = {}
+        self.storage_path = file_path
         
-    def load_recipes(self, file_path: str) -> None:
+    def load_recipes(self) -> None:
         """
         Load recipes from a JSON file.
 
@@ -36,14 +37,14 @@ class Feast_Finder:
             Dict[str, Any]: Dictionary containing loaded recipes.
         """
         try:
-            with open(file_path) as file:
+            with open(self.storage_path) as file:
                 raw_json = json.load(file)
 
                 recipes = self.process_raw_json(raw_json)
                 self.favorite_recipes = recipes
 
         except FileNotFoundError:
-            pass
+            raise
     
     def process_raw_json(self, raw_json) -> Dict[str, Recipe]:
         recipes = {}
@@ -60,22 +61,7 @@ class Feast_Finder:
             Dict[str, Any]: Dictionary containing all recipes.
         """
         return self.favorite_recipes
-
-class Favorite_Recipe:
-    def __init__(self) -> None:
-        """
-        Initialize a favorite recipe object.
-
-        Parameters:
-            file_path (str): The file path to save the recipes.
-        """
     
-    def save_recipe(self) -> None:
-        """Save recipes to a JSON file."""
-        with open(self.file_path, 'w') as file:
-            json.dump(self.recipes, file, indent=4)
-
-
     def add_recipe(self, recipe: Recipe) -> bool:
         """
         Add a recipe to the collection.
@@ -86,17 +72,27 @@ class Favorite_Recipe:
         Returns:
             bool: True if the recipe was successfully added, False otherwise.
         """
-        if recipe.title in self.recipes:
+        if recipe.recipe_id in self.favorite_recipes:
             return False
-        self.recipes[recipe.title] = {
-            "title": recipe.title,
-            "recipe_id": recipe.id,
-            "instructions": recipe.instructions,
-            "ingredients": recipe.ingredients,
-            "image": recipe.image
-        }
+        self.favorite_recipes[recipe.recipe_id] = recipe
         self.save_recipe()
         return True
+    
+    def save_recipe(self) -> None:
+        """Save recipes to a JSON file."""
+        with open(self.storage_path, 'w') as file:
+            serialized_recipes = {recipe: self.favorite_recipes[recipe].__dict__ for recipe in self.favorite_recipes}
+            json.dump(serialized_recipes, file, indent=4)
+
+class Favorite_Recipe:
+    def __init__(self) -> None:
+        """
+        Initialize a favorite recipe object.
+
+        Parameters:
+            file_path (str): The file path to save the recipes.
+        """
+
     
     
     def delete_recipe(self, recipe: Recipe) -> bool:
@@ -133,3 +129,15 @@ class Favorite_Recipe:
             return True  
         return False
 
+
+
+def check_recipe_fields(json_data: Dict) -> Tuple[bool, str]:
+    messages: List[str] = [] 
+    if 'title' not in json_data:
+        messages.append("title is required")
+    if 'instructions' not in json_data:
+        messages.append("instructions is required")
+    if 'ingredients' not in json_data:
+        messages.append("ingredients is required")
+    
+    return (True, messages) if len(messages) == 0 else (False, messages)

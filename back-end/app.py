@@ -3,8 +3,9 @@ import os
 import requests
 from flask_cors import CORS
 import re
-from favorite_recipe import Feast_Finder, Favorite_Recipe, Recipe
+from favorite_recipe import Feast_Finder, Favorite_Recipe, Recipe, check_recipe_fields
 from typing import Union, Tuple, Optional, List
+import random
 
 try: 
     from BeautifulSoup import BeautifulSoup
@@ -19,8 +20,8 @@ API_KEY = os.environ.get('API_KEY')
 SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
 
 # Default storage file (only used if not overridden in testing)
-app.feast_finder = Feast_Finder()
-app.feast_finder.load_recipes('myfavrecipes.json')
+app.feast_finder = Feast_Finder('myfavrecipes.json')
+app.feast_finder.load_recipes()
 
 @app.route('/health')
 def health_check():
@@ -78,42 +79,30 @@ def add_to_favorites() -> Response:
     recipe_id = request.form['recipe_id']
 
     recipe = Recipe(recipe_title, recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
-    success = app.fav_recipes.add_recipe(recipe)
+    success = app.feast_finder.add_recipe(recipe)
 
     if success:
         return jsonify({"message": "Recipe added to favorites successfully"})
     else:
         return jsonify({"error": "Failed to add recipe to favorites"})
 
-@app.route('/feastFinder/recipes/', methods=['POST'])
+@app.route('/feastFinder/recipe/', methods=['POST'])
 def create_recipe() -> Response:
     """
     Endpoint to create a new recipe and add it to the favorites.
     Returns:
         Response: JSON response indicating the success or failure of the operation.
-    """
+    """    
+    check, msgs = check_recipe_fields(request.json)
 
-    # Check for required fields:
-    if 'r_title' not in request.form:
-        return jsonify({"error": "r_title is required"}), 400
-    if 'r_instructions' not in request.form:
-        return jsonify({"error": "r_instructions is required"}), 400
-    if 'r_ingredients' not in request.form:
-        return jsonify({"error": "r_ingredients is required"}), 400
-
-    recipe_title = request.form['r_title']
-    recipe_id = request.form.get('r_id', None) # since it is optional
-    recipe_instructions = request.form['r_instructions']
-    recipe_ingredients = request.form['r_ingredients']
-    recipe_image = request.form.get('r_image', None) # since it is optional
-
-    recipe = Recipe(recipe_title, recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
-    recipe_added = app.fav_recipes.add_recipe(recipe)
-
-    if recipe_added:
-        return jsonify({"message": "Recipe added successfully"}), 201
+    if check:
+        recipe = Recipe(request.json['title'], request.json.get('id', f"{random.randint(0, 120000)}"), request.json['instructions'], request.json['ingredients'], request.json.get('image', None))
+        if app.feast_finder.add_recipe(recipe):
+            return jsonify({"message": "Recipe added successfully"}), 201
+        else:
+            return jsonify({"error": "Recipe with this title already exists"}), 409
     else:
-        return jsonify({"error": "Recipe with this title already exists"}), 409
+        return jsonify({"error": msgs}), 400
 
 @app.route('/feastFinder/recipes/', methods=['DELETE'])
 def delete_recipe() -> Response:
