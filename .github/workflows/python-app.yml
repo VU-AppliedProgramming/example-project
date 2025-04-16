@@ -27,7 +27,7 @@ jobs:
       run: |
         cd back-end
         python -m pip install --upgrade pip
-        pip install BeautifulSoup flake8 pytest
+        pip install BeautifulSoup4 flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
