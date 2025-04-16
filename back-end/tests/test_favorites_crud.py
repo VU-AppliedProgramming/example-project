@@ -1,16 +1,9 @@
 import pytest
 import os
 import json
-import sys
 from pathlib import Path
 from typing import Any, Dict
-
-# Add the root directory to the Python path
-root_dir = str(Path(__file__).parent.parent)
-sys.path.append(root_dir)
-
-from app import app
-from favrecipes import FavRecipes
+from context import app, FavRecipes
 from flask.testing import FlaskClient
 
 
