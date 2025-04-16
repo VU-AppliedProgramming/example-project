@@ -6,8 +6,8 @@ from typing import Any, Dict
 from context import app, Feast_Finder, Recipe, check_recipe_fields
 from flask.testing import FlaskClient
 
-GET_FAVORITE_RECIPES = "/feastFinder/recipes/favorites/"
-CREATE_RECIPE = "/feastFinder/recipe/"
+FAVORITE_RECIPES_ENDPOINT = "/feastFinder/recipes/favorites/"
+CREATE_RECIPE_ENDPOINT = "/feastFinder/recipe/"
 
 """
 Test suite for verifying custom recipe creation and modification functionalities.
@@ -48,7 +48,7 @@ def test_create_recipe_success(client_fixture):
     recipe = Recipe("Spaghetti Bolognese", "Boil pasta, cook sauce", "Pasta, Tomato, Beef", "http://example.com/image.jpg", id="4321")
 
     # check how many recipes we have before adding a new one
-    response = client_fixture.get(GET_FAVORITE_RECIPES)
+    response = client_fixture.get(FAVORITE_RECIPES_ENDPOINT)
     recipes_before: Dict[str, Any] = response.get_json()
     count_before: int = len(recipes_before)
 
@@ -63,7 +63,7 @@ def test_create_recipe_success(client_fixture):
     assert response_data.get("message") == "Recipe added successfully with id 4321"  # <- confirm the message also
 
     # verify that the total recipe count increased by one
-    response = client_fixture.get("/feastFinder/recipes/favorites/")
+    response = client_fixture.get(FAVORITE_RECIPES_ENDPOINT)
     recipes_after: Dict[str, Any] = response.get_json()
     assert len(recipes_after) == count_before + 1
 
@@ -91,21 +91,21 @@ def test_create_recipe_with_existing_list(client_fixture):
     app.feast_finder.load_recipes()
 
     # get the current recipe count (should be >= 1)
-    response = client_fixture.get(GET_FAVORITE_RECIPES)
+    response = client_fixture.get(FAVORITE_RECIPES_ENDPOINT)
     recipes_before: Dict[str, Any] = response.get_json()
     count_before: int = len(recipes_before)
     assert count_before >= 1
 
     new_recipe = Recipe("Vegan Salad", "Mix all greens and add dressing", "Lettuce, Spinach, Cucumber, Dressing", "http://example.com/vegansalad.jpg", id="9876")
     # send create request for the new recipe
-    response = client_fixture.post(CREATE_RECIPE, 
+    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, 
                                    json=new_recipe.__dict__, 
                                    headers={'Content-Type': 'application/json'})
     
     assert response.status_code == 201  # <- created
 
     # confirm the count has incremented by one.
-    response = client_fixture.get(GET_FAVORITE_RECIPES)
+    response = client_fixture.get(FAVORITE_RECIPES_ENDPOINT)
     recipes_after: Dict[str, Any] = response.get_json()
 
     assert len(recipes_after) == count_before + 1
@@ -124,11 +124,11 @@ def test_create_duplicate_recipe(client_fixture):
     }
 
     # create the recipe for the first time.
-    response = client_fixture.post("/create_recipe", data=recipe_data)
+    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
     assert response.status_code == 201  # <- created
 
     # try to create the same recipe again (should fail).
-    response_duplicate = client_fixture.post("/create_recipe", data=recipe_data)
+    response_duplicate = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
     assert response_duplicate.status_code == 409  # <- should give conflict
     response_dup_data: Dict[str, Any] = response_duplicate.get_json()
     assert response_dup_data.get("error") == "Recipe with this title already exists"
@@ -144,7 +144,7 @@ def test_update_recipe_success(client_fixture):
         'r_instructions': "Mix flour, eggs, milk",
         'r_ingredients': "Flour, Eggs, Milk"
     }
-    response = client_fixture.post("/create_recipe", data=recipe_data)
+    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
     assert response.status_code == 201  # <- created
 
     # update data for the recipe instructions
@@ -152,7 +152,7 @@ def test_update_recipe_success(client_fixture):
         "r_title": "Pancakes",
         "r_instructions": "Mix flour, eggs, milk thoroughly and add vanilla extract"
     }
-    update_response = client_fixture.put("/update_recipe_instructions", json=update_data)
+    update_response = client_fixture.put(FAVORITE_RECIPES_ENDPOINT, json=update_data)
     assert update_response.status_code == 200 # <- ok
     update_response_data: Dict[str, Any] = update_response.get_json()
     assert update_response_data.get("message") == "Recipe instructions updated successfully"
@@ -173,7 +173,7 @@ def test_update_nonexistent_recipe(client_fixture):
         "r_title": "nonexistent recipe",
         "r_instructions": "New instructions that won't be applied"
     }
-    update_response = client_fixture.put("/update_recipe_instructions", json=update_data)
+    update_response = client_fixture.put(FAVORITE_RECIPES_ENDPOINT, json=update_data)
     assert update_response.status_code == 404 # <- not found
     update_response_data: Dict[str, Any] = update_response.get_json()
     assert update_response_data.get("error") == "Recipe with this title does not exist"
@@ -190,16 +190,16 @@ def test_delete_recipe(client_fixture):
         'r_instructions': "Instructions to be deleted",
         'r_ingredients': "Ingredients to be deleted"
     }
-    response = client_fixture.post("/create_recipe", data=recipe_data)
+    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
     assert response.status_code == 201
 
     data = {'r_title': 'Test Delete'}
-    del_response = client_fixture.delete("/delete_recipe", json=data)
+    del_response = client_fixture.delete(FAVORITE_RECIPES_ENDPOINT, json=data)
     assert del_response.status_code == 200
     assert del_response.get_json().get("message") == "Recipe deleted successfully"
 
     # confirm that it no longer appears in /favorites
-    response_after_del = client_fixture.get("/favorites")
+    response_after_del = client_fixture.get(FAVORITE_RECIPES_ENDPOINT)
     recipes_after_del = response_after_del.get_json()
     assert "Test Delete" not in recipes_after_del
 
@@ -209,7 +209,7 @@ def test_delete_nonexistent_recipe(client_fixture):
     Test that deleting a recipe that doesn't exist returns a 404 error.
     """
     data = {'r_title': 'Fake Recipe'}
-    del_response = client_fixture.delete("/delete_recipe", json=data)
+    del_response = client_fixture.delete(FAVORITE_RECIPES_ENDPOINT, json=data)
     assert del_response.status_code == 404 # <- not found
     assert del_response.get_json().get("error") == "Recipe with this title does not exist"
 
@@ -225,7 +225,7 @@ def test_create_recipe_missing_title(client_fixture: FlaskClient) -> None:
         'r_ingredients': "Some ingredients"
         # 'r_title' is omitted here
     }
-    response = client_fixture.post("/create_recipe", data=incomplete_data)
+    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
     assert response.status_code == 400
     assert "r_title is required" in response.get_json()["error"]
 
@@ -241,7 +241,7 @@ def test_create_recipe_missing_instructions(client_fixture: FlaskClient) -> None
         'r_ingredients': "Some ingredients"
         # 'r_instructions' is omitted here
     }
-    response = client_fixture.post("/create_recipe", data=incomplete_data)
+    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
     assert response.status_code == 400
     assert "r_instructions is required" in response.get_json()["error"]
 
@@ -257,7 +257,7 @@ def test_create_recipe_missing_ingredients(client_fixture: FlaskClient) -> None:
         'r_instructions': "Some instructions"
         # 'r_ingredients' is omitted here
     }
-    response = client_fixture.post("/create_recipe", data=incomplete_data)
+    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
     assert response.status_code == 400
     assert "r_ingredients is required" in response.get_json()["error"]
 
