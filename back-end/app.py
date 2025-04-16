@@ -117,31 +117,18 @@ def delete_recipe() -> Response:
 
     return jsonify({"error": "Recipe with this title does not exist"}), 404
 
-@app.route('/feastFinder/recipes/', methods=['PUT'])
+@app.route('/feastFinder/recipes/favorites/', methods=['PUT'])
 def update_recipe() -> Response:
     """
     Endpoint to update the instructions of a recipe in the favorites.
     Returns:
         Response: JSON response indicating the success or failure of the operation.
     """
+    recipe_id = request.json['recipe_id']
+    new_instructions = request.json['instructions']
 
-    data = request.get_json()
-    r_title = data.get('r_title')
-    new_instructions = data.get('r_instructions')
-
-    recipes = app.fav_recipes.get_recipes()
-
-    if r_title in recipes:
-        recipe = Recipe(
-            recipes[r_title]["title"],
-            recipes[r_title]["recipe_id"],
-            recipes[r_title]["instructions"],
-            recipes[r_title]["ingredients"],
-            recipes[r_title]["image"]
-        )
-
-        if app.fav_recipes.update_recipe(recipe, new_instructions):
-            return jsonify({"message": "Recipe instructions updated successfully"}), 200
+    if app.feast_finder.update_recipe(recipe_id, new_instructions):
+        return jsonify({"message": "Recipe instructions updated successfully"}), 200
 
     return jsonify({"error": "Recipe with this title does not exist"}), 404
 

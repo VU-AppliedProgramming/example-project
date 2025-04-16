@@ -78,6 +78,24 @@ class Feast_Finder:
         self.save_recipe()
         return True
     
+    def update_recipe(self, recipe_id: str, new_ingredients: str) -> bool:
+        """
+        Update ingredients of a recipe.
+
+        Parameters:
+            recipe (Recipe): The recipe to update.
+            new_ingredients (str): The new ingredients to update.
+
+        Returns:
+            bool: True if the recipe was successfully updated, False otherwise.
+        """
+        if recipe_id in self.favorite_recipes:
+            recipe = self.favorite_recipes[recipe_id]
+            recipe.ingredients = new_ingredients
+            self.save_recipe()
+            return True  
+        return False
+    
     def delete_recipe(self, recipe_id: str) -> bool:
         """
         Delete a recipe from the collection.
@@ -109,24 +127,7 @@ class Favorite_Recipe:
             file_path (str): The file path to save the recipes.
         """
 
-    
-    
-    def update_recipe(self, recipe: Recipe, new_ingredients: str) -> bool:
-        """
-        Update ingredients of a recipe.
 
-        Parameters:
-            recipe (Recipe): The recipe to update.
-            new_ingredients (str): The new ingredients to update.
-
-        Returns:
-            bool: True if the recipe was successfully updated, False otherwise.
-        """
-        if recipe.title in self.recipes:
-            self.recipes[recipe.title]["instructions"] = new_ingredients
-            self.save_recipe()
-            return True  
-        return False
 
 
 
