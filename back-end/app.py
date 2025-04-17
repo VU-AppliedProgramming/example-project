@@ -64,7 +64,7 @@ def get_favorite_recipe_by_id(recipe_id: str) -> Response:
     
 ### CRUD OPERATIONS ###
 
-@app.route('/feastFinder/recipes/favorites/add_to_favorites', methods=['POST', 'GET'])
+@app.route('/feastFinder/recipes/favorites/add_to_favorites', methods=['POST'])
 def add_to_favorites() -> Response:
     """
     Endpoint to add a recipe to the favorites.
