@@ -1,7 +1,8 @@
 import json
 import os
 import pytest
-from favrecipes import Recipe, FavRecipes
+# from favrecipes import Recipe, FavRecipes
+from context import Feast_Finder, Recipe, check_recipe_fields
 from pathlib import Path
 
 @pytest.fixture
@@ -22,7 +23,7 @@ def temp_file(tmp_path: Path) -> str:
     return str(file_path)
 
 @pytest.fixture
-def fav_recipes(temp_file: str) -> FavRecipes:
+def fav_recipes(temp_file: str) -> Feast_Finder:
     """
     Fixture to create a fresh instance of FavRecipes using a temporary file.
     
@@ -33,7 +34,7 @@ def fav_recipes(temp_file: str) -> FavRecipes:
         FavRecipes: An instance initialized with the temporary file.
     """
 
-    return FavRecipes(temp_file)
+    return Feast_Finder(temp_file)
 
 @pytest.fixture
 def sample_recipe() -> Recipe:
@@ -53,7 +54,7 @@ def sample_recipe() -> Recipe:
         image="http://example.com/pancakes.jpg"
     )
 
-def test_add_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
+def test_add_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
     """
     Test that a recipe is successfully added to the favorites.
 
@@ -69,7 +70,7 @@ def test_add_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     assert sample_recipe.title in recipes
     assert recipes[sample_recipe.title]["recipe_id"] == sample_recipe.id
 
-def test_add_duplicate_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
+def test_add_duplicate_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
     """
     Test that adding a duplicate recipe (same title) fails.
 
@@ -86,7 +87,7 @@ def test_add_duplicate_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) ->
     # second addition should fail due to duplicate title
     assert result2 is False
 
-def test_delete_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
+def test_delete_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
     """
     Test deleting a recipe from the favorites.
 
@@ -103,7 +104,7 @@ def test_delete_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     recipes = fav_recipes.get_recipes()
     assert sample_recipe.title not in recipes
 
-def test_delete_nonexistent_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
+def test_delete_nonexistent_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
     """
     Test deleting a recipe that does not exist.
 
@@ -114,7 +115,7 @@ def test_delete_nonexistent_recipe(fav_recipes: FavRecipes, sample_recipe: Recip
     result = fav_recipes.delete_recipe(sample_recipe)
     assert result is False
 
-def test_update_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
+def test_update_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
     """
     Test updating the ingredients of an existing recipe.
 
@@ -130,7 +131,7 @@ def test_update_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
     recipes = fav_recipes.get_recipes()
     assert recipes[sample_recipe.title]["ingredients"] == new_ingredients
 
-def test_update_nonexistent_recipe(fav_recipes: FavRecipes, sample_recipe: Recipe) -> None:
+def test_update_nonexistent_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
     """
     Test updating a recipe that does not exist.
 
@@ -152,11 +153,11 @@ def test_persistence(temp_file: str, sample_recipe: Recipe) -> None:
     """
 
     # check that after adding a recipe and creating a new FavRecipes instance the recipe persists via the JSON file
-    fav1 = FavRecipes(temp_file)
+    fav1 = Feast_Finder(temp_file)
     fav1.add_recipe(sample_recipe)
     
     # create a new instance to force reloading from file
-    fav2 = FavRecipes(temp_file)
+    fav2 = Feast_Finder(temp_file)
     recipes = fav2.get_recipes()
     assert sample_recipe.title in recipes
 
