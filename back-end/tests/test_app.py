@@ -1,8 +1,7 @@
 import json
 import pytest
 import requests
-from app import app
-from favrecipes import FavRecipes, Recipe
+from context import app, Feast_Finder, Recipe, check_recipe_fields
 from typing import Any, Optional
 from pathlib import Path
 from typing import Generator
@@ -37,7 +36,7 @@ def client(tmp_path: Path) -> Generator[FlaskClient, None, None]:
     :return: A Flask test client configured for testing
     """
     test_file = tmp_path / "test_recipes.json"
-    app.fav_recipes = FavRecipes(str(test_file))  # each test uses a new file
+    app.feast_finder = Feast_Finder(test_file)  # each test uses a new file
     app.config["TESTING"] = True
     with app.test_client() as client:
         yield client
