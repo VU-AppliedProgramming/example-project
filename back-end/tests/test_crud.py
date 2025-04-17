@@ -159,9 +159,9 @@ def test_persistence(temp_file: str, sample_recipe: Recipe) -> None:
     # create a new instance to force reloading from file
     fav2 = Feast_Finder(temp_file)
     recipes = fav2.get_favorite_recipes()
-    assert sample_recipe.title in recipes
+    assert str(sample_recipe.recipe_id) in recipes
 
     # check that the saved JSON file is properly formatted
     with open(temp_file, 'r') as f:
         data = json.load(f)
-    assert sample_recipe.title in data
+    assert str(sample_recipe.recipe_id) in data
