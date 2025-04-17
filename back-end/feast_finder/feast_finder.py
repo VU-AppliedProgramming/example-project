@@ -1,5 +1,6 @@
 from typing import Dict, List, Tuple
 import json
+import random
 
 class Recipe:
     def __init__(self, title: str, instructions: str, ingredients: str, image: str, id: int = None) -> None:
@@ -123,4 +124,13 @@ class Feast_Finder:
         with open(self.storage_path, 'w') as file:
             serialized_recipes = {recipe: self.favorite_recipes[recipe].__dict__ for recipe in self.favorite_recipes}
             json.dump(serialized_recipes, file, indent=4)
+
+    def exists_recipe_with_id(self, id:str) -> bool:
+        return True if id not in self.favorite_recipes else False
+    
+    def get_id(self, id:str) -> str:
+        if not self.exists_recipe_with_id(id) or not id:
+            new_id = f"{random.randint(0, 120000)}"
+            return new_id
+        return None 
 
