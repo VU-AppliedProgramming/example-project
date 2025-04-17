@@ -51,7 +51,7 @@ class Feast_Finder:
                     self.favorite_recipes = recipes
 
         except FileNotFoundError:
-            raise
+            print("There was an error while reading the file")
     
     def process_raw_json(self, raw_json) -> Dict[str, Recipe]:
         recipes = {}
