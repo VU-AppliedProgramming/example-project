@@ -126,11 +126,12 @@ class Feast_Finder:
             json.dump(serialized_recipes, file, indent=4)
 
     def exists_recipe_with_id(self, id:str) -> bool:
-        return True if id not in self.favorite_recipes else False
+        return True if id in self.favorite_recipes else False
     
     def get_id(self, id:str) -> str:
-        if not self.exists_recipe_with_id(id) or not id:
+        if id == None or self.exists_recipe_with_id(id):
+            print(f"########: {id}")
             new_id = f"{random.randint(0, 120000)}"
             return new_id
-        return None 
+        return id
 

@@ -96,9 +96,9 @@ def create_recipe() -> Response:
     check, msgs = check_recipe_fields(request.json)
 
     if check:
-        id: str = app.feast_finder.get_id(request.json.get('recipe_id', None))
+        recipe_id: str = app.feast_finder.get_id(request.json.get('recipe_id', None))
 
-        recipe = Recipe(request.json['title'], request.json['instructions'], request.json['ingredients'], request.json.get('image', None), id=id)
+        recipe = Recipe(request.json['title'], request.json['instructions'], request.json['ingredients'], request.json.get('image', None), id=recipe_id)
         if app.feast_finder.add_recipe(recipe):
             return jsonify({"message": f"Recipe added successfully with id {recipe.recipe_id}"}), 201
         else:
