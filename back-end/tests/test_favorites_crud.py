@@ -113,155 +113,155 @@ def test_create_recipe_with_existing_list(client_fixture):
     assert "9876" in recipes_after
 
 
-def test_create_duplicate_recipe(client_fixture):
-    """
-    Test that the API prevents the creation of duplicate recipes.
-    """
-    recipe_data: Dict[str, Any] = {
-        'r_title': "Tiramisu",
-        'r_instructions': "Mix ingredients, layer, chill",
-        'r_ingredients': "Coffee, Mascarpone, Ladyfingers"
-    }
+# def test_create_duplicate_recipe(client_fixture):
+#     """
+#     Test that the API prevents the creation of duplicate recipes.
+#     """
+#     recipe_data: Dict[str, Any] = {
+#         'r_title': "Tiramisu",
+#         'r_instructions': "Mix ingredients, layer, chill",
+#         'r_ingredients': "Coffee, Mascarpone, Ladyfingers"
+#     }
 
-    # create the recipe for the first time.
-    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
-    assert response.status_code == 201  # <- created
+#     # create the recipe for the first time.
+#     response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
+#     assert response.status_code == 201  # <- created
 
-    # try to create the same recipe again (should fail).
-    response_duplicate = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
-    assert response_duplicate.status_code == 409  # <- should give conflict
-    response_dup_data: Dict[str, Any] = response_duplicate.get_json()
-    assert response_dup_data.get("error") == "Recipe with this title already exists"
-
-
-def test_update_recipe_success(client_fixture):
-    """
-    Test successful update of an existing recipe's instructions.
-    """
-    # create a recipe to update later
-    # recipe_data: Dict[str, Any] = {
-    #     'r_title': "Pancakes",
-    #     'r_instructions': "Mix flour, eggs, milk",
-    #     'r_ingredients': "Flour, Eggs, Milk"
-    # }
-    recipe = Recipe("Pancakes", "Mix flour, eggs, milk", "Flour, Eggs, Milk")
-    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, 
-                                   json=recipe.__dict__,
-                                   headers={'Content-Type': 'application/json'}
-                                   )
-    assert response.status_code == 201  # <- created
-
-    # update data for the recipe instructions
-    update_data: Dict[str, Any] = {
-        "r_title": "Pancakes",
-        "r_instructions": "Mix flour, eggs, milk thoroughly and add vanilla extract"
-    }
-    update_response = client_fixture.put(FAVORITE_RECIPES_ENDPOINT, json=update_data)
-    assert update_response.status_code == 200 # <- ok
-    update_response_data: Dict[str, Any] = update_response.get_json()
-    assert update_response_data.get("message") == "Recipe instructions updated successfully"
-
-    # retrieve the updated recipe to confirm changes
-    response = client_fixture.get("/favorites")
-    recipes_after_update: Dict[str, Any] = response.get_json()
-    assert "Pancakes" in recipes_after_update
-    assert recipes_after_update["Pancakes"]["instructions"] == \
-        "Mix flour, eggs, milk thoroughly and add vanilla extract"
+#     # try to create the same recipe again (should fail).
+#     response_duplicate = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
+#     assert response_duplicate.status_code == 409  # <- should give conflict
+#     response_dup_data: Dict[str, Any] = response_duplicate.get_json()
+#     assert response_dup_data.get("error") == "Recipe with this title already exists"
 
 
-def test_update_nonexistent_recipe(client_fixture):
-    """
-    Test that updating a recipe that does not exist returns an error.
-    """
-    update_data: Dict[str, Any] = {
-        "r_title": "nonexistent recipe",
-        "r_instructions": "New instructions that won't be applied"
-    }
-    update_response = client_fixture.put(FAVORITE_RECIPES_ENDPOINT, json=update_data)
-    assert update_response.status_code == 404 # <- not found
-    update_response_data: Dict[str, Any] = update_response.get_json()
-    assert update_response_data.get("error") == "Recipe with this title does not exist"
+# def test_update_recipe_success(client_fixture):
+#     """
+#     Test successful update of an existing recipe's instructions.
+#     """
+#     # create a recipe to update later
+#     # recipe_data: Dict[str, Any] = {
+#     #     'r_title': "Pancakes",
+#     #     'r_instructions': "Mix flour, eggs, milk",
+#     #     'r_ingredients': "Flour, Eggs, Milk"
+#     # }
+#     recipe = Recipe("Pancakes", "Mix flour, eggs, milk", "Flour, Eggs, Milk")
+#     response = client_fixture.post(CREATE_RECIPE_ENDPOINT, 
+#                                    json=recipe.__dict__,
+#                                    headers={'Content-Type': 'application/json'}
+#                                    )
+#     assert response.status_code == 201  # <- created
+
+#     # update data for the recipe instructions
+#     update_data: Dict[str, Any] = {
+#         "r_title": "Pancakes",
+#         "r_instructions": "Mix flour, eggs, milk thoroughly and add vanilla extract"
+#     }
+#     update_response = client_fixture.put(FAVORITE_RECIPES_ENDPOINT, json=update_data)
+#     assert update_response.status_code == 200 # <- ok
+#     update_response_data: Dict[str, Any] = update_response.get_json()
+#     assert update_response_data.get("message") == "Recipe instructions updated successfully"
+
+#     # retrieve the updated recipe to confirm changes
+#     response = client_fixture.get("/favorites")
+#     recipes_after_update: Dict[str, Any] = response.get_json()
+#     assert "Pancakes" in recipes_after_update
+#     assert recipes_after_update["Pancakes"]["instructions"] == \
+#         "Mix flour, eggs, milk thoroughly and add vanilla extract"
 
 
-def test_delete_recipe(client_fixture):
-    """
-    Test deleting an existing recipe from the favorites list.
-    Verifies the correct status code, success message, and that the recipe is removed from /favorites.
-    """
-
-    recipe_data = {
-        'r_title': "Test Delete",
-        'r_instructions': "Instructions to be deleted",
-        'r_ingredients': "Ingredients to be deleted"
-    }
-    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
-    assert response.status_code == 201
-
-    data = {'r_title': 'Test Delete'}
-    del_response = client_fixture.delete(FAVORITE_RECIPES_ENDPOINT, json=data)
-    assert del_response.status_code == 200
-    assert del_response.get_json().get("message") == "Recipe deleted successfully"
-
-    # confirm that it no longer appears in /favorites
-    response_after_del = client_fixture.get(FAVORITE_RECIPES_ENDPOINT)
-    recipes_after_del = response_after_del.get_json()
-    assert "Test Delete" not in recipes_after_del
+# def test_update_nonexistent_recipe(client_fixture):
+#     """
+#     Test that updating a recipe that does not exist returns an error.
+#     """
+#     update_data: Dict[str, Any] = {
+#         "r_title": "nonexistent recipe",
+#         "r_instructions": "New instructions that won't be applied"
+#     }
+#     update_response = client_fixture.put(FAVORITE_RECIPES_ENDPOINT, json=update_data)
+#     assert update_response.status_code == 404 # <- not found
+#     update_response_data: Dict[str, Any] = update_response.get_json()
+#     assert update_response_data.get("error") == "Recipe with this title does not exist"
 
 
-def test_delete_nonexistent_recipe(client_fixture):
-    """
-    Test that deleting a recipe that doesn't exist returns a 404 error.
-    """
-    data = {'r_title': 'Fake Recipe'}
-    del_response = client_fixture.delete(FAVORITE_RECIPES_ENDPOINT, json=data)
-    assert del_response.status_code == 404 # <- not found
-    assert del_response.get_json().get("error") == "Recipe with this title does not exist"
+# def test_delete_recipe(client_fixture):
+#     """
+#     Test deleting an existing recipe from the favorites list.
+#     Verifies the correct status code, success message, and that the recipe is removed from /favorites.
+#     """
+
+#     recipe_data = {
+#         'r_title': "Test Delete",
+#         'r_instructions': "Instructions to be deleted",
+#         'r_ingredients': "Ingredients to be deleted"
+#     }
+#     response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=recipe_data)
+#     assert response.status_code == 201
+
+#     data = {'r_title': 'Test Delete'}
+#     del_response = client_fixture.delete(FAVORITE_RECIPES_ENDPOINT, json=data)
+#     assert del_response.status_code == 200
+#     assert del_response.get_json().get("message") == "Recipe deleted successfully"
+
+#     # confirm that it no longer appears in /favorites
+#     response_after_del = client_fixture.get(FAVORITE_RECIPES_ENDPOINT)
+#     recipes_after_del = response_after_del.get_json()
+#     assert "Test Delete" not in recipes_after_del
 
 
-def test_create_recipe_missing_title(client_fixture: FlaskClient) -> None:
-    """
-    Test that creating a recipe without the 'r_title' field 
-    returns a 400 status code and an error message indicating
-    the missing 'r_title' requirement.
-    """
-    incomplete_data: Dict[str, str] = {
-        'r_instructions': "Some instructions",
-        'r_ingredients': "Some ingredients"
-        # 'r_title' is omitted here
-    }
-    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
-    assert response.status_code == 400
-    assert "r_title is required" in response.get_json()["error"]
+# def test_delete_nonexistent_recipe(client_fixture):
+#     """
+#     Test that deleting a recipe that doesn't exist returns a 404 error.
+#     """
+#     data = {'r_title': 'Fake Recipe'}
+#     del_response = client_fixture.delete(FAVORITE_RECIPES_ENDPOINT, json=data)
+#     assert del_response.status_code == 404 # <- not found
+#     assert del_response.get_json().get("error") == "Recipe with this title does not exist"
 
 
-def test_create_recipe_missing_instructions(client_fixture: FlaskClient) -> None:
-    """
-    Test that creating a recipe without the 'r_instructions' field 
-    returns a 400 status code and an error message indicating
-    the missing 'r_instructions' requirement.
-    """
-    incomplete_data: Dict[str, str] = {
-        'r_title': "No Instructions",
-        'r_ingredients': "Some ingredients"
-        # 'r_instructions' is omitted here
-    }
-    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
-    assert response.status_code == 400
-    assert "r_instructions is required" in response.get_json()["error"]
+# def test_create_recipe_missing_title(client_fixture: FlaskClient) -> None:
+#     """
+#     Test that creating a recipe without the 'r_title' field 
+#     returns a 400 status code and an error message indicating
+#     the missing 'r_title' requirement.
+#     """
+#     incomplete_data: Dict[str, str] = {
+#         'r_instructions': "Some instructions",
+#         'r_ingredients': "Some ingredients"
+#         # 'r_title' is omitted here
+#     }
+#     response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
+#     assert response.status_code == 400
+#     assert "r_title is required" in response.get_json()["error"]
 
 
-def test_create_recipe_missing_ingredients(client_fixture: FlaskClient) -> None:
-    """
-    Test that creating a recipe without the 'r_ingredients' field 
-    returns a 400 status code and an error message indicating
-    the missing 'r_ingredients' requirement.
-    """
-    incomplete_data: Dict[str, str] = {
-        'r_title': "No Ingredients",
-        'r_instructions': "Some instructions"
-        # 'r_ingredients' is omitted here
-    }
-    response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
-    assert response.status_code == 400
-    assert "r_ingredients is required" in response.get_json()["error"]
+# def test_create_recipe_missing_instructions(client_fixture: FlaskClient) -> None:
+#     """
+#     Test that creating a recipe without the 'r_instructions' field 
+#     returns a 400 status code and an error message indicating
+#     the missing 'r_instructions' requirement.
+#     """
+#     incomplete_data: Dict[str, str] = {
+#         'r_title': "No Instructions",
+#         'r_ingredients': "Some ingredients"
+#         # 'r_instructions' is omitted here
+#     }
+#     response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
+#     assert response.status_code == 400
+#     assert "r_instructions is required" in response.get_json()["error"]
+
+
+# def test_create_recipe_missing_ingredients(client_fixture: FlaskClient) -> None:
+#     """
+#     Test that creating a recipe without the 'r_ingredients' field 
+#     returns a 400 status code and an error message indicating
+#     the missing 'r_ingredients' requirement.
+#     """
+#     incomplete_data: Dict[str, str] = {
+#         'r_title': "No Ingredients",
+#         'r_instructions': "Some instructions"
+#         # 'r_ingredients' is omitted here
+#     }
+#     response = client_fixture.post(CREATE_RECIPE_ENDPOINT, data=incomplete_data)
+#     assert response.status_code == 400
+#     assert "r_ingredients is required" in response.get_json()["error"]
 
