@@ -27,7 +27,7 @@ jobs:
       run: |
         cd back-end
         python -m pip install --upgrade pip
-        pip install BeautifulSoup4 flake8 pytest
+        pip install BeautifulSoup4 flake8 pytest pytest-cov
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
@@ -38,3 +38,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest back-end/tests/test_favorites_crud.py  
+    - name: Test coverage with pytest-cov
+      run: |
+        python -m pytest --cov=back-end/ tests/
