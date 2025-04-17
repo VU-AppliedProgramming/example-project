@@ -40,4 +40,4 @@ jobs:
         pytest back-end/tests/test_favorites_crud.py  
     - name: Test coverage with pytest-cov
       run: |
-        python -m pytest --cov=back-end/ tests/
+        python -m pytest --cov=back-end/ back-end/tests/
