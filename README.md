@@ -45,3 +45,6 @@ The folder architecture can be found bellow:
 
 
 
+## Requirements
+
+For the requirements of this project, see [requirements](requirements.md).
