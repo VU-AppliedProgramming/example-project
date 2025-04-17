@@ -66,7 +66,7 @@ def test_add_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
 
     result = fav_recipes.add_recipe(sample_recipe)
     assert result is True
-    recipes = fav_recipes.get_recipes()
+    recipes = fav_recipes.get_favorite_recipes()
     assert sample_recipe.title in recipes
     assert recipes[sample_recipe.title]["recipe_id"] == sample_recipe.id
 
@@ -101,7 +101,7 @@ def test_delete_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None
     result = fav_recipes.delete_recipe(sample_recipe)
     assert result is True
 
-    recipes = fav_recipes.get_recipes()
+    recipes = fav_recipes.get_favorite_recipes()
     assert sample_recipe.title not in recipes
 
 def test_delete_nonexistent_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
@@ -128,7 +128,7 @@ def test_update_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None
     new_ingredients = "Flour, Eggs, Milk, Sugar, Vanilla"
     result = fav_recipes.update_recipe(sample_recipe, new_ingredients)
     assert result is True
-    recipes = fav_recipes.get_recipes()
+    recipes = fav_recipes.get_favorite_recipes()
     assert recipes[sample_recipe.title]["ingredients"] == new_ingredients
 
 def test_update_nonexistent_recipe(fav_recipes: Feast_Finder, sample_recipe: Recipe) -> None:
@@ -158,7 +158,7 @@ def test_persistence(temp_file: str, sample_recipe: Recipe) -> None:
     
     # create a new instance to force reloading from file
     fav2 = Feast_Finder(temp_file)
-    recipes = fav2.get_recipes()
+    recipes = fav2.get_favorite_recipes()
     assert sample_recipe.title in recipes
 
     # check that the saved JSON file is properly formatted
