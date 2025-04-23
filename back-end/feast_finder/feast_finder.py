@@ -85,20 +85,20 @@ class Feast_Finder:
         self.save_recipe()
         return True
     
-    def update_recipe(self, recipe_id: str, new_ingredients: str) -> bool:
+    def update_recipe(self, recipe_id: str, new_instructions: str) -> bool:
         """
-        Update ingredients of a recipe.
+        Update instructions of a recipe.
 
         Parameters:
-            recipe (Recipe): The recipe to update.
-            new_ingredients (str): The new ingredients to update.
+            recipe_id (str): The ID of the recipe to update.
+            new_instructions (str): The new instructions to update.
 
         Returns:
             bool: True if the recipe was successfully updated, False otherwise.
         """
         if recipe_id in self.favorite_recipes:
             recipe = self.favorite_recipes[recipe_id]
-            recipe.ingredients = new_ingredients
+            recipe.instructions = new_instructions  # update instructions instead of ingredients
             self.save_recipe()
             return True  
         return False

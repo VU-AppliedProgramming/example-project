@@ -99,8 +99,8 @@ def test_create_recipe_with_existing_list(client_fixture):
     new_recipe = Recipe("Vegan Salad", "Mix all greens and add dressing", "Lettuce, Spinach, Cucumber, Dressing", "http://example.com/vegansalad.jpg", id="9876")
     # send create request for the new recipe
     response = client_fixture.post(CREATE_RECIPE_ENDPOINT, 
-                                   json=new_recipe.__dict__, 
-                                   headers={'Content-Type': 'application/json'})
+                                json=new_recipe.__dict__, 
+                                headers={'Content-Type': 'application/json'})
     
     assert response.status_code == 201  # <- created
 
@@ -265,3 +265,207 @@ def test_create_recipe_with_existing_list(client_fixture):
 #     assert response.status_code == 400
 #     assert "r_ingredients is required" in response.get_json()["error"]
 
+def test_create_duplicate_recipe(client_fixture: FlaskClient) -> None:
+    """
+    Test that the API prevents the creation of duplicate recipes with the same ID.
+    
+    Args:
+        client_fixture: Flask test client
+    """
+
+    # first create a recipe with ID "7777"
+    recipe = Recipe("Tiramisu", "Mix ingredients, layer, chill", "Coffee, Mascarpone, Ladyfingers", "http://example.com/image.jpg", id="7777")
+    response = client_fixture.post(
+        CREATE_RECIPE_ENDPOINT,
+        json=recipe.__dict__,
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 201  # created
+
+    # try to create another recipe with the same ID
+    duplicate_recipe = Recipe("Different Recipe", "Different instructions", "Different ingredients", "http://example.com/diff.jpg", id="7777")
+    response_duplicate = client_fixture.post(
+        CREATE_RECIPE_ENDPOINT,
+        json=duplicate_recipe.__dict__,
+        headers={'Content-Type': 'application/json'}
+    )
+    
+    response_data = response_duplicate.get_json()
+    
+    # either the status code should be 409 OR the message should indicate success with a new ID
+    if response_duplicate.status_code == 201:
+        assert "Recipe added successfully with id" in response_data.get("message")
+        assert "7777" not in response_data.get("message")  # shouldn't use the duplicate ID
+    else:
+        assert response_duplicate.status_code == 409  # should be conflict
+        assert "already exists" in response_data.get("error", "")
+
+
+def test_update_recipe_success(client_fixture: FlaskClient) -> None:
+    """
+    Test successful update of an existing recipe's ingredients.
+    
+    Args:
+        client_fixture: Flask test client
+    """
+
+    # create a recipe to update later
+    recipe = Recipe("Pancakes", "Mix flour, eggs, milk", "Flour, Eggs, Milk", "http://example.com/pancakes.jpg", id="8888")
+    response = client_fixture.post(
+        CREATE_RECIPE_ENDPOINT,
+        json=recipe.__dict__,
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 201  # created
+
+    update_data: Dict[str, Any] = {
+        "recipe_id": "8888",
+        "instructions": "Mix flour, eggs, milk thoroughly and add vanilla extract"
+    }
+    update_response = client_fixture.put(FAVORITE_RECIPES_ENDPOINT, json=update_data)
+    assert update_response.status_code == 200  # ok
+    
+    # get the updated recipe
+    response = client_fixture.get(f"{FAVORITE_RECIPES_ENDPOINT}8888")
+    recipe_after_update = response.get_json()
+    
+    #check that the recipe exists and was updated correctly
+    assert "8888" in recipe_after_update
+    assert recipe_after_update["8888"]["instructions"] == "Mix flour, eggs, milk thoroughly and add vanilla extract"
+
+
+def test_update_nonexistent_recipe(client_fixture: FlaskClient) -> None:
+    """
+    Test that updating a recipe that does not exist returns an error.
+    
+    Args:
+        client_fixture: Flask test client
+    """
+
+    update_data: Dict[str, Any] = {
+        "recipe_id": "nonexistent_id",
+        "instructions": "New instructions that won't be applied"
+    }
+    update_response = client_fixture.put(FAVORITE_RECIPES_ENDPOINT, json=update_data)
+    assert update_response.status_code == 404  # not found
+    update_response_data: Dict[str, Any] = update_response.get_json()
+    assert update_response_data.get("error") == "Recipe with this title does not exist"
+
+
+def test_delete_recipe(client_fixture: FlaskClient) -> None:
+    """
+    Test deleting an existing recipe from the favorites list by ID.
+    Verifies the correct status code, success message, and that the recipe is removed.
+    
+    Args:
+        client_fixture: Flask test client
+    """
+
+    recipe = Recipe("Test Delete", "Instructions to be deleted", "Ingredients to be deleted", "http://example.com/delete.jpg", id="9999")
+
+    response = client_fixture.post(
+        CREATE_RECIPE_ENDPOINT,
+        json=recipe.__dict__,
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 201  # created
+
+    # delete the recipe by ID
+    data = {'recipe_id': '9999'}
+    del_response = client_fixture.delete(FAVORITE_RECIPES_ENDPOINT, json=data)
+    assert del_response.status_code == 200  # ok
+    assert del_response.get_json().get("message") == "Recipe deleted successfully"
+
+    # confirm that it no longer appears in favorites
+    response_after_del = client_fixture.get(FAVORITE_RECIPES_ENDPOINT)
+    recipes_after_del = response_after_del.get_json()
+    assert "9999" not in recipes_after_del
+
+
+def test_delete_nonexistent_recipe(client_fixture: FlaskClient) -> None:
+    """
+    Test that deleting a recipe that doesn't exist returns a 404 error.
+    
+    Args:
+        client_fixture: Flask test client
+    """
+
+    data = {'recipe_id': 'fake_recipe_id'}
+    del_response = client_fixture.delete(FAVORITE_RECIPES_ENDPOINT, json=data)
+    assert del_response.status_code == 404  # not found
+    assert del_response.get_json().get("error") == "Recipe with this title does not exist"
+
+
+def test_create_recipe_missing_title(client_fixture: FlaskClient) -> None:
+    """
+    Test that creating a recipe without the 'title' field 
+    returns a 400 status code and an error message indicating
+    the missing 'title' requirement.
+    
+    Args:
+        client_fixture: Flask test client
+    """
+
+    incomplete_data: Dict[str, str] = {
+        'instructions': "Some instructions",
+        'ingredients': "Some ingredients"
+        # 'title' is missing here
+    }
+    response = client_fixture.post(
+        CREATE_RECIPE_ENDPOINT,
+        json=incomplete_data,
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 400  # bad request
+    response_data: Dict[str, Any] = response.get_json()
+    assert "title is required" in response_data.get("error")
+
+
+def test_create_recipe_missing_instructions(client_fixture: FlaskClient) -> None:
+    """
+    Test that creating a recipe without the 'instructions' field 
+    returns a 400 status code and an error message indicating
+    the missing 'instructions' requirement.
+    
+    Args:
+        client_fixture: Flask test client
+    """
+
+    incomplete_data: Dict[str, str] = {
+        'title': "No Instructions",
+        'ingredients': "Some ingredients"
+        # 'instructions' is missing here
+    }
+    response = client_fixture.post(
+        CREATE_RECIPE_ENDPOINT,
+        json=incomplete_data,
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 400  # bad request
+    response_data: Dict[str, Any] = response.get_json()
+    assert "instructions is required" in response_data.get("error")
+
+
+def test_create_recipe_missing_ingredients(client_fixture: FlaskClient) -> None:
+    """
+    Test that creating a recipe without the 'ingredients' field 
+    returns a 400 status code and an error message indicating
+    the missing 'ingredients' requirement.
+    
+    Args:
+        client_fixture: Flask test client
+    """
+
+    incomplete_data: Dict[str, str] = {
+        'title': "No Ingredients",
+        'instructions': "Some instructions"
+        # 'ingredients' is missing here
+    }
+    response = client_fixture.post(
+        CREATE_RECIPE_ENDPOINT,
+        json=incomplete_data,
+        headers={'Content-Type': 'application/json'}
+    )
+    assert response.status_code == 400  # bad request
+    response_data: Dict[str, Any] = response.get_json()
+    assert "ingredients is required" in response_data.get("error")
