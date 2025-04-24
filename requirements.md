@@ -19,31 +19,32 @@
   - Recipes found via search
   - Custom recipes created manually  
 - **Required fields**:
-  - `title` (unique string used to identify the recipe in favorites)  
+  - `recipe_id` (unique string used to identify the recipe in favorites) 
+  - `title` (name of the recipe)  
   - `instructions` (cooking/preparation steps)  
   - `ingredients` (list of ingredients needed)  
 - **Optional fields**:
   - `image` (URL or file path to the recipe’s image)  
-  - `recipe_id` (external or user‑generated ID; stored if provided but not required)  
+
 
 ### 2.2 View favorite recipes
 
 - Retrieve a list of all favorite recipes  
-- Retrieve details of a specific favorite recipe by `title`  
+- Retrieve details of a specific favorite recipe by `id`  
 
 ### 2.3 Update recipe instructions
 
-- Edit the `instructions` of an existing favorite recipe (identified by `title`)  
+- Edit the `instructions` of an existing favorite recipe (identified by `id`)  
 
 ### 2.4 Delete recipes from favorites
 
-- Remove a recipe from favorites by specifying its `title`  
+- Remove a recipe from favorites by specifying its `id`  
 
 ## 3. User Recipe Creation
 
 - Create custom recipes with the same fields as above:
-  - **Required**: `title`, `instructions`, `ingredients`
-  - **Optional**: `image`, `recipe_id`  
+  - **Required**: `recipe_id`, `title`, `instructions`, `ingredients`
+  - **Optional**: `image`,  
 
 ## 4. Recipe Cost Information
 
@@ -57,8 +58,7 @@
 ## Additional Notes
 
 - **Error Handling**:
-  - Missing any required field (`title`, `instructions`, `ingredients`) → **400 Bad Request** with descriptive error  
-  - Duplicate `title` when creating a recipe → **409 Conflict**  
+  - Missing any required field (`id`, `title`, `instructions`, `ingredients`) → **400 Bad Request** with descriptive error  
+  - Duplicate `id` when creating a recipe → **409 Conflict**  
   - Updating or deleting a non-existent recipe → **404 Not Found**  
-- The system uses the **`title`** as the unique key for local storage in favorites.  
-- An optional `recipe_id` (from Spoonacular or user) can be stored but is not required for identification.  
+- The system uses the **`id`** as the unique key for local storage in favorites.   
