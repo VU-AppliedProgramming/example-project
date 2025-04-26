@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, render_template
 import os
 import requests
 from flask_cors import CORS
@@ -12,7 +12,18 @@ try:
 except ImportError:
     from bs4 import BeautifulSoup
 
-app = Flask(__name__)
+
+BASE_DIR      = os.path.dirname(os.path.abspath(__file__))
+FRONTEND_ROOT = os.path.join(BASE_DIR, '..', 'genai-front-end')
+TEMPLATE_DIR  = os.path.join(FRONTEND_ROOT, 'templates')
+STATIC_DIR    = os.path.join(FRONTEND_ROOT, 'static')
+
+app = Flask(
+    __name__,
+    template_folder=TEMPLATE_DIR,
+    static_folder=STATIC_DIR,
+    static_url_path='/static'
+)
 CORS(app)
 
 # Spoonacular API key
@@ -22,6 +33,10 @@ SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
 # Default storage file (only used if not overridden in testing)
 app.feast_finder = Feast_Finder('myfavrecipes.json')
 app.feast_finder.load_recipes()
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/health')
 def health_check():

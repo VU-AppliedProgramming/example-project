@@ -1,801 +1,573 @@
-// DOM Elements
 document.addEventListener('DOMContentLoaded', () => {
-    // Navigation & UI Elements
-    const navLinks = document.querySelectorAll('nav a');
-    const recipeModal = document.getElementById('recipe-modal');
+    // Elements
+    const searchForm        = document.getElementById('search-form');
+    const searchResults     = document.getElementById('search-results');
+    const searchLoader      = document.getElementById('search-loader');
+    const noResults         = document.getElementById('no-results');
+    const randomRecipeBtn   = document.getElementById('random-recipe-btn');
+    const randomRecipeResult= document.getElementById('random-recipe-result');
+    const randomRecipeLoader= document.getElementById('random-recipe-loader');
+    const refreshFavoritesBtn = document.getElementById('refresh-favorites');
+    const favoritesList     = document.getElementById('favorites-list');
+    const favoritesLoader   = document.getElementById('favorites-loader');
+    const noFavorites       = document.getElementById('no-favorites');
+    const createRecipeBtn   = document.getElementById('create-recipe-btn');
+  
+    const recipeModal       = document.getElementById('recipe-modal');
+    const recipeDetailContent = document.getElementById('recipe-detail-content');
+    const closeModal        = recipeModal.querySelector('.close-modal');
+    const addToFavoritesBtn = document.getElementById('add-to-favorites-btn');
+  
     const createRecipeModal = document.getElementById('create-recipe-modal');
-    const closeModalButtons = document.querySelectorAll('.close-modal, .close-form');
-    
-    // Search Elements
-    const searchForm = document.getElementById('search-form');
-    const searchQuery = document.getElementById('search-query');
-    const minCalories = document.getElementById('min-calories');
-    const maxCalories = document.getElementById('max-calories');
-    const searchResults = document.getElementById('search-results');
-    
-    // Random Recipe Elements
-    const randomRecipeBtn = document.getElementById('random-recipe-btn');
-    const randomRecipeResult = document.getElementById('random-recipe-result');
-    
-    // Favorites Elements
-    const favoritesSearchInput = document.getElementById('favorites-search');
-    const searchFavoritesBtn = document.getElementById('search-favorites-btn');
-    const createRecipeBtn = document.getElementById('create-recipe-btn');
-    const createRecipeForm = document.getElementById('create-recipe-form');
-    const favoritesList = document.getElementById('favorites-list');
-    
-    // Timer Elements
-    const timerMinutes = document.getElementById('timer-minutes');
-    const timerSeconds = document.getElementById('timer-seconds');
-    const timerInput = document.getElementById('timer-input');
-    const timerStartBtn = document.getElementById('timer-start');
-    const timerPauseBtn = document.getElementById('timer-pause');
-    const timerResetBtn = document.getElementById('timer-reset');
-    
-    // Event Listeners
-    // Navigation
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
+    const createRecipeForm  = document.getElementById('create-recipe-form');
+    const closeCreateModal  = createRecipeModal.querySelector('.close-create-modal');
+  
+    const editRecipeModal   = document.getElementById('edit-recipe-modal');
+    const editRecipeForm    = document.getElementById('edit-recipe-form');
+    const closeEditModal    = editRecipeModal.querySelector('.close-edit-modal');
+  
+    const priceBreakdownModal = document.getElementById('price-breakdown-modal');
+    const priceBreakdownImg    = document.getElementById('price-breakdown-img');
+    const priceBreakdownData   = document.getElementById('price-breakdown-data');
+    const closePriceModal      = priceBreakdownModal.querySelector('.close-price-modal');
+  
+    const notification       = document.getElementById('notification');
+    const notificationMessage= document.getElementById('notification-message');
+  
+    const timerMinutes      = document.getElementById('minutes');
+    const timerSeconds      = document.getElementById('seconds');
+    const timerMinutesInput = document.getElementById('timer-minutes');
+    const timerSecondsInput = document.getElementById('timer-seconds');
+    const timerStartBtn     = document.getElementById('timer-start');
+    const timerPauseBtn     = document.getElementById('timer-pause');
+    const timerResetBtn     = document.getElementById('timer-reset');
+  
+    let currentRecipe = null;
+    let timerInterval = null;
+    let totalSeconds  = 0;
+    let isTimerRunning= false;
+  
+    // Nav link highlighting & smooth scroll
+    document.querySelectorAll('nav ul li a').forEach(link => {
+      link.addEventListener('click', function(e){
+        document.querySelectorAll('nav ul li a').forEach(l=>l.classList.remove('active'));
+        this.classList.add('active');
+        const tgt = this.getAttribute('href');
+        if(tgt.startsWith('#')) document.querySelector(tgt)?.scrollIntoView({behavior:'smooth'});
+      });
+    });
+  
+    // Helpers
+    function showNotification(msg, isError=false){
+      notificationMessage.textContent = msg;
+      notification.className = 'notification show' + (isError?' error':'');
+      setTimeout(()=> notification.className = 'notification', 3000);
+    }
+    function showLoader(el){ if(el) el.style.display = 'block'; }
+    function hideLoader(el){ if(el) el.style.display = 'none'; }
+  
+    // SEARCH
+    searchForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const q   = document.getElementById('search-query').value.trim();
+      const min = document.getElementById('min-calories').value;
+      const max = document.getElementById('max-calories').value;
+      if(!q){ showNotification('Please enter a search term.', true); return; }
+  
+      searchResults.innerHTML = '';
+      searchResults.style.display = 'none';
+      noResults.style.display = 'none';
+      showLoader(searchLoader);
+  
+      let url = `/api/meals?query=${encodeURIComponent(q)}`;
+      if(min) url += `&minCalories=${min}`;
+      if(max) url += `&maxCalories=${max}`;
+  
+      fetch(url)
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+          hideLoader(searchLoader);
+          if(data.results?.length){
+            renderSearchResults(data.results);
+            searchResults.style.display = 'grid';
+          } else {
+            noResults.style.display = 'block';
+          }
+        })
+        .catch(err => {
+          hideLoader(searchLoader);
+          showNotification('Error fetching search results.', true);
+          console.error(err);
         });
     });
-    
-    // Modal Close Buttons
-    closeModalButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            recipeModal.style.display = 'none';
-            createRecipeModal.style.display = 'none';
+  
+    function renderSearchResults(list){
+      list.forEach(recipe => {
+        const card = document.createElement('div');
+        card.className = 'recipe-card';
+        card.innerHTML = `
+          <div class="recipe-image">
+            <img src="${recipe.image}" alt="${recipe.title}" loading="lazy">
+          </div>
+          <div class="recipe-content">
+            <h3 class="recipe-title">${recipe.title}</h3>
+            <div class="recipe-actions">
+              <button class="action-btn view-recipe" data-id="${recipe.id}">
+                <i class="fas fa-eye"></i> View
+              </button>
+            </div>
+          </div>`;
+        searchResults.appendChild(card);
+        card.querySelector('.view-recipe').addEventListener('click', () => {
+          fetchRecipeDetails(recipe.id);
+        });
+      });
+    }
+  
+    // RANDOM
+    randomRecipeBtn.addEventListener('click', () => {
+      randomRecipeResult.innerHTML = '';
+      randomRecipeResult.style.display = 'none';
+      showLoader(randomRecipeLoader);
+  
+      fetch('/api/random')
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+          hideLoader(randomRecipeLoader);
+          renderRandomRecipe(data);
+          randomRecipeResult.style.display = 'block';
+        })
+        .catch(err => {
+          hideLoader(randomRecipeLoader);
+          showNotification('Error fetching random recipe.', true);
+          console.error(err);
         });
     });
-    
-    // Close modal when clicking outside of modal content
-    window.addEventListener('click', (e) => {
-        if (e.target === recipeModal) {
-            recipeModal.style.display = 'none';
+  
+    function renderRandomRecipe(recipe){
+      const imgUrl = recipe.image || '/static/images/placeholder.png';
+      randomRecipeResult.innerHTML = `
+        <div class="recipe-detail-image">
+          <img src="${imgUrl}" alt="${recipe.title}">
+        </div>
+        <div class="recipe-detail-content">
+          <h2 class="recipe-detail-title">${recipe.title}</h2>
+          <div class="recipe-stats">
+            <div class="recipe-stat"><i class="fas fa-clock"></i> Ready in ${recipe.readyInMinutes||'N/A'} min</div>
+            <div class="recipe-stat"><i class="fas fa-utensils"></i> Serves ${recipe.servings||'N/A'}</div>
+            ${recipe.vegetarian?'<div class="recipe-stat"><i class="fas fa-leaf"></i> Vegetarian</div>':''}
+            ${recipe.vegan?'<div class="recipe-stat"><i class="fas fa-seedling"></i> Vegan</div>':''}
+            ${recipe.glutenFree?'<div class="recipe-stat"><i class="fas fa-bread-slice"></i> Gluten-Free</div>':''}
+            ${recipe.dairyFree?'<div class="recipe-stat"><i class="fas fa-cheese"></i> Dairy-Free</div>':''}
+          </div>
+          <div class="recipe-actions-large">
+            <button class="btn btn-primary view-full-recipe" data-id="${recipe.id}">
+              <i class="fas fa-eye"></i> View Full Recipe
+            </button>
+            <button class="btn btn-secondary view-price-breakdown" data-id="${recipe.id}">
+              <i class="fas fa-dollar-sign"></i> Price Breakdown
+            </button>
+          </div>
+        </div>`;
+      randomRecipeResult.querySelector('.view-full-recipe')
+        .addEventListener('click', () => fetchRecipeDetails(recipe.id));
+      randomRecipeResult.querySelector('.view-price-breakdown')
+        .addEventListener('click', () => viewPriceBreakdown(recipe.id));
+    }
+  
+    // RECIPE DETAILS
+    function fetchRecipeDetails(id){
+      recipeDetailContent.innerHTML = '<div class="loader-small"></div>';
+      recipeModal.style.display = 'block';
+      currentRecipe = null;
+  
+      fetch(`/api/recipe/info/${id}`)
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+          currentRecipe = data;
+          renderRecipeDetails(data);
+        })
+        .catch(err => {
+          recipeDetailContent.innerHTML = '<p class="error-message">Error loading recipe details.</p>';
+          showNotification('Error fetching recipe details.', true);
+          console.error(err);
+        });
+    }
+  
+    function renderRecipeDetails(recipe){
+      const ingredients = (recipe.extendedIngredients||[]).map(i=>i.original);
+      let instructions = [];
+      if(recipe.analyzedInstructions?.[0]?.steps){
+        instructions = recipe.analyzedInstructions[0].steps.map(s=>s.step);
+      } else if(recipe.instructions){
+        instructions = recipe.instructions.split('\n').filter(Boolean);
+      }
+      if(!instructions.length) instructions = ['No instructions available.'];
+      const imgUrl = recipe.image || '/static/images/placeholder.png';
+  
+      recipeDetailContent.innerHTML = `
+        <div class="recipe-detail-image">
+          <img src="${imgUrl}" alt="${recipe.title}">
+        </div>
+        <div class="recipe-detail-main-content">
+          <h2 class="recipe-detail-title">${recipe.title}</h2>
+          <div class="recipe-stats">
+            <div class="recipe-stat"><i class="fas fa-clock"></i> Ready in ${recipe.readyInMinutes||'N/A'} min</div>
+            <div class="recipe-stat"><i class="fas fa-utensils"></i> Serves ${recipe.servings||'N/A'}</div>
+            ${recipe.vegetarian?'<div class="recipe-stat"><i class="fas fa-leaf"></i> Vegetarian</div>':''}
+            ${recipe.vegan?'<div class="recipe-stat"><i class="fas fa-seedling"></i> Vegan</div>':''}
+            ${recipe.glutenFree?'<div class="recipe-stat"><i class="fas fa-bread-slice"></i> Gluten-Free</div>':''}
+            ${recipe.dairyFree?'<div class="recipe-stat"><i class="fas fa-cheese"></i> Dairy-Free</div>':''}
+          </div>
+          <div class="recipe-detail-section">
+            <h3>Ingredients</h3>
+            <ul class="ingredients-list">${ingredients.map(i=>`<li>${i}</li>`).join('')}</ul>
+          </div>
+          <div class="recipe-detail-section">
+            <h3>Instructions</h3>
+            <ol class="instructions-list">${instructions.map(i=>`<li>${i}</li>`).join('')}</ol>
+          </div>
+          <div class="recipe-actions-large modal-specific-actions">
+            <button class="btn btn-secondary view-price-breakdown" data-id="${recipe.id}">
+              <i class="fas fa-dollar-sign"></i> Price Breakdown
+            </button>
+          </div>
+        </div>`;
+      recipeDetailContent.querySelector('.view-price-breakdown')
+        .addEventListener('click', () => viewPriceBreakdown(recipe.id));
+    }
+  
+    // PRICE BREAKDOWN
+    function viewPriceBreakdown(id){
+      priceBreakdownModal.style.display = 'block';
+      priceBreakdownImg.style.display = 'none';
+      priceBreakdownData.innerHTML = '<div class="loader-small"></div>';
+  
+      priceBreakdownImg.src = `/api/price_breakdown_widget/${id}`;
+      priceBreakdownImg.onload = () => priceBreakdownImg.style.display = 'block';
+  
+      fetch(`/api/price_breakdown/${id}`)
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+          if(Array.isArray(data) && data.length===2){
+            const [ings, prcs] = data;
+            let html = '<dl class="price-breakdown-list">', ok=false;
+            ings.forEach((ing,i) => {
+              if(ing && prcs[i] && !ing.toLowerCase().includes('total')){
+                html += `<dt>${ing}</dt><dd>${prcs[i]}</dd>`; ok=true;
+              }
+            });
+            html += '</dl>';
+            priceBreakdownData.innerHTML = ok? html : '<p>No price data available.</p>';
+          } else {
+            priceBreakdownData.innerHTML = '<p>Error parsing price data.</p>';
+          }
+        })
+        .catch(err => {
+          priceBreakdownData.innerHTML = '<p class="error-message">Could not load price data.</p>';
+          console.error(err);
+        });
+    }
+  
+    // FAVORITES
+    function loadFavorites(){
+      favoritesList.innerHTML = '';
+      noFavorites.style.display = 'none';
+      showLoader(favoritesLoader);
+  
+      fetch('/feastFinder/recipes/favorites/')
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+          hideLoader(favoritesLoader);
+          if(Object.keys(data).length){
+            renderFavorites(data);
+            favoritesList.style.display = 'grid';
+          } else {
+            noFavorites.style.display = 'block';
+          }
+        })
+        .catch(err => {
+          hideLoader(favoritesLoader);
+          showNotification('Could not load favorites.', true);
+          noFavorites.textContent = 'Error loading favorites.';
+          noFavorites.style.display = 'block';
+          console.error(err);
+        });
+    }
+  
+    function renderFavorites(recipes){
+      favoritesList.innerHTML = '';
+      Object.entries(recipes).forEach(([id, recipe]) => {
+        const card = document.createElement('div');
+        card.className = 'recipe-card favorite-card';
+        card.innerHTML = `
+          <div class="recipe-image">
+            <img src="${recipe.image}" alt="${recipe.title}" loading="lazy">
+          </div>
+          <div class="recipe-content">
+            <h3 class="recipe-title">${recipe.title}</h3>
+          </div>
+          <div class="recipe-actions">
+            <button class="action-btn view-fav-recipe" data-id="${id}">
+              <i class="fas fa-eye"></i> View
+            </button>
+            <button class="action-btn edit-recipe" data-id="${id}">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="action-btn delete-recipe" data-id="${id}">
+              <i class="fas fa-trash-alt"></i> Delete
+            </button>
+          </div>`;
+        favoritesList.appendChild(card);
+  
+        card.querySelector('.view-fav-recipe').addEventListener('click', e => {
+          const rid = e.currentTarget.dataset.id;
+          if(!isNaN(parseInt(rid))) {
+            fetchRecipeDetails(rid);
+          } else {
+            displayFavoriteDetails({...recipe, id: rid});
+          }
+        });
+        card.querySelector('.edit-recipe').addEventListener('click', e => {
+          openEditModal(e.currentTarget.dataset.id, recipe);
+        });
+        card.querySelector('.delete-recipe').addEventListener('click', e => {
+          const rid = e.currentTarget.dataset.id;
+          if(confirm('Delete this recipe?')) deleteFavorite(rid);
+        });
+      });
+    }
+  
+    function displayFavoriteDetails(recipe){
+      currentRecipe = recipe;
+      recipeDetailContent.innerHTML = `
+        <div class="recipe-detail-image">
+          <img src="${recipe.image}" alt="${recipe.title}">
+        </div>
+        <div class="recipe-detail-main-content">
+          <h2 class="recipe-detail-title">${recipe.title}</h2>
+        </div>
+        <div class="recipe-detail-section">
+          <h3>Ingredients</h3>
+          <ul class="ingredients-list">
+            ${(recipe.ingredients||'').split('\n').filter(Boolean).map(i => `<li>${i}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="recipe-detail-section">
+          <h3>Instructions</h3>
+          <ol class="instructions-list">
+            ${(recipe.instructions||'').split('\n').filter(Boolean).map(i => `<li>${i}</li>`).join('')}
+          </ol>
+        </div>`;
+      recipeModal.style.display = 'block';
+      addToFavoritesBtn.style.display = 'none';
+    }
+  
+    function openEditModal(id, recipe){
+      document.getElementById('edit_recipe_id').value = id;
+      document.getElementById('edit_r_instructions').value = recipe.instructions || '';
+      editRecipeModal.style.display = 'block';
+    }
+  
+    editRecipeForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const rid   = document.getElementById('edit_recipe_id').value;
+      const instr = document.getElementById('edit_r_instructions').value.trim();
+      if(!instr){ showNotification('Instructions cannot be empty.', true); return; }
+      fetch('/feastFinder/recipes/favorites/', {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({recipe_id: rid, instructions: instr})
+      })
+      .then(r => {
+        if(r.ok) return r.json().then(d => ({ok:true,msg:d.message}));
+        if(r.status===404) return r.json().then(d => ({ok:false,msg:d.error}));
+        return Promise.reject('Update failed');
+      })
+      .then(res => {
+        showNotification(res.msg, !res.ok);
+        if(res.ok){ editRecipeModal.style.display='none'; loadFavorites(); }
+      })
+      .catch(err => {
+        showNotification(`Error: ${err}`, true);
+        console.error(err);
+      });
+    });
+  
+    function deleteFavorite(rid){
+      fetch('/feastFinder/recipes/favorites/', {
+        method: 'DELETE',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({recipe_id: rid})
+      })
+      .then(r => {
+        if(r.ok) return r.json().then(d => ({ok:true,msg:d.message}));
+        if(r.status===404) return r.json().then(d => ({ok:false,msg:d.error}));
+        return Promise.reject('Delete failed');
+      })
+      .then(res => {
+        showNotification(res.msg, !res.ok);
+        if(res.ok) loadFavorites();
+      })
+      .catch(err => {
+        showNotification(`Error: ${err}`, true);
+        console.error(err);
+      });
+    }
+  
+    createRecipeBtn.addEventListener('click', ()=>{
+      createRecipeForm.reset();
+      createRecipeModal.style.display='block';
+    });
+  
+    createRecipeForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const title = document.getElementById('r_title').value.trim();
+      const rid   = document.getElementById('r_id').value.trim() || null;
+      const ings  = document.getElementById('r_ingredients').value.trim();
+      const instr = document.getElementById('r_instructions').value.trim();
+      const img   = document.getElementById('r_image').value.trim();
+      if(!title||!ings||!instr||!img){
+        showNotification('Please fill in all fields.', true);
+        return;
+      }
+      fetch('/feastFinder/recipe/', {
+        method: 'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({title, recipe_id: rid, ingredients: ings, instructions: instr, image: img})
+      })
+      .then(r => {
+        if(r.status===201) return r.json().then(d => ({ok:true,msg:d.message}));
+        return r.json().then(d => ({ok:false,msg:d.error||JSON.stringify(d)}));
+      })
+      .then(res => {
+        showNotification(res.msg, !res.ok);
+        if(res.ok){
+          createRecipeModal.style.display='none';
+          loadFavorites();
         }
-        if (e.target === createRecipeModal) {
-            createRecipeModal.style.display = 'none';
+      })
+      .catch(err => {
+        showNotification(`Error: ${err}`, true);
+        console.error(err);
+      });
+    });
+  
+    addToFavoritesBtn.addEventListener('click', ()=>{
+      if(!currentRecipe?.id){
+        showNotification('No recipe selected.', true);
+        return;
+      }
+      const fd = new FormData();
+      fd.append('recipe_title', currentRecipe.title);
+      fd.append('recipe_id', currentRecipe.id);
+      fd.append('recipe_image', currentRecipe.image||'');
+      const ingr = (currentRecipe.extendedIngredients||[]).map(i=>i.original).join('\n');
+      let instr = '';
+      if(currentRecipe.analyzedInstructions?.[0]?.steps){
+        instr = currentRecipe.analyzedInstructions[0].steps.map(s=>s.step).join('\n');
+      } else {
+        instr = currentRecipe.instructions||'';
+      }
+      fd.append('recipe_ingredients', ingr);
+      fd.append('recipe_instructions', instr);
+  
+      fetch('/feastFinder/recipes/favorites/add_to_favorites', {method:'POST', body:fd})
+        .then(r => r.json())
+        .then(d => {
+          if(d.message){
+            showNotification(d.message);
+            recipeModal.style.display='none';
+            loadFavorites();
+          } else {
+            showNotification(d.error||'Error adding favorite', true);
+          }
+        })
+        .catch(err => {
+          showNotification('Failed to add to favorites.', true);
+          console.error(err);
+        });
+    });
+  
+    function closeModalHandler(modal){
+      modal.style.display='none';
+      if(modal===recipeModal){
+        recipeDetailContent.innerHTML=''; currentRecipe=null; addToFavoritesBtn.style.display='block';
+      }
+      if(modal===priceBreakdownModal){
+        priceBreakdownImg.src=''; priceBreakdownData.innerHTML='';
+      }
+    }
+    closeModal.addEventListener('click', ()=>closeModalHandler(recipeModal));
+    closeCreateModal.addEventListener('click', ()=>closeModalHandler(createRecipeModal));
+    closeEditModal.addEventListener('click', ()=>closeModalHandler(editRecipeModal));
+    closePriceModal.addEventListener('click', ()=>closeModalHandler(priceBreakdownModal));
+    window.addEventListener('click', e => {
+      if(e.target===recipeModal) closeModalHandler(recipeModal);
+      if(e.target===createRecipeModal) closeModalHandler(createRecipeModal);
+      if(e.target===editRecipeModal) closeModalHandler(editRecipeModal);
+      if(e.target===priceBreakdownModal) closeModalHandler(priceBreakdownModal);
+    });
+  
+    // Timer
+    function updateTimerDisplay(){
+      const m = Math.floor(totalSeconds/60);
+      const s = totalSeconds % 60;
+      timerMinutes.textContent = String(m).padStart(2,'0');
+      timerSeconds.textContent = String(s).padStart(2,'0');
+    }
+    function startTimer(){
+      if(isTimerRunning) return;
+      const m = parseInt(timerMinutesInput.value)||0;
+      const s = parseInt(timerSecondsInput.value)||0;
+      totalSeconds = m*60 + s;
+      if(totalSeconds<=0){
+        showNotification('Please set a valid timer duration.', true);
+        return;
+      }
+      isTimerRunning = true;
+      timerStartBtn.disabled = true;
+      timerPauseBtn.disabled = false;
+      timerMinutesInput.disabled = true;
+      timerSecondsInput.disabled = true;
+      updateTimerDisplay();
+      timerInterval = setInterval(()=>{
+        totalSeconds--;
+        if(totalSeconds<0){
+          resetTimer();
+          showNotification("Time's up!");
+        } else {
+          updateTimerDisplay();
         }
-    });
-    
-    // Search Form
-    searchForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        searchRecipes();
-    });
-    
-    // Random Recipe Button
-    randomRecipeBtn.addEventListener('click', getRandomRecipe);
-    
-    // Favorites Search
-    searchFavoritesBtn.addEventListener('click', searchFavorites);
-    favoritesSearchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            searchFavorites();
-        }
-    });
-    
-    // Create Recipe Button
-    createRecipeBtn.addEventListener('click', () => {
-        // Reset form for new recipe
-        createRecipeForm.reset();
-        document.getElementById('create-recipe-title').textContent = 'Create New Recipe';
-        document.getElementById('recipe-id').value = '';
-        createRecipeModal.style.display = 'block';
-    });
-    
-    // Create Recipe Form
-    createRecipeForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        saveRecipe();
-    });
-    
-    // Timer Controls
+      }, 1000);
+    }
+    function pauseTimer(){
+      if(!isTimerRunning) return;
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      timerStartBtn.disabled = false;
+      timerPauseBtn.disabled = true;
+      timerStartBtn.textContent = 'Resume';
+    }
+    function resetTimer(){
+      clearInterval(timerInterval);
+      isTimerRunning = false;
+      totalSeconds = 0;
+      timerMinutesInput.value = 5;
+      timerSecondsInput.value = 0;
+      updateTimerDisplay();
+      timerStartBtn.disabled = false;
+      timerPauseBtn.disabled = true;
+      timerStartBtn.textContent = 'Start';
+      timerMinutesInput.disabled = false;
+      timerSecondsInput.disabled = false;
+    }
     timerStartBtn.addEventListener('click', startTimer);
     timerPauseBtn.addEventListener('click', pauseTimer);
     timerResetBtn.addEventListener('click', resetTimer);
-    
-    // Load favorites on page load
+  
+    // Initial load
     loadFavorites();
-});
-
-// API Functions
-
-// Function to search recipes from API
-async function searchRecipes() {
-    const searchQuery = document.getElementById('search-query');
-    const minCalories = document.getElementById('min-calories');
-    const maxCalories = document.getElementById('max-calories');
-    const searchResults = document.getElementById('search-results');
-    
-    const query = searchQuery.value.trim();
-    if (!query) return;
-    
-    // Show loading indicator
-    searchResults.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
-    
-    let url = `/api/meals?query=${encodeURIComponent(query)}`;
-    
-    // Add calorie parameters if specified
-    const minCal = minCalories.value.trim();
-    const maxCal = maxCalories.value.trim();
-    if (minCal && maxCal) {
-        url += `&minCalories=${minCal}&maxCalories=${maxCal}`;
-    }
-    
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        if (data.error) {
-            searchResults.innerHTML = `<div class="error-message">Error: ${data.error}</div>`;
-            return;
-        }
-        
-        displaySearchResults(data.results || []);
-    } catch (error) {
-        searchResults.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-    }
-}
-
-// Function to display search results
-function displaySearchResults(results) {
-    const searchResults = document.getElementById('search-results');
-    
-    if (results.length === 0) {
-        searchResults.innerHTML = '<div class="no-results">No recipes found. Try different keywords.</div>';
-        return;
-    }
-    
-    let html = '';
-    results.forEach(recipe => {
-        html += `
-            <div class="recipe-card fade-in">
-                <div class="recipe-image">
-                    <img src="${recipe.image}" alt="${recipe.title}">
-                </div>
-                <div class="recipe-content">
-                    <h3>${recipe.title}</h3>
-                    <div class="recipe-buttons">
-                        <button class="btn-secondary" onclick="viewRecipeDetails(${recipe.id})">
-                            <i class="fas fa-info-circle"></i> Details
-                        </button>
-                        <button class="btn-primary" onclick="addToFavoritesFromSearch(${recipe.id})">
-                            <i class="fas fa-heart"></i> Favorite
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    searchResults.innerHTML = html;
-}
-
-// Function to get random recipe
-async function getRandomRecipe() {
-    const randomRecipeResult = document.getElementById('random-recipe-result');
-    
-    // Show loading indicator
-    randomRecipeResult.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
-    
-    try {
-        const response = await fetch('/api/random');
-        const recipe = await response.json();
-        
-        if (recipe.error) {
-            randomRecipeResult.innerHTML = `<div class="error-message">Error: ${recipe.error}</div>`;
-            return;
-        }
-        
-        randomRecipeResult.innerHTML = `
-            <div class="recipe-card slide-up">
-                <div class="recipe-image">
-                    <img src="${recipe.image}" alt="${recipe.title}">
-                </div>
-                <div class="recipe-content">
-                    <h3>${recipe.title}</h3>
-                    <p>${recipe.readyInMinutes} minutes | ${recipe.servings} servings</p>
-                    <div class="recipe-buttons">
-                        <button class="btn-secondary" onclick="viewRecipeDetails(${recipe.id})">
-                            <i class="fas fa-info-circle"></i> Details
-                        </button>
-                        <button class="btn-primary" onclick="addToFavoritesFromSearch(${recipe.id})">
-                            <i class="fas fa-heart"></i> Favorite
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    } catch (error) {
-        randomRecipeResult.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-    }
-}
-
-// Function to view recipe details
-async function viewRecipeDetails(recipeId) {
-    const recipeModal = document.getElementById('recipe-modal');
-    const recipeModalContent = document.getElementById('recipe-modal-content');
-    const recipePriceBreakdown = document.getElementById('recipe-price-breakdown');
-    
-    // Show loading indicator
-    recipeModalContent.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
-    recipePriceBreakdown.innerHTML = '';
-    recipeModal.style.display = 'block';
-    
-    try {
-        // Fetch recipe details
-        const response = await fetch(`/api/recipe/info/${recipeId}`);
-        const recipe = await response.json();
-        
-        if (recipe.error) {
-            recipeModalContent.innerHTML = `<div class="error-message">Error: ${recipe.error}</div>`;
-            return;
-        }
-        
-        // Format ingredients
-        const ingredientsList = recipe.extendedIngredients.map(ingredient => 
-            `<li>${ingredient.original}</li>`
-        ).join('');
-        
-        // Format instructions
-        let instructionsHtml = '<ol>';
-        if (recipe.analyzedInstructions && recipe.analyzedInstructions.length > 0) {
-            const steps = recipe.analyzedInstructions[0].steps;
-            steps.forEach(step => {
-                instructionsHtml += `<li>${step.step}</li>`;
-            });
-        } else if (recipe.instructions) {
-            // Split instructions by periods if it's a string
-            const instructionSteps = recipe.instructions.split('.');
-            instructionSteps.forEach(step => {
-                if (step.trim()) {
-                    instructionsHtml += `<li>${step.trim()}.</li>`;
-                }
-            });
-        } else {
-            instructionsHtml += '<li>No instructions available.</li>';
-        }
-        instructionsHtml += '</ol>';
-        
-        // Create recipe detail HTML
-        recipeModalContent.innerHTML = `
-            <div class="recipe-detail">
-                <div class="recipe-detail-header">
-                    <h2>${recipe.title}</h2>
-                    <p>Ready in ${recipe.readyInMinutes} minutes | ${recipe.servings} servings</p>
-                </div>
-                
-                <img src="${recipe.image}" alt="${recipe.title}" class="recipe-detail-image">
-                
-                <div class="recipe-detail-section">
-                    <h3>Ingredients</h3>
-                    <ul>${ingredientsList}</ul>
-                </div>
-                
-                <div class="recipe-detail-section">
-                    <h3>Instructions</h3>
-                    ${instructionsHtml}
-                </div>
-                
-                <div class="recipe-detail-actions">
-                    <button class="btn-primary" onclick="addToFavoritesFromSearch(${recipe.id})">
-                        <i class="fas fa-heart"></i> Add to Favorites
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        // Fetch price breakdown
-        fetchPriceBreakdown(recipeId);
-        
-    } catch (error) {
-        recipeModalContent.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-    }
-}
-
-// Function to fetch price breakdown
-async function fetchPriceBreakdown(recipeId) {
-    const recipePriceBreakdown = document.getElementById('recipe-price-breakdown');
-    
-    try {
-        // First try to get the detailed price breakdown
-        const response = await fetch(`/api/price_breakdown/${recipeId}`);
-        const data = await response.json();
-        
-        if (data && Array.isArray(data) && data.length === 2) {
-            const [ingredients, prices] = data;
-            
-            let priceHtml = '<div class="price-breakdown">';
-            priceHtml += '<h3>Price Breakdown</h3>';
-            priceHtml += '<div class="price-breakdown-content">';
-            
-            for (let i = 0; i < ingredients.length; i++) {
-                if (ingredients[i] && prices[i]) {
-                    priceHtml += `
-                        <div class="price-item">
-                            <span>${ingredients[i]}</span>
-                            <span>${prices[i]}</span>
-                        </div>
-                    `;
-                }
-            }
-            
-            priceHtml += '</div></div>';
-            recipePriceBreakdown.innerHTML = priceHtml;
-        } else {
-            // If detailed breakdown fails, try the image widget
-            recipePriceBreakdown.innerHTML = `
-                <div class="price-breakdown">
-                    <h3>Price Breakdown</h3>
-                    <img src="/api/price_breakdown_widget/${recipeId}" alt="Price Breakdown" class="price-breakdown-img">
-                </div>
-            `;
-        }
-    } catch (error) {
-        recipePriceBreakdown.innerHTML = '<div class="error-message">Price breakdown not available</div>';
-    }
-}
-
-// Function to add recipe to favorites from search results
-async function addToFavoritesFromSearch(recipeId) {
-    try {
-        // First get the recipe details
-        const response = await fetch(`/api/recipe/info/${recipeId}`);
-        const recipe = await response.json();
-        
-        if (recipe.error) {
-            alert(`Error: ${recipe.error}`);
-            return;
-        }
-        
-        // Format ingredients
-        const ingredientsList = recipe.extendedIngredients.map(ingredient => 
-            ingredient.original
-        ).join('\n');
-        
-        // Format instructions
-        let instructions = '';
-        if (recipe.analyzedInstructions && recipe.analyzedInstructions.length > 0) {
-            const steps = recipe.analyzedInstructions[0].steps;
-            instructions = steps.map(step => step.step).join('\n');
-        } else if (recipe.instructions) {
-            instructions = recipe.instructions;
-        }
-        
-        // Create form data
-        const formData = new FormData();
-        formData.append('recipe_title', recipe.title);
-        formData.append('recipe_instructions', instructions);
-        formData.append('recipe_ingredients', ingredientsList);
-        formData.append('recipe_image', recipe.image);
-        formData.append('recipe_id', recipe.id);
-        
-        // Submit to add to favorites
-        const saveResponse = await fetch('/feastFinder/recipes/favorites/add_to_favorites', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await saveResponse.json();
-        
-        if (result.message) {
-            alert(result.message);
-            loadFavorites(); // Refresh favorites list
-        } else if (result.error) {
-            alert(`Error: ${result.error}`);
-        }
-        
-    } catch (error) {
-        alert(`Error: ${error.message}`);
-    }
-}
-
-// Function to load favorites
-async function loadFavorites() {
-    const favoritesList = document.getElementById('favorites-list');
-    
-    try {
-        const response = await fetch('/feastFinder/recipes/favorites/');
-        const favorites = await response.json();
-        
-        if (Object.keys(favorites).length === 0) {
-            favoritesList.innerHTML = '<div class="no-results">No favorite recipes yet. Add some!</div>';
-            return;
-        }
-        
-        let html = '';
-        for (const recipeId in favorites) {
-            const recipe = favorites[recipeId];
-            html += `
-                <div class="recipe-card fade-in" data-id="${recipeId}">
-                    <div class="recipe-image">
-                        <img src="${recipe.image || '/static/images/placeholder.jpg'}" alt="${recipe.title}">
-                    </div>
-                    <div class="recipe-content">
-                        <h3>${recipe.title}</h3>
-                        <div class="recipe-buttons">
-                            <button class="btn-secondary" onclick="viewFavoriteDetails('${recipeId}')">
-                                <i class="fas fa-info-circle"></i> Details
-                            </button>
-                            <button class="btn-secondary" onclick="editRecipe('${recipeId}')">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn-primary" onclick="deleteRecipe('${recipeId}')">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        favoritesList.innerHTML = html;
-    } catch (error) {
-        favoritesList.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-    }
-}
-
-// Function to search favorites
-async function searchFavorites() {
-    const favoritesSearchInput = document.getElementById('favorites-search');
-    const favoritesList = document.getElementById('favorites-list');
-    
-    const query = favoritesSearchInput.value.trim();
-    if (!query) {
-        loadFavorites();
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/feastFinder/recipes/favorites/search?query=${encodeURIComponent(query)}`);
-        const results = await response.json();
-        
-        if (Object.keys(results).length === 0) {
-            favoritesList.innerHTML = '<div class="no-results">No matching recipes found in your favorites.</div>';
-            return;
-        }
-        
-        let html = '';
-        for (const recipeId in results) {
-            const recipe = results[recipeId];
-            html += `
-                <div class="recipe-card fade-in" data-id="${recipeId}">
-                    <div class="recipe-image">
-                        <img src="${recipe.image || '/static/images/placeholder.jpg'}" alt="${recipe.title}">
-                    </div>
-                    <div class="recipe-content">
-                        <h3>${recipe.title}</h3>
-                        <div class="recipe-buttons">
-                            <button class="btn-secondary" onclick="viewFavoriteDetails('${recipeId}')">
-                                <i class="fas fa-info-circle"></i> Details
-                            </button>
-                            <button class="btn-secondary" onclick="editRecipe('${recipeId}')">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn-primary" onclick="deleteRecipe('${recipeId}')">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        favoritesList.innerHTML = html;
-    } catch (error) {
-        favoritesList.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-    }
-}
-
-// Function to view favorite recipe details
-async function viewFavoriteDetails(recipeId) {
-    const recipeModal = document.getElementById('recipe-modal');
-    const recipeModalContent = document.getElementById('recipe-modal-content');
-    const recipePriceBreakdown = document.getElementById('recipe-price-breakdown');
-    
-    // Show loading indicator
-    recipeModalContent.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
-    recipePriceBreakdown.innerHTML = '';
-    recipeModal.style.display = 'block';
-    
-    try {
-        // Fetch favorite recipe details
-        const response = await fetch(`/feastFinder/recipes/favorites/${recipeId}`);
-        const data = await response.json();
-        
-        if (!data[recipeId]) {
-            recipeModalContent.innerHTML = `<div class="error-message">Recipe not found</div>`;
-            return;
-        }
-        
-        const recipe = data[recipeId];
-        
-        // Format ingredients
-        const ingredientsList = recipe.ingredients.split('\n').map(ingredient => 
-            `<li>${ingredient.trim()}</li>`
-        ).join('');
-        
-        // Format instructions
-        let instructionsHtml = '<ol>';
-        const instructionSteps = recipe.instructions.split('\n');
-        instructionSteps.forEach(step => {
-            if (step.trim()) {
-                instructionsHtml += `<li>${step.trim()}</li>`;
-            }
-        });
-        instructionsHtml += '</ol>';
-        
-        // Create recipe detail HTML
-        recipeModalContent.innerHTML = `
-            <div class="recipe-detail">
-                <div class="recipe-detail-header">
-                    <h2>${recipe.title}</h2>
-                </div>
-                
-                ${recipe.image ? `<img src="${recipe.image}" alt="${recipe.title}" class="recipe-detail-image">` : ''}
-                
-                <div class="recipe-detail-section">
-                    <h3>Ingredients</h3>
-                    <ul>${ingredientsList}</ul>
-                </div>
-                
-                <div class="recipe-detail-section">
-                    <h3>Instructions</h3>
-                    ${instructionsHtml}
-                </div>
-                
-                <div class="recipe-detail-actions">
-                    <button class="btn-secondary" onclick="editRecipe('${recipeId}')">
-                        <i class="fas fa-edit"></i> Edit Recipe
-                    </button>
-                    <button class="btn-primary" onclick="deleteRecipe('${recipeId}')">
-                        <i class="fas fa-trash"></i> Delete Recipe
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        // No price breakdown for favorite recipes
-        recipePriceBreakdown.innerHTML = '';
-        
-    } catch (error) {
-        recipeModalContent.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
-    }
-}
-
-// Function to edit recipe
-async function editRecipe(recipeId) {
-    const createRecipeModal = document.getElementById('create-recipe-modal');
-    
-    try {
-        // Fetch recipe details
-        const response = await fetch(`/feastFinder/recipes/favorites/${recipeId}`);
-        const data = await response.json();
-        
-        if (!data[recipeId]) {
-            alert('Recipe not found');
-            return;
-        }
-        
-        const recipe = data[recipeId];
-        
-        // Fill the form with recipe data
-        document.getElementById('create-recipe-title').textContent = 'Edit Recipe';
-        document.getElementById('recipe-id').value = recipeId;
-        document.getElementById('recipe-title').value = recipe.title;
-        document.getElementById('recipe-ingredients').value = recipe.ingredients;
-        document.getElementById('recipe-instructions').value = recipe.instructions;
-        document.getElementById('recipe-image').value = recipe.image || '';
-        
-        // Show the modal
-        createRecipeModal.style.display = 'block';
-        
-    } catch (error) {
-        alert(`Error: ${error.message}`);
-    }
-}
-
-// Function to save recipe (create new or update existing)
-async function saveRecipe() {
-    const createRecipeForm = document.getElementById('create-recipe-form');
-    const recipeId = document.getElementById('recipe-id').value;
-    
-    const formData = {
-        title: document.getElementById('recipe-title').value,
-        ingredients: document.getElementById('recipe-ingredients').value,
-        instructions: document.getElementById('recipe-instructions').value,
-        image: document.getElementById('recipe-image').value || null
-    };
-    
-    if (recipeId) {
-        // Update existing recipe
-        formData.recipe_id = recipeId;
-        
-        try {
-            const response = await fetch('/feastFinder/recipes/favorites/', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            
-            const result = await response.json();
-            
-            if (result.message) {
-                alert(result.message);
-                document.getElementById('create-recipe-modal').style.display = 'none';
-                loadFavorites(); // Refresh the favorites list
-            } else if (result.error) {
-                alert(`Error: ${result.error}`);
-            }
-        } catch (error) {
-            alert(`Error: ${error.message}`);
-        }
-    } else {
-        // Create new recipe
-        try {
-            const response = await fetch('/feastFinder/recipe/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            
-            const result = await response.json();
-            
-            if (result.message) {
-                alert(result.message);
-                document.getElementById('create-recipe-modal').style.display = 'none';
-                loadFavorites(); // Refresh the favorites list
-            } else if (result.error) {
-                alert(`Error: ${result.error}`);
-            }
-        } catch (error) {
-            alert(`Error: ${error.message}`);
-        }
-    }
-}
-
-// Function to delete recipe
-async function deleteRecipe(recipeId) {
-    if (confirm('Are you sure you want to delete this recipe from your favorites?')) {
-        try {
-            const response = await fetch('/feastFinder/recipes/favorites/', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ recipe_id: recipeId })
-            });
-            
-            const result = await response.json();
-            
-            if (result.message) {
-                alert(result.message);
-                
-                // Close modal if it's open
-                document.getElementById('recipe-modal').style.display = 'none';
-                
-                // Refresh favorites list
-                loadFavorites();
-            } else if (result.error) {
-                alert(`Error: ${result.error}`);
-            }
-        } catch (error) {
-            alert(`Error: ${error.message}`);
-        }
-    }
-}
-
-// Timer functionality
-let timerInterval;
-let totalSeconds = 0;
-let timerRunning = false;
-
-function startTimer() {
-    const timerInput = document.getElementById('timer-input');
-    const timerStartBtn = document.getElementById('timer-start');
-    const timerPauseBtn = document.getElementById('timer-pause');
-    
-    if (!timerRunning) {
-        // If timer is not already running and there's no previous timer
-        if (totalSeconds === 0) {
-            // Get minutes from input
-            const minutes = parseInt(timerInput.value);
-            if (isNaN(minutes) || minutes <= 0) {
-                alert('Please enter a valid number of minutes');
-                return;
-            }
-            totalSeconds = minutes * 60;
-        }
-        
-        // Update button states
-        timerStartBtn.disabled = true;
-        timerPauseBtn.disabled = false;
-        
-        // Start the timer
-        timerRunning = true;
-        updateTimerDisplay();
-        
-        timerInterval = setInterval(() => {
-            totalSeconds--;
-            updateTimerDisplay();
-            
-            if (totalSeconds <= 0) {
-                // Timer finished
-                clearInterval(timerInterval);
-                timerRunning = false;
-                timerStartBtn.disabled = false;
-                timerPauseBtn.disabled = true;
-                
-                // Play sound alert
-                playTimerAlert();
-                
-                // Show alert
-                alert('Timer finished!');
-            }
-        }, 1000);
-    }
-}
-
-function pauseTimer() {
-    const timerStartBtn = document.getElementById('timer-start');
-    const timerPauseBtn = document.getElementById('timer-pause');
-    
-    clearInterval(timerInterval);
-    timerRunning = false;
-    timerStartBtn.disabled = false;
-    timerPauseBtn.disabled = true;
-}
-
-function resetTimer() {
-    const timerStartBtn = document.getElementById('timer-start');
-    const timerPauseBtn = document.getElementById('timer-pause');
-    const timerMinutes = document.getElementById('timer-minutes');
-    const timerSeconds = document.getElementById('timer-seconds');
-    
-    clearInterval(timerInterval);
-    timerRunning = false;
-    totalSeconds = 0;
-    
-    timerMinutes.textContent = '00';
-    timerSeconds.textContent = '00';
-    
-    timerStartBtn.disabled = false;
-    timerPauseBtn.disabled = true;
-}
-
-function updateTimerDisplay() {
-    const timerMinutes = document.getElementById('timer-minutes');
-    const timerSeconds = document.getElementById('timer-seconds');
-    
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    
-    timerMinutes.textContent = minutes.toString().padStart(2, '0');
-    timerSeconds.textContent = seconds.toString().padStart(2, '0');
-}
-
-function playTimerAlert() {
-    // Create audio context
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Create oscillator
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    // Play beep sound
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 880;
-    gainNode.gain.value = 0.5;
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.5);
-}
+    updateTimerDisplay();
+  });
+  
