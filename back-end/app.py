@@ -266,5 +266,32 @@ def get_recipe_info(meal_id: int) -> Union[dict, Response]:
 
     return response.json()
 
+
+@app.route('/feastFinder/recipes/favorites/search')
+def search_favorite_recipes() -> jsonify:
+    """
+    Endpoint to search for recipes in favorites based on query terms.
+    The search looks for matches in title, instructions, and ingredients.
+        
+    Returns:
+        Response: JSON response containing matching recipes
+    """
+
+    query = request.args.get('query', '').lower()
+    if not query:
+        return jsonify({})
+    
+    favorite_recipes = app.feast_finder.get_favorite_recipes()
+    matching_recipes = {}
+    
+    for recipe_id, recipe in favorite_recipes.items():
+        # search in title, instructions, and ingredients
+        if (query in recipe.title.lower() or 
+            query in recipe.instructions.lower() or 
+            query in recipe.ingredients.lower()):
+            matching_recipes[recipe_id] = recipe.__dict__
+    
+    return jsonify(matching_recipes)
+
 if __name__ == '__main__':
     app.run(debug=True, port = 5002)
