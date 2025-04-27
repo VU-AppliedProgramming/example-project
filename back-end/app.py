@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, render_template
 import os
 import requests
 from flask_cors import CORS
@@ -6,22 +6,38 @@ import re
 from feast_finder import Feast_Finder, Recipe, check_recipe_fields
 from typing import Union, Tuple, Optional, List
 import random
+from pathlib import Path
+
+from dotenv import load_dotenv, find_dotenv 
+load_dotenv(find_dotenv())                  
 
 try: 
     from BeautifulSoup import BeautifulSoup
 except ImportError:
     from bs4 import BeautifulSoup
 
-app = Flask(__name__)
+
+RECIPES_FILE  = 'back-end/myfavrecipes.json'
+
+app = Flask(
+    __name__,
+    template_folder="../genai-front-end/templates",   # <- templates folder
+    static_folder  ="../genai-front-end/static",      # <- CSS/JS/images
+    static_url_path="/static"                         # URL prefix
+)
 CORS(app)
+
 
 # Spoonacular API key
 API_KEY = os.environ.get('API_KEY')
-SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
+SPOONACULAR_API = "https://api.spoonacular.com" # fixed path
 
-# Default storage file (only used if not overridden in testing)
-app.feast_finder = Feast_Finder('myfavrecipes.json')
+app.feast_finder = Feast_Finder(str(RECIPES_FILE))
 app.feast_finder.load_recipes()
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/health')
 def health_check():
@@ -55,6 +71,7 @@ def get_favorite_recipe_by_id(recipe_id: str) -> Response:
     Returns:
         Response: JSON response containing information about the requested recipe.
     """
+
     favorite_recipes = app.feast_finder.get_favorite_recipes()
 
     if recipe_id in favorite_recipes:
@@ -148,14 +165,15 @@ def get_meals() -> Union[dict, Response]:
     min_calories = request.args.get('minCalories', type=int)
     max_calories = request.args.get('maxCalories', type=int)
 
-    url = f'{SPOONACULAR_API}/complexSearch?query={query}&apiKey={API_KEY}'
-    if min_calories is not None and max_calories is not None:
-        url += f'&minCalories={min_calories}&maxCalories={max_calories}'
+    url = f'{SPOONACULAR_API}/recipes/complexSearch'
+    params = {'apiKey': API_KEY, 'query': query}
+    if min_calories is not None: params['minCalories'] = min_calories
+    if max_calories is not None: params['maxCalories'] = max_calories
 
-    response = requests.get(url)
+    response = requests.get(url, params=params)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch meals'}), 500
-
+    
     return response.json()
 
 @app.route('/api/recipe/<int:meal_id>')
@@ -168,11 +186,10 @@ def get_recipe(meal_id: int) -> Union[dict, Response]:
         Union[dict, Response]: JSON response containing the recipe or an error message.
     """
 
-    url = f'{SPOONACULAR_API}/{meal_id}/information?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/{meal_id}/information'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch recipe'}), 500
-
     return response.json()
 
 @app.route('/api/random')
@@ -183,13 +200,11 @@ def get_random_recipe() -> Union[dict, Response]:
         Union[dict, Response]: JSON response containing the random recipe or an error message.
     """
 
-    url = f'{SPOONACULAR_API}/random?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/random'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch random recipe'}), 500
-
-    data = response.json()
-    return jsonify(data['recipes'][0])
+    return jsonify(response.json()['recipes'][0])
 
 @app.route('/api/price_breakdown_widget/<int:meal_id>')
 def get_price_breakdown_widget(meal_id: int) -> Union[Response, tuple]:
@@ -201,8 +216,8 @@ def get_price_breakdown_widget(meal_id: int) -> Union[Response, tuple]:
         Union[Response, tuple]: Response object containing the image data or an error message.
     """
 
-    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget.png?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/{meal_id}/priceBreakdownWidget.png'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
 
@@ -241,8 +256,8 @@ def get_price_breakdown(meal_id: int) -> jsonify:
         jsonify: JSON response containing the price breakdown widget information.
     """
 
-    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/{meal_id}/priceBreakdownWidget'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
 
@@ -259,8 +274,8 @@ def get_recipe_info(meal_id: int) -> Union[dict, Response]:
         Union[dict, Response]: JSON response containing the recipe or an error message.
     """
     
-    url = f'{SPOONACULAR_API}/{meal_id}/information?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/{meal_id}/information'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch recipe'}), 500
 
