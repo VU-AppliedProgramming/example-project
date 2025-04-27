@@ -72,6 +72,7 @@ def get_favorite_recipe_by_id(recipe_id: str) -> Response:
         Response: JSON response containing information about the requested recipe.
     """
 
+
     favorite_recipes = app.feast_finder.get_favorite_recipes()
 
     if recipe_id in favorite_recipes:
