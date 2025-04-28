@@ -153,7 +153,8 @@ def test_create_duplicate_recipe(client_fixture: FlaskClient) -> None:
     
     response_data = response_duplicate.get_json()
     
-    # either the status code should be 409 OR the message should indicate success with a new ID
+    # the second request should still return 201, but the backend must replace the
+    # duplicate incoming ID (“7777”) with a newly generated, unique ID
     assert response_duplicate.status_code == 201
     assert "Recipe added successfully with id" in response_data.get("message")
     assert "7777" not in response_data.get("message")  # shouldn't use the duplicate ID
