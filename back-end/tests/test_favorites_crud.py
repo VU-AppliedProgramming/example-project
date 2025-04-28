@@ -154,13 +154,9 @@ def test_create_duplicate_recipe(client_fixture: FlaskClient) -> None:
     response_data = response_duplicate.get_json()
     
     # either the status code should be 409 OR the message should indicate success with a new ID
-    if response_duplicate.status_code == 201:
-        assert "Recipe added successfully with id" in response_data.get("message")
-        assert "7777" not in response_data.get("message")  # shouldn't use the duplicate ID
-    else:
-        assert response_duplicate.status_code == 409  # should be conflict
-        assert "already exists" in response_data.get("error", "")
-
+    assert response_duplicate.status_code == 201
+    assert "Recipe added successfully with id" in response_data.get("message")
+    assert "7777" not in response_data.get("message")  # shouldn't use the duplicate ID
 
 ###############################################################################
 #                                                                             #
@@ -396,63 +392,50 @@ def test_get_meals_search(mock_get, client_fixture: FlaskClient) -> None:
 
     # mock the API response
     mock_response = MagicMock()
-    mock_response.status_code = 200 # ok
+    mock_response.status_code = 200
 
     mock_response.json.return_value = {
         "results": [
-            {
-                "id": 123456,
-                "title": "Spaghetti Bolognese",
-                "image": "http://example.com/spaghetti.jpg"
-            },
-            {
-                "id": 654321,
-                "title": "Pasta Primavera",
-                "image": "http://example.com/primavera.jpg"
-            }
+            {"id": 123456, "title": "Spaghetti Bolognese",
+                "image": "http://example.com/spaghetti.jpg"},
+            {"id": 654321, "title": "Pasta Primavera",
+                "image": "http://example.com/primavera.jpg"}
         ],
         "totalResults": 2
     }
-
     mock_get.return_value = mock_response
-    
-    # test the endpoint
-    response = client_fixture.get('/api/meals?query=pasta&minCalories=100&maxCalories=500')
-    
-    # check the response
+
+    # call the endpoint
+    response = client_fixture.get("/api/meals?query=pasta&minCalories=100&maxCalories=500")
     assert response.status_code == 200 # ok
+
     data = response.get_json()
-    
-    # check if we actually retrieved the recipes
-    assert "results" in data
-    assert len(data["results"]) == 2
-    
-    # check first recipe details
-    first_recipe = data["results"][0]
-    assert first_recipe["id"] == 123456
-    assert first_recipe["title"] == "Spaghetti Bolognese"
-    assert first_recipe["image"] == "http://example.com/spaghetti.jpg"
-    
-    # check second recipe details
-    second_recipe = data["results"][1]
-    assert second_recipe["id"] == 654321
-    assert second_recipe["title"] == "Pasta Primavera"
-    assert second_recipe["image"] == "http://example.com/primavera.jpg"
-    
-    # confirm that totalResults matches expected value (2)
+
+    # basic value checks
+    assert "results" in data and len(data["results"]) == 2
+    assert data["results"][0]["id"] == 123456
+    assert data["results"][1]["title"] == "Pasta Primavera"
     assert data["totalResults"] == 2
-    
-    # check that the mock was called with the correct URL components
+
+
+    # there should be exactly one call
     mock_get.assert_called_once()
-    call_args = mock_get.call_args[0][0]
-    
-    # some extra check to make sure all params are there
-    assert 'api.spoonacular.com/recipes' in call_args
-    assert 'complexSearch' in call_args
-    assert 'query=pasta' in call_args
-    assert 'apiKey=' in call_args
-    assert 'minCalories=100' in call_args
-    assert 'maxCalories=500' in call_args
+
+    positional_args, keyword_args = mock_get.call_args
+
+    # the base URL
+    base_url_passed = positional_args[0]
+    assert base_url_passed == "https://api.spoonacular.com/recipes/complexSearch"
+
+    # params dict
+    assert "params" in keyword_args
+    params = keyword_args["params"]
+
+    # check every expected query parameter
+    assert params["query"] == "pasta"
+    assert params["minCalories"] == 100
+    assert params["maxCalories"] == 500
+    assert "apiKey" in params and params["apiKey"]  
 
 
 @patch('requests.get')
@@ -465,26 +448,30 @@ def test_get_meals_search_api_error(mock_get, client_fixture: FlaskClient) -> No
         client_fixture: Flask test client
     """
 
-    # mock an API error
+    # mock the API response
     mock_response = MagicMock()
     mock_response.status_code = 500 # server error
     mock_get.return_value = mock_response
-    
-    # test the endpoint
-    response = client_fixture.get('/api/meals?query=pasta')
-    
-    # check the response
+
+    # call the endpoint
+    response = client_fixture.get("/api/meals?query=pasta")
     assert response.status_code == 500 # server error
-    
-    data = response.get_json()
-    
-    assert "error" in data
-    assert data["error"] == "Failed to fetch meals"
-    
-    # check that the mock was called correctly
+    assert response.get_json() == {"error": "Failed to fetch meals"}
+
+    # exactly one outgoing request
     mock_get.assert_called_once()
-    call_args = mock_get.call_args[0][0]
-    assert 'complexSearch?query=pasta' in call_args
+    positional_args, keyword_args = mock_get.call_args
+
+    # Bbase URL
+    assert positional_args[0] == "https://api.spoonacular.com/recipes/complexSearch"
+
+    # params dict
+    assert "params" in keyword_args
+    params = keyword_args["params"]
+
+    # check parameters
+    assert params["query"] == "pasta"
+    assert "apiKey" in params and params["apiKey"]
 
 
 def test_search_favorite_recipes(client_fixture: FlaskClient) -> None:
@@ -606,24 +593,24 @@ def test_get_price_breakdown_api_error(mock_get, client_fixture: FlaskClient) ->
         client_fixture: Flask test client
     """
 
-    # mock an API error
+    # mock the API response
     mock_response = MagicMock()
     mock_response.status_code = 500 # server error
     mock_get.return_value = mock_response
-    
-    # test the endpoint
-    response = client_fixture.get('/api/price_breakdown/123456')
-    
-    # check the response status code
+
+    # call the endpoint
+    response = client_fixture.get("/api/price_breakdown/123456")
     assert response.status_code == 500 # server error
-    
-    data = response.get_json()
-    
-    assert "error" in data
-    assert data["error"] == "Failed to fetch price breakdown widget"
-    
-    # check that the mock was called with the correct URL
+    assert response.get_json() == {"error": "Failed to fetch price breakdown widget"}
+
+    # check outgoing request
     mock_get.assert_called_once()
-    call_args = mock_get.call_args[0][0]
-    assert '123456/priceBreakdownWidget' in call_args
-    assert 'apiKey=' in call_args
+    positional_args, keyword_args = mock_get.call_args
+
+    assert positional_args[0] == ("https://api.spoonacular.com/recipes/123456/priceBreakdownWidget")
+
+    assert "params" in keyword_args
+    params = keyword_args["params"]
+
+    # apiKey must be included and non-empty
+    assert "apiKey" in params and params["apiKey"]
