@@ -9,7 +9,7 @@
     "26867": {
         "title": "tester",
         "recipe_id": "26867",
-        "instructions": "bbb",
+        "instructions": "bbb\n\nccc",
         "ingredients": "aaa",
         "image": ""
     },
@@ -26,5 +26,12 @@
         "instructions": "Heat oil, saute onions until translucent.\r\nAdd cent.\r\nAdd remaining ingredients, saute for 2 minutes, and set aside. Prepare topping. and sea salt. Simmer for 5 more minutes.Partially mash beans for a thick bean sauce consistency.",
         "ingredients": "1 (15 oz.) black beans, drained, rinsed\r\n1/4 teaspoon cayenne pepper or to taste\r\n2 tablespoons extra virgin olive oil\r\n2 tablespoons grated ginger\r\n1/2 teaspoon ground cumin\r\n2 mediums onions -- chopped\r\n2 tablespoons ume plum vinegar\r\n3 sweet red peppers, roasted and peeled (optional)\r\n1 teaspoon sea salt",
         "image": "https://img.spoonacular.com/recipes/635066-556x370.jpg"
+    },
+    "157107": {
+        "title": "Skinny Cheesecake Brownie Bites",
+        "recipe_id": "157107",
+        "instructions": "See the full recipe at Because I Like Chocolate.",
+        "ingredients": "1/4 tsp. baking powder\r\n1/4 tsp. baking soda\r\n2 tbsp. brown sugar\r\n1/3 cup cocoa powder\r\n1 egg\r\n1 egg yolk\r\n1/2 cup flour\r\n4 oz. light cream cheese\r\n2 tbsp. olive oil\r\n1/4 tsp. salt\r\n1/2 cup unsweetened apple sauce\r\n1/2 tsp. vanilla bean paste (or vanilla extract if you can't find it)\r\n1/4 cup white sugar",
+        "image": "https://img.spoonacular.com/recipes/157107-556x370.jpg"
     }
 }
