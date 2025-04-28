@@ -17,7 +17,7 @@ except ImportError:
     from bs4 import BeautifulSoup
 
 
-RECIPES_FILE  = 'back-end/myfavrecipes.json'
+RECIPES_FILE  = os.path.join(os.path.dirname(__file__), "myfavrecipes.json")
 
 app = Flask(
     __name__,
