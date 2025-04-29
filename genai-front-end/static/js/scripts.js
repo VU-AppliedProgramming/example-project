@@ -43,6 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const notification         = document.getElementById('notification');
   const notificationMessage  = document.getElementById('notification-message');
 
+  const favSearchForm  = document.getElementById('favorites-search-form');
+  const favSearchQuery = document.getElementById('favorites-search-query');
+
+
   /* Timer elements */
   const timerMinutes         = document.getElementById('minutes');
   const timerSeconds         = document.getElementById('seconds');
@@ -290,6 +294,47 @@ document.addEventListener('DOMContentLoaded', () => {
         priceBreakdownData.innerHTML = '<p>Could not load price data.</p>';
       });
   }
+
+  /* ─────────────────────── FAVORITES SEARCH ─────────────────────── */
+favSearchForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const q = favSearchQuery.value.trim();
+  // blank query ⇒ show full list again
+  if (!q) return loadFavorites();
+
+  favoritesList.innerHTML = '';
+  favoritesList.style.display = 'none';
+  noFavorites.style.display = 'none';
+  showLoader(favoritesLoader);
+
+  fetch(`/feastFinder/recipes/favorites/search?query=${encodeURIComponent(q)}`)
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => {
+      hideLoader(favoritesLoader);
+      const hits = Object.values(data);
+      if (hits.length) {
+        displayFavorites(hits);
+        favoritesList.style.display = 'grid';
+      } else {
+        noFavorites.textContent = 'No matching recipes.';
+        noFavorites.style.display = 'block';
+      }
+    })
+    .catch(() => {
+      hideLoader(favoritesLoader);
+      showNotification('Error searching favourites.', true);
+    });
+});
+
+
+/* ───────────────────────── REFRESH FAVORITES ───────────────────────── */
+
+refreshFavoritesBtn.addEventListener('click', () => {
+  // clear any search term that might be showing
+  if (typeof favSearchQuery !== 'undefined') favSearchQuery.value = '';
+
+  loadFavorites();            // pull the full list again
+});
 
   /* ───────────────────────── FAVORITES CRUD ─────────────────────────── */
   function loadFavorites() {

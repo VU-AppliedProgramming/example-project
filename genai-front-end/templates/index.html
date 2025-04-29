@@ -91,15 +91,38 @@
     <section id="favorites-section" class="section">
       <div class="container">
         <h2 class="section-title">Your Favorite Recipes</h2>
+    
         <div class="section-tools">
-          <button id="refresh-favorites" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Refresh</button>
-          <button id="create-recipe-btn" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Recipe</button>
+          <!-- Refresh button (unchanged) -->
+          <button id="refresh-favorites" class="btn btn-secondary">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+    
+          <!-- >>> NEW: search-within-favorites form <<< -->
+          <form id="favorites-search-form" class="favorites-search">
+            <input id="favorites-search-query"
+                   type="text"
+                   placeholder="Search favourites…"
+                   aria-label="Search favourites">
+            <button type="submit" class="btn btn-secondary">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+    
+          <!-- Create button (unchanged) -->
+          <button id="create-recipe-btn" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create New Recipe
+          </button>
         </div>
-        <div id="favorites-list" class="recipe-grid"></div>
+    
+        <div id="favorites-list"   class="recipe-grid"></div>
         <div id="favorites-loader" class="loader"></div>
-        <div id="no-favorites" class="message">You don't have any favorite recipes yet.</div>
+        <div id="no-favorites"     class="message">
+          You don't have any favorite recipes yet.
+        </div>
       </div>
     </section>
+    
 
     <!-- Cooking Timer -->
     <section id="cooking-timer" class="section bg-light">

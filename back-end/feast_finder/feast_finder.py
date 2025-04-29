@@ -139,6 +139,6 @@ class Feast_Finder:
     def get_id(self, id: str) -> str:
         if id is None or self.exists_recipe_with_id(id):
             print(f"########: {id}")
-            new_id = f"{random.randint(0, 120000)}"
+            new_id = f"_{random.randint(0, 120000)}" # added _ so that we don't accidentally assign an existing id
             return new_id
         return id
