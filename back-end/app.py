@@ -25,6 +25,7 @@ app = Flask(
     static_folder  ="../genai-front-end/static",      # <- CSS/JS/images
     static_url_path="/static"                         # URL prefix
 )
+
 CORS(app)
 
 
