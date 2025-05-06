@@ -17,9 +17,15 @@ except ImportError:
     from bs4 import BeautifulSoup
 
 
-RECIPES_FILE  = 'back-end/myfavrecipes.json'
+RECIPES_FILE  = os.path.join(os.path.dirname(__file__), "myfavrecipes.json")
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder="../genai-front-end/templates",   # <- templates folder
+    static_folder  ="../genai-front-end/static",      # <- CSS/JS/images
+    static_url_path="/static"                         # URL prefix
+)
+
 CORS(app)
 
 
