@@ -6,13 +6,6 @@
         "ingredients": "3 tablespoons (45 g) unsalted butter softened to room temperature\r\n1/8 teaspoon cream of tartar\r\n3 eggs\r\ncup (50 g) flour\r\n2 tablespoons Lemon Juice\r\n1 tablespoon lemon zest\r\npowdered sugar\r\nSalt to Taste\r\n1 cup (200 g) sugar, divided\r\n1 teaspoon vanilla\r\n1 cup whole milk (I used half low fat milk + half light cream)",
         "image": "https://img.spoonacular.com/recipes/650482-556x370.jpg"
     },
-    "661879": {
-        "title": "Strawberry Rhubarb Pie Vegan Shake",
-        "recipe_id": "661879",
-        "instructions": "Combine all ingredients in a blender; pulse until smooth.Top with soy or dairy based whip cream and sprinkle with additional graham crackers.",
-        "ingredients": "1 ripe frozen banana\r\n2 tablespoons graham cracker crumbs (check label to ensure it is vegan)\r\nice cubes\r\n3-4 teaspoons freshly squeezed lemon juice\r\n1 cup light coconut milk\r\n1 cup strawberry rhubarb compote\r\n2 pounds fresh strawberries, sliced\r\n1/2 teaspoon pure vanilla extract",
-        "image": "https://img.spoonacular.com/recipes/661879-556x370.jpg"
-    },
     "635066": {
         "title": "Black Bean Feijoada",
         "recipe_id": "635066",
@@ -33,5 +26,12 @@
         "instructions": "kjvsnd'lv",
         "ingredients": "jevnslkvn",
         "image": "https://www.bigbasket.com/media/uploads/p/xxl/40122445_6-fresho-grapes-green-residue-free.jpg"
+    },
+    "656817": {
+        "title": "Pork Schnitzel And Apple Salad",
+        "recipe_id": "656817",
+        "instructions": "Using a meat mallet, pound pork slices evenly to 5mm thick. Marinate it with cornflour, cooking wine and lightly beaten egg for about 3 - 5 minutes.\r\nCoat marinated pork slices evenly with breadcrumbs by pressing the meat down against the crumbs.\r\nHeat oil in a frying pan on medium heat, cook pork schnitzel for 3 minutes on each side or until golden and cooked through.\r\nDrain well on paper towels.\r\nMeanwhile, toss the pre-packed salad with accompany dressing before transferring them to a serving plate and top with apple slices. (you can soak apple slices with some lightly salted water to prevent it from oxidized and turns brown)\r\nNext thickly slice pork and arrange on salad and drizzle mustard dressing over pork and serve.",
+        "ingredients": "1 cup breadcrumbs or Panko\r\n1/2 Tablespoon Cornflour\r\n1 Egg, lightly beaten\r\n2 Green Apple, cored, halved and thinly sliced\r\nSome Mayonnaise\r\n1/3 cup Olive Oil\r\n1 Packet Ready-to-serve Salad Green with dressing\r\n4 Pork Sirloin Steaks, fat trimmed\r\nSome Wholegrain/Creamy Mustard Sauce\r\n1/2 Tablespoon Cooking Wine",
+        "image": "https://img.spoonacular.com/recipes/656817-556x370."
     }
 }

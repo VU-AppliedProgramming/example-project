@@ -1,7 +1,5 @@
 back-end/.env
 */.env
-back-end/tests/__pycache__
-back-end/feast_finder/__pycache__
 **/.DS_Store
 **/__pycache__/
 *.pyc
