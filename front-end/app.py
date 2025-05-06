@@ -6,7 +6,7 @@ from typing import Tuple, Union
 app = Flask(__name__)
 CORS(app)
 
-BACKEND_ENDPOINT = 'http://localhost:5000'
+BACKEND_ENDPOINT = 'http://localhost:5002'
 
 @app.route('/check_backend')
 def check_backend() -> Tuple[str, int]:
@@ -41,7 +41,7 @@ def get_test_data() -> str:
         str: Rendered HTML template with favorites data.
     """
     
-    backend_url = f'{BACKEND_ENDPOINT}/test'
+    backend_url = f'{BACKEND_ENDPOINT}/favorites'
     response = requests.get(backend_url)
     recipes = response.json()
     return render_template('test.html', results=recipes)

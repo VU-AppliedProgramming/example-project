@@ -1,25 +1,38 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, render_template
 import os
 import requests
 from flask_cors import CORS
 import re
-from favrecipes import FavRecipes, Recipe
+from feast_finder import Feast_Finder, Recipe, check_recipe_fields
 from typing import Union, Tuple, Optional, List
+import random
+from pathlib import Path
+
+from dotenv import load_dotenv, find_dotenv 
+load_dotenv(find_dotenv())                  
 
 try: 
     from BeautifulSoup import BeautifulSoup
 except ImportError:
     from bs4 import BeautifulSoup
 
+
+RECIPES_FILE  = 'back-end/myfavrecipes.json'
+
 app = Flask(__name__)
 CORS(app)
 
+
 # Spoonacular API key
 API_KEY = os.environ.get('API_KEY')
-SPOONACULAR_API = "https://api.spoonacular.com/recipes/"
+SPOONACULAR_API = "https://api.spoonacular.com" # fixed path
 
-# Default storage file (only used if not overridden in testing)
-app.fav_recipes = FavRecipes('myfavrecipes.json')
+app.feast_finder = Feast_Finder(str(RECIPES_FILE))
+app.feast_finder.load_recipes()
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/health')
 def health_check():
@@ -31,19 +44,21 @@ def health_check():
 
     return 'OK', 200
 
-@app.route('/test')
-def test():
+@app.route('/feastFinder/recipes/favorites/')
+def get_favorite_recipes():
     """
     Endpoint to retrieve recipes from favorites.
     Returns:
         Response: JSON response containing the favorite recipes.
     """
         
-    recipes = app.fav_recipes.get_recipes()
-    return jsonify(recipes)
+    recipes = app.feast_finder.get_favorite_recipes()
 
-@app.route('/show_one_favorite/<recipe_id>')
-def s_one_fav(recipe_id: str) -> Response:
+    serialized_recipes = {recipe: recipes[recipe].__dict__ for recipe in recipes}
+    return jsonify(serialized_recipes)
+
+@app.route('/feastFinder/recipes/favorites/<recipe_id>')
+def get_favorite_recipe_by_id(recipe_id: str) -> Response:
     """
     Endpoint to display information about a single favorite recipe based on its ID.
     Args:
@@ -52,15 +67,17 @@ def s_one_fav(recipe_id: str) -> Response:
         Response: JSON response containing information about the requested recipe.
     """
 
-    recipes = app.fav_recipes.get_recipes()
-    if recipe_id in recipes:
-        return jsonify({recipe_id: recipes[recipe_id]})
+
+    favorite_recipes = app.feast_finder.get_favorite_recipes()
+
+    if recipe_id in favorite_recipes:
+        return jsonify({recipe_id: favorite_recipes[recipe_id].__dict__})
     else:
         return jsonify({"error": "Recipe not found"})
     
 ### CRUD OPERATIONS ###
 
-@app.route('/add_to_favorites', methods=['POST', 'GET'])
+@app.route('/feastFinder/recipes/favorites/add_to_favorites', methods=['POST'])
 def add_to_favorites() -> Response:
     """
     Endpoint to add a recipe to the favorites.
@@ -74,87 +91,59 @@ def add_to_favorites() -> Response:
     recipe_image = request.form['recipe_image']
     recipe_id = request.form['recipe_id']
 
-    recipe = Recipe(recipe_title, recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
-    success = app.fav_recipes.add_recipe(recipe)
+    recipe = Recipe(recipe_title, recipe_instructions, recipe_ingredients, recipe_image, id = recipe_id)
+    success = app.feast_finder.add_recipe(recipe)
 
     if success:
         return jsonify({"message": "Recipe added to favorites successfully"})
     else:
         return jsonify({"error": "Failed to add recipe to favorites"})
 
-@app.route('/create_recipe', methods=['POST'])
+@app.route('/feastFinder/recipe/', methods=['POST'])
 def create_recipe() -> Response:
     """
     Endpoint to create a new recipe and add it to the favorites.
     Returns:
         Response: JSON response indicating the success or failure of the operation.
-    """
+    """    
+    check, msgs = check_recipe_fields(request.json)
 
-    recipe_title = request.form['r_title']
-    recipe_id = request.form['r_id']
-    recipe_instructions = request.form['r_instructions']
-    recipe_ingredients = request.form['r_ingredients']
-    recipe_image = request.form['r_image']
+    if check:
+        recipe_id: str = app.feast_finder.get_id(request.json.get('recipe_id', None))
 
-    recipe = Recipe(recipe_title, recipe_id, recipe_instructions, recipe_ingredients, recipe_image)
-    recipe_added = app.fav_recipes.add_recipe(recipe)
-
-    if recipe_added:
-        return jsonify({"message": "Recipe added successfully"}), 201
+        recipe = Recipe(request.json['title'], request.json['instructions'], request.json['ingredients'], request.json.get('image', None), id=recipe_id)
+        if app.feast_finder.add_recipe(recipe):
+            return jsonify({"message": f"Recipe added successfully with id {recipe.recipe_id}"}), 201
+        else:
+            return jsonify({"error": "Recipe with this title already exists"}), 409
     else:
-        return jsonify({"error": "Recipe with this title already exists"}), 409
+        return jsonify({"error": msgs}), 400
 
-@app.route('/delete_recipe', methods=['DELETE'])
+@app.route('/feastFinder/recipes/favorites/', methods=['DELETE'])
 def delete_recipe() -> Response:
     """
     Endpoint to delete a recipe from the favorites list.
     Returns:
         Response: JSON response indicating the success or failure of the operation.
     """
-
-    data = request.get_json()
-    r_title = data.get('r_title')
-    recipes = app.fav_recipes.get_recipes()
-
-    if r_title in recipes:
-        recipe = Recipe(
-            recipes[r_title]["title"],
-            recipes[r_title]["recipe_id"],
-            recipes[r_title]["instructions"],
-            recipes[r_title]["ingredients"],
-            recipes[r_title]["image"]
-        )
-
-        if app.fav_recipes.delete_recipe(recipe):
-            return jsonify({"message": "Recipe deleted successfully"}), 200
+    recipe_id = request.json['recipe_id']
+    if app.feast_finder.delete_recipe(recipe_id):
+        return jsonify({"message": "Recipe deleted successfully"}), 200
 
     return jsonify({"error": "Recipe with this title does not exist"}), 404
 
-@app.route('/update_recipe_instructions', methods=['PUT'])
+@app.route('/feastFinder/recipes/favorites/', methods=['PUT'])
 def update_recipe() -> Response:
     """
     Endpoint to update the instructions of a recipe in the favorites.
     Returns:
         Response: JSON response indicating the success or failure of the operation.
     """
+    recipe_id = request.json['recipe_id']
+    new_instructions = request.json['instructions']
 
-    data = request.get_json()
-    r_title = data.get('r_title')
-    new_instructions = data.get('r_instructions')
-
-    recipes = app.fav_recipes.get_recipes()
-
-    if r_title in recipes:
-        recipe = Recipe(
-            recipes[r_title]["title"],
-            recipes[r_title]["recipe_id"],
-            recipes[r_title]["instructions"],
-            recipes[r_title]["ingredients"],
-            recipes[r_title]["image"]
-        )
-
-        if app.fav_recipes.update_recipe(recipe, new_instructions):
-            return jsonify({"message": "Ingredients updated successfully"}), 200
+    if app.feast_finder.update_recipe(recipe_id, new_instructions):
+        return jsonify({"message": "Recipe instructions updated successfully"}), 200
 
     return jsonify({"error": "Recipe with this title does not exist"}), 404
 
@@ -172,14 +161,15 @@ def get_meals() -> Union[dict, Response]:
     min_calories = request.args.get('minCalories', type=int)
     max_calories = request.args.get('maxCalories', type=int)
 
-    url = f'{SPOONACULAR_API}/complexSearch?query={query}&apiKey={API_KEY}'
-    if min_calories is not None and max_calories is not None:
-        url += f'&minCalories={min_calories}&maxCalories={max_calories}'
+    url = f'{SPOONACULAR_API}/recipes/complexSearch'
+    params = {'apiKey': API_KEY, 'query': query}
+    if min_calories is not None: params['minCalories'] = min_calories
+    if max_calories is not None: params['maxCalories'] = max_calories
 
-    response = requests.get(url)
+    response = requests.get(url, params=params)
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch meals'}), 500
-
+    
     return response.json()
 
 @app.route('/api/recipe/<int:meal_id>')
@@ -192,11 +182,10 @@ def get_recipe(meal_id: int) -> Union[dict, Response]:
         Union[dict, Response]: JSON response containing the recipe or an error message.
     """
 
-    url = f'{SPOONACULAR_API}/{meal_id}/information?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/{meal_id}/information'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch recipe'}), 500
-
     return response.json()
 
 @app.route('/api/random')
@@ -207,13 +196,11 @@ def get_random_recipe() -> Union[dict, Response]:
         Union[dict, Response]: JSON response containing the random recipe or an error message.
     """
 
-    url = f'{SPOONACULAR_API}/random?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/random'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch random recipe'}), 500
-
-    data = response.json()
-    return jsonify(data['recipes'][0])
+    return jsonify(response.json()['recipes'][0])
 
 @app.route('/api/price_breakdown_widget/<int:meal_id>')
 def get_price_breakdown_widget(meal_id: int) -> Union[Response, tuple]:
@@ -225,8 +212,8 @@ def get_price_breakdown_widget(meal_id: int) -> Union[Response, tuple]:
         Union[Response, tuple]: Response object containing the image data or an error message.
     """
 
-    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget.png?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/{meal_id}/priceBreakdownWidget.png'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
 
@@ -265,8 +252,8 @@ def get_price_breakdown(meal_id: int) -> jsonify:
         jsonify: JSON response containing the price breakdown widget information.
     """
 
-    url = f'{SPOONACULAR_API}/{meal_id}/priceBreakdownWidget?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/{meal_id}/priceBreakdownWidget'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch price breakdown widget'}), 500
 
@@ -283,12 +270,39 @@ def get_recipe_info(meal_id: int) -> Union[dict, Response]:
         Union[dict, Response]: JSON response containing the recipe or an error message.
     """
     
-    url = f'{SPOONACULAR_API}/{meal_id}/information?apiKey={API_KEY}'
-    response = requests.get(url)
+    url = f'{SPOONACULAR_API}/recipes/{meal_id}/information'
+    response = requests.get(url, params={'apiKey': API_KEY})
     if response.status_code != 200:
         return jsonify({'error': 'Failed to fetch recipe'}), 500
 
     return response.json()
 
+
+@app.route('/feastFinder/recipes/favorites/search')
+def search_favorite_recipes() -> jsonify:
+    """
+    Endpoint to search for recipes in favorites based on query terms.
+    The search looks for matches in title, instructions, and ingredients.
+        
+    Returns:
+        Response: JSON response containing matching recipes
+    """
+
+    query = request.args.get('query', '').lower()
+    if not query:
+        return jsonify({})
+    
+    favorite_recipes = app.feast_finder.get_favorite_recipes()
+    matching_recipes = {}
+    
+    for recipe_id, recipe in favorite_recipes.items():
+        # search in title, instructions, and ingredients
+        if (query in recipe.title.lower() or 
+            query in recipe.instructions.lower() or 
+            query in recipe.ingredients.lower()):
+            matching_recipes[recipe_id] = recipe.__dict__
+    
+    return jsonify(matching_recipes)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port = 5002)
