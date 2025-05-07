@@ -224,14 +224,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function displayRecipeDetails(r) {
     const ingredients = (r.extendedIngredients ?? []).map(i => i.original);
-    let instructions  = [];
+    let instructions = [];
     if (r.analyzedInstructions?.[0]?.steps?.length) {
       instructions = r.analyzedInstructions[0].steps.map(s => s.step);
     } else if (r.instructions) {
       instructions = r.instructions.split('\n').filter(Boolean);
     }
     if (!instructions.length) instructions = ['No instructions available.'];
-
+  
     recipeDetailContent.innerHTML = `
       <div class="recipe-detail-image">
         <img
@@ -250,24 +250,24 @@ document.addEventListener('DOMContentLoaded', () => {
           ${r.glutenFree  ? '<div class="recipe-stat"><i class="fas fa-bread-slice"></i> Gluten-Free</div>' : ''}
           ${r.dairyFree   ? '<div class="recipe-stat"><i class="fas fa-cheese"></i> Dairy-Free</div>'     : ''}
         </div>
-
+  
         <div class="recipe-detail-section">
           <h3>Ingredients</h3>
           <ul class="ingredients-list">${ingredients.map(x => `<li>${x}</li>`).join('')}</ul>
         </div>
-
+  
         <div class="recipe-detail-section">
           <h3>Instructions</h3>
           <ol class="instructions-list">${instructions.map(x => `<li>${x}</li>`).join('')}</ol>
         </div>
-
+  
         <div class="recipe-actions-large modal-specific-actions">
           <button class="btn btn-secondary view-price-breakdown" data-id="${r.id}">
             <i class="fas fa-dollar-sign"></i> Price Breakdown
           </button>
         </div>
       </div>`;
-
+  
     recipeDetailContent.querySelector('.view-price-breakdown')
       .addEventListener('click', e => viewPriceBreakdown(e.currentTarget.dataset.id));
   }
@@ -428,28 +428,28 @@ refreshFavoritesBtn.addEventListener('click', () => {
   function displayFavoriteDetails(r) {
     const titleText = r.recipe_title || r.title || 'Untitled Recipe';
     recipeDetailContent.innerHTML = `
-      <div class="recipe-detail-image">
-        <img
-          src="${r.image || DEFAULT_IMAGE}"
-          alt="${titleText}"
-          onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'"
-        >
-      </div>
-      <div class="recipe-detail-main-content">
-        <h2 class="recipe-detail-title">${titleText}</h2>
-        <div class="recipe-detail-section">
-          <h3>Ingredients</h3>
-          <ul class="ingredients-list">
-            ${r.ingredients.split('\n').filter(Boolean).map(x=>`<li>${x}</li>`).join('')}
-          </ul>
+        <div class="recipe-detail-image">
+          <img
+            src="${r.image || DEFAULT_IMAGE}"
+            alt="${titleText}"
+            onerror="this.onerror=null;this.src='${DEFAULT_IMAGE}'"
+          >
         </div>
-        <div class="recipe-detail-section">
-          <h3>Instructions</h3>
-          <ol class="instructions-list">
-            ${r.instructions.split('\n').filter(Boolean).map(x=>`<li>${x}</li>`).join('')}
-          </ol>
-        </div>
-      </div>`;
+        <div class="recipe-detail-main-content">
+          <h2 class="recipe-detail-title">${titleText}</h2>
+          <div class="recipe-detail-section">
+            <h3>Ingredients</h3>
+            <ul class="ingredients-list">
+              ${r.ingredients.split('\n').filter(Boolean).map(x=>`<li>${x}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="recipe-detail-section">
+            <h3>Instructions</h3>
+            <ol class="instructions-list">
+              ${r.instructions.split('\n').filter(Boolean).map(x=>`<li>${x}</li>`).join('')}
+            </ol>
+          </div>
+        </div>`;
     addToFavoritesBtn.style.display = 'none';
     recipeModal.style.display = 'block';
   }
