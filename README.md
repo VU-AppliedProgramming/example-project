@@ -1,6 +1,6 @@
 # FeastFinder - Your Guide to Gastronomic Greatness
 
-![alt text](image.png)
+![alt text](app-photo.png)
 
 ## Brief description of the project
 
@@ -18,7 +18,7 @@ We are group 101 and this is our app called `FeastFinder`, an interactive cookin
 
 ### Starting the server:
 
-1. Open two terminal windows (e.g., Terminal).
+1. Open a terminal window.
 2. In that terminal, navigate to the back-end server directory using `cd` followed by the path.
 3. Then, run `python3 app.py` to start the `FeasFinder` Flask server.
 
@@ -69,6 +69,7 @@ AP-EXAMPLE-PROJECT/                  # Root directory of the project
 ├── LICENSE                          # Project license information
 ├── README.md                        # Project overview and instructions
 └── requirements.md                  # App requirements
+└── app-photo.png                    # Website design demo
 ```
 
 
