@@ -4,15 +4,7 @@
 
 ## Brief description of the project
 
-We are group 101 and our project is called FeastFinder. It is a dynamic recipe management system which combines cooking and web development. The project is driven by a two Flask servers (back end and front end) and uses the Spoonacular API for fetching recipes. Additionally, it leverages multiple custom made classes and functions to ensure persistance and enable CRUD operations. Using CSS, HTML, JavaScript and Bootstrap, our frontend provides a responsive and visually appealing UI, featuring interactive elements like cooking timers, price breakdown plots, calorie filters and more. Through this project, we aimed to create a user-friendly and distinctive recipe application that elevates the cooking experience and reflects our passion towards both technology and culinary delights.
-
-## Architecture
-
-![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/25aa668d-23d0-4a38-a6d5-e0c54971bbaa)
-
-
-## Frontend mockup
-![alt text](image-1.png)
+We are group 101 and this is our app called `FeastFinder`, an interactive cooking website that lets users search for recipes by keyword or by the ingredients they already have, narrow those results with minimum and maximum calorie filters, and open recipe cards that display photos, nutritional facts, ingredients, step-by-step instructions, and a clear price breakdown. After finding or creating a dish they like, they can save it to their favorites, update the instructions, delete it later, and even browse their saved recipes by title or ingredient. A random recipe button offers instant inspiration, while an on-screen cooking timer keeps the preparation on track in real time. We left styling decisions entirely to the GenAI tools, setting no visual rules as the front-end took shape.
 
 ## Team members
 
@@ -24,24 +16,60 @@ We are group 101 and our project is called FeastFinder. It is a dynamic recipe m
 
 - Ensure you have all dependencies installed. These are listed in a file named `requirements.txt`. You can install them using `pip install -r requirements.txt`.
 
-### Starting the servers:
+### Starting the server:
 
-1. Open two terminal windows (e.g., Command Prompt, PowerShell).
-2. In one terminal, navigate to the front-end server directory using `cd` followed by the path.
-3. In the other terminal, navigate to the back-end server directory using `cd`.
-4. In each terminal, run `python app.py` to start the respective Flask server.
+1. Open two terminal windows (e.g., Terminal).
+2. In that terminal, navigate to the back-end server directory using `cd` followed by the path.
+3. Then, run `python3 app.py` to start the `FeasFinder` Flask server.
 
 ### Accessing the servers:
 
-Once the servers are running, you should be able to access them using the provided port numbers.
+Once the server is running, you should be able to access it using the provided port number.
 
 
-## Architecture
+## Project Structure
 
-The repository for this project consists of 2 folders (back end, front end) and this README file.
-The folder architecture can be found bellow:
+Below is an overview of the folder structure for this project. It’s organized to separate backend, frontend, configuration files, and tests clearly.
 
-![image](https://github.com/VU-AppliedProgramming/example-project/assets/119077341/550ef9bc-672e-4fc2-9b4f-718b75568a9c)
+```plaintext
+AP-EXAMPLE-PROJECT/                  # Root directory of the project
+├── .github/                         # GitHub workflows and configurations
+├── back-end/                        # Backend source code
+│   ├── __pycache__/                 # Python cache files
+│   ├── .pytest_cache/               # Pytest cache for faster test runs
+│   ├── feast_finder/                # Main backend app package
+│   │   ├── __pycache__/             # Cache for the package
+│   │   ├── __init__.py              # Marks as a Python package
+│   │   ├── feast_finder.py          # FeasFinder classs
+│   │   ├── util.py                  # Utility functions
+│   └── tests/                       # Backend test suite
+│       ├── __pycache__/             # Cache for tests
+│       ├── .pytest_cache/           # Test run cache
+│       ├── context.py               # Test setup and fixtures
+│       ├── test_app.py              # Tests for main app logic
+│       ├── test_crud.py             # Tests for CRUD operations
+│       └── test_favorites_crud.py   # Tests for favorites CRUD
+├── .env                             # Environment variables
+├── app.py                           # Back-end Flask server
+├── myfavrecipes.json                # Favorite recipes
+├── requirements.txt                 # Python package dependencies
+├── front-end/                       
+├── genai-front-end/                 # Main frontend application
+│   ├── static/                      # Static assets (CSS, JS, images)
+│   │   ├── css/
+│   │   │   └── styles.css           # Stylesheet
+│   │   ├── images/
+│   │   │   ├── logo.png             # Logo image
+│   │   │   └── temp.png             # Placeholder image (for missing images)
+│   │   └── js/
+│   │       └── scripts.js           # Frontend JavaScript
+│   └── templates/
+│       └── index.html               # HTML template
+├── .gitignore                       # Specifies files to ignore in Git
+├── LICENSE                          # Project license information
+├── README.md                        # Project overview and instructions
+└── requirements.md                  # App requirements
+```
 
 
 
