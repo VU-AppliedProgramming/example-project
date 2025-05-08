@@ -40,7 +40,7 @@ AP-EXAMPLE-PROJECT/                  # Root directory of the project
 │   ├── feast_finder/                # Main backend app package
 │   │   ├── __pycache__/             # Cache for the package
 │   │   ├── __init__.py              # Marks as a Python package
-│   │   ├── feast_finder.py          # FeasFinder classs
+│   │   ├── feast_finder.py          # FeasFinder class
 │   │   ├── util.py                  # Utility functions
 │   └── tests/                       # Backend test suite
 │       ├── __pycache__/             # Cache for tests
