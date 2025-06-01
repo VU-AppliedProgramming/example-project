@@ -46,8 +46,6 @@ AP-EXAMPLE-PROJECT/                  # Root directory of the project
 │       ├── __pycache__/             # Cache for tests
 │       ├── .pytest_cache/           # Test run cache
 │       ├── context.py               # Test setup and fixtures
-│       ├── test_app.py              # Tests for main app logic
-│       ├── test_crud.py             # Tests for CRUD operations
 │       └── test_favorites_crud.py   # Tests for favorites CRUD
 ├── .env                             # Environment variables
 ├── app.py                           # Back-end Flask server
